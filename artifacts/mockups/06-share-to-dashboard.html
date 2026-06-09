@@ -1,0 +1,844 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Share to the dashboard · MIRA × Discourse Graphs</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<style>
+  /* ===================================================================
+     Mockup 06 — "Share to the dashboard" (Sean → Kate, the producer side)
+     Sean, in Obsidian, picks his Evidence and opens a Share-to-dashboard
+     panel: the plugin proposes a self-describing bundle, offers connected
+     nodes (a subset of the vault), sets per-node visibility (raw stacks
+     gated; working notes withheld), chooses public vs password-protected
+     (consortium), lets a candidate ride along, and pushes via KOI.
+     Palette / components / fonts come from tokens.css + components.css;
+     this block is only screen-specific composition.
+     Sibling-of: 01-publish (publish to the world) → retargeted to a
+     read-only shared dashboard for a known collaborator.
+     =================================================================== */
+  body { padding: 36px 20px 56px; }
+
+  /* ---- Obsidian editor chrome (the dark pane behind the modal) ------ */
+  .obsidian-shell { display: flex; min-height: 640px; background: var(--paper); }
+
+  .ribbon {
+    width: 48px; flex: none; background: #18181c; display: flex;
+    flex-direction: column; align-items: center; gap: 14px; padding: 14px 0;
+    border-right: 1px solid #000;
+  }
+  .ribbon .ic-btn {
+    width: 30px; height: 30px; border-radius: 7px; display: grid; place-items: center;
+    color: #8b8b94; transition: background .18s var(--ease), color .18s var(--ease);
+  }
+  .ribbon .ic-btn svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  .ribbon .ic-btn.active { background: #2a2a30; color: #cfcfd6; }
+  .ribbon .ic-btn.koi.active { background: #2a2e52; color: #aeb4eb; }
+  .ribbon .spacer { flex: 1; }
+
+  .filetree {
+    width: 234px; flex: none; background: var(--surface-2); border-right: 1px solid var(--line);
+    padding: 12px 8px; font-size: 13px;
+  }
+  .filetree .vault {
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); font-weight: 700; padding: 4px 8px 10px;
+  }
+  .filetree .f {
+    display: flex; align-items: center; gap: 8px; padding: 6px 9px; border-radius: 6px;
+    color: var(--ink-2); cursor: default; line-height: 1.2;
+  }
+  .filetree .f .swatch { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+  .filetree .f.sel { background: var(--brand-tint); color: var(--ink); font-weight: 600; }
+  .filetree .f.sel::after {
+    content: 'right-click ›'; margin-left: auto; font-family: var(--font-mono);
+    font-size: 9.5px; color: var(--evidence-ink); letter-spacing: .04em;
+  }
+  .filetree .f.indent { padding-left: 22px; color: var(--muted); }
+  .filetree .f.dim { color: var(--faint); font-style: italic; }
+  .filetree .f .cand-dot { border-radius: 50%; background: var(--faint); }
+
+  .editor {
+    flex: 1; padding: 26px 30px; position: relative; min-width: 0;
+    background: radial-gradient(rgba(255,255,255,.02) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .editor .doc-h { font-family: var(--font-display); font-size: 22px; color: var(--ink); margin-bottom: 4px; }
+  .editor .doc-meta { font-family: var(--font-mono); font-size: 11px; color: var(--faint); margin-bottom: 18px; }
+  .editor .doc-line { height: 9px; border-radius: 5px; background: var(--line); margin: 11px 0; opacity: .6; }
+  .editor .doc-line.w1 { width: 86%; } .editor .doc-line.w2 { width: 72%; } .editor .doc-line.w3 { width: 90%; }
+
+  /* dim the editor while the panel is "open" */
+  .editor::before {
+    content: ''; position: absolute; inset: 0; background: rgba(8,8,10,.48);
+    backdrop-filter: blur(1.5px);
+  }
+
+  /* ---- The share panel (light paper panel floating over Obsidian) --- */
+  .modal-wrap {
+    position: relative; display: flex; align-items: flex-start; justify-content: center;
+    padding: 22px 18px 26px; overflow: visible; z-index: 2;
+  }
+  .modal {
+    width: 100%; max-width: 600px; background: var(--surface); color: var(--ink);
+    border-radius: var(--r-lg); box-shadow: var(--shadow-3); border: 1px solid var(--line);
+    overflow: hidden;
+    /* the panel is light even though it sits in .theme-obsidian — reset the vars locally */
+    --paper: #faf8f4; --surface: #ffffff; --surface-2: #f4f2ec;
+    --ink: #1c2024; --ink-2: #3a3f47; --muted: #6b7280; --faint: #9aa0aa;
+    --line: #e7e3d8; --line-2: #ece9e0; --shadow-color: 28 32 36; --brand-tint: #eceefb;
+  }
+  .modal-head {
+    display: flex; align-items: flex-start; gap: 13px; padding: 18px 20px 16px;
+    border-bottom: 1px solid var(--line); background: var(--surface);
+  }
+  .modal-head .title { flex: 1; min-width: 0; }
+  .modal-head h3 { font-size: 17px; margin-bottom: 2px; }
+  .modal-head .x {
+    width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center;
+    color: var(--faint); border: 1px solid transparent; cursor: pointer; flex: none;
+  }
+  .modal-head .x:hover { background: var(--surface-2); color: var(--ink); }
+  .modal-head .x svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  /* the dashboard destination chip in the head */
+  .dest-chip {
+    display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono);
+    font-size: 10.5px; color: var(--brand); background: var(--brand-tint);
+    border: 1px solid #aeb4eb; border-radius: var(--r-pill); padding: 4px 10px; margin-top: 6px;
+  }
+  .dest-chip svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  .modal-body { padding: 4px 20px; max-height: 68vh; overflow-y: auto; }
+  .modal-foot {
+    display: flex; align-items: center; gap: 12px; padding: 15px 20px;
+    border-top: 1px solid var(--line); background: var(--surface-2);
+  }
+
+  /* section scaffolding inside the panel */
+  .sec { padding: 16px 0; border-bottom: 1px dashed var(--line); }
+  .sec:last-child { border-bottom: 0; }
+  .sec-label { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .sec-num {
+    width: 19px; height: 19px; border-radius: 50%; flex: none;
+    display: grid; place-items: center; font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    background: var(--brand-tint); color: var(--brand);
+  }
+  .sec-title { font-family: var(--font-body); font-weight: 700; font-size: 13px; letter-spacing: .01em; }
+  .sec-hint { margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--faint); letter-spacing: .04em; }
+
+  /* 1 — the proposed bundle (a stack/checklist of node cards) */
+  .bundle { display: flex; flex-direction: column; gap: 7px; }
+  .bcard {
+    display: grid; grid-template-columns: 26px 1fr auto; gap: 0 11px; align-items: center;
+    padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r-md);
+    background: var(--surface); border-left-width: 4px;
+    transition: box-shadow .18s var(--ease), transform .18s var(--ease), opacity .25s var(--ease);
+  }
+  .bcard:hover { box-shadow: var(--shadow-1); }
+  .bcard.evidence { border-left-color: var(--evidence-ink); }
+  .bcard.study    { border-left-color: var(--study-ink); }
+  .bcard.protocol { border-left-color: var(--protocol-ink); }
+  .bcard.question { border-left-color: var(--question-ink); }
+  .bcard.candidate{ border-left-color: var(--faint); border-style: dashed; background: var(--surface-2); }
+  .bcard .ttl { min-width: 0; }
+  .bcard .ttl .nm { font-family: var(--font-display); font-size: 13.5px; font-weight: 600; line-height: 1.25; }
+  .bcard .ttl .bd { font-size: 11.5px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+  .bcard .ttl .row { gap: 7px; margin-bottom: 4px; }
+  /* an offered (connected) card reads quieter until ticked */
+  .bcard.offered { background: var(--surface-2); border-style: dashed; }
+  .bcard.offered:not(.on) { opacity: .72; }
+  .auto-pill {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: .05em;
+    color: var(--ok); background: var(--claim-wash); border: 1px solid var(--claim-edge);
+    padding: 2px 7px; border-radius: var(--r-pill);
+  }
+  .offer-pill {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: .05em;
+    color: var(--muted); background: var(--surface); border: 1px dashed var(--line);
+    padding: 2px 7px; border-radius: var(--r-pill);
+  }
+  .cand-pill {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: .05em;
+    color: var(--muted); background: var(--surface); border: 1px dashed var(--faint);
+    padding: 2px 7px; border-radius: var(--r-pill);
+  }
+  .bundle .pubmark {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700;
+    color: var(--request-ink); white-space: nowrap;
+  }
+  .bundle .pubmark svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+
+  /* a small "offer connected nodes" caption above the offered cards */
+  .offer-note {
+    display: flex; gap: 7px; align-items: flex-start; margin: 9px 0 4px;
+    font-size: 11.5px; color: var(--muted); line-height: 1.45;
+  }
+  .offer-note svg { width: 13px; height: 13px; stroke: var(--muted); fill: none; stroke-width: 2; flex: none; margin-top: 2px; }
+  .offer-note b { color: var(--ink-2); }
+
+  /* checkbox (shared idiom) */
+  .cbx {
+    appearance: none; -webkit-appearance: none; width: 17px; height: 17px; border-radius: 5px;
+    border: 1.5px solid var(--line); background: var(--surface); cursor: pointer; position: relative;
+    transition: all .15s var(--ease); margin: 0;
+  }
+  .cbx:checked, .cbx:disabled:checked { background: var(--brand); border-color: var(--brand); }
+  .cbx:checked::after {
+    content: ''; position: absolute; left: 5px; top: 1.5px; width: 4px; height: 9px;
+    border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(43deg);
+  }
+  .cbx:disabled { opacity: .92; cursor: default; }
+
+  .ptr-line { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .ptr-line .pointer { font-size: 10.5px; padding: 4px 7px; }
+  .ptr-line .pointer .kind { font-size: 8px; }
+  .ptr-line .pointer.gated { border-style: dashed; border-color: var(--question-edge); background: var(--question-wash); }
+
+  /* illustrative two-curve plot inside the evidence card (G3BP1 leads PABP1) */
+  .evspark {
+    margin-top: 9px; display: flex; gap: 11px; align-items: center;
+    background: var(--surface-2); border: 1px solid var(--line-2); border-radius: var(--r-sm);
+    padding: 8px 10px;
+  }
+  .evspark svg { flex: none; }
+  .evspark .lg { font-size: 10px; line-height: 1.5; color: var(--ink-2); }
+  .evspark .lg .leg { display: inline-flex; align-items: center; gap: 5px; font-weight: 600; }
+  .evspark .lg .leg i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .evspark .lg .cap { display: block; color: var(--faint); font-style: italic; font-family: var(--font-display); font-size: 9.5px; margin-top: 2px; }
+  .spk .axis { stroke: var(--line); stroke-width: 1; }
+  .spk .lead { stroke: var(--question-edge); stroke-width: 1; stroke-dasharray: 2 4; }
+  .spk .g3 { fill: none; stroke: var(--study-ink); stroke-width: 2.2; stroke-linecap: round;
+    stroke-dasharray: 120; animation: drawline 1.1s var(--ease-out) .5s both; --len: 120; }
+  .spk .pa { fill: none; stroke: var(--evidence-ink); stroke-width: 2.2; stroke-linecap: round;
+    stroke-dasharray: 120; animation: drawline 1.1s var(--ease-out) .72s both; --len: 120; }
+  @media (prefers-reduced-motion: reduce){ .spk .g3, .spk .pa { animation: none; stroke-dasharray: none; } }
+
+  /* 2 — audience: public (lab website) vs password-protected (consortium) */
+  .aud { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media (max-width: 560px){ .aud { grid-template-columns: 1fr; } }
+  .aud-opt {
+    display: flex; align-items: flex-start; gap: 10px; padding: 12px 13px; cursor: pointer;
+    border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface);
+    transition: all .16s var(--ease); user-select: none;
+  }
+  .aud-opt:hover { border-color: var(--ink-2); }
+  .aud-opt .radio {
+    width: 17px; height: 17px; border-radius: 50%; border: 1.5px solid var(--line);
+    flex: none; margin-top: 1px; position: relative; transition: all .15s var(--ease);
+  }
+  .aud-opt .atxt { flex: 1; min-width: 0; }
+  .aud-opt .atxt .an { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 11.5px; color: var(--muted); flex-wrap: wrap; }
+  .aud-opt .atxt .an .share-level { font-size: 11px; padding: 3px 9px; }
+  .aud-opt .atxt .an .share-level svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+  .aud-opt .atxt .ad { font-size: 10.5px; color: var(--muted); font-family: var(--font-mono); margin-top: 5px; letter-spacing: .01em; }
+  .aud-opt[aria-checked="true"] { border-color: var(--brand); background: var(--brand-tint); box-shadow: var(--shadow-1); }
+  .aud-opt[aria-checked="true"] .radio { border-color: var(--brand); border-width: 5px; }
+  .aud-opt.world-opt[aria-checked="true"] { border-color: #aeb4eb; background: var(--brand-tint); }
+  .aud-note {
+    display: flex; gap: 7px; align-items: flex-start; margin-top: 10px; font-size: 11.5px; color: var(--muted); line-height: 1.45;
+  }
+  .aud-note svg { width: 13px; height: 13px; stroke: var(--brand); fill: none; stroke-width: 2; flex: none; margin-top: 1px; }
+  .aud-note b { color: var(--ink-2); }
+
+  /* 3 — visibility: consortium / public / private + request-access-gated, per resource (R5) */
+  .vis-list { display: flex; flex-direction: column; gap: 7px; }
+  .vis-row {
+    display: flex; align-items: center; gap: 11px; padding: 9px 12px;
+    border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface);
+  }
+  .vis-row .vk { flex: 1; min-width: 0; }
+  .vis-row .vk .vn { font-weight: 600; font-size: 12.5px; }
+  .vis-row .vk .vp { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .vis-row .share-level { flex: none; font-size: 11px; padding: 4px 10px; }
+  .vis-row .share-level svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  /* the withheld private working note — R5 progressive disclosure */
+  .withheld-block { margin-top: 9px; }
+  .withheld-block .node.private { padding: 11px 13px; }
+  .withheld-block .node.private .node-head { display: flex; align-items: center; gap: 8px; }
+  .withheld-block .node.private .node-title { font-size: 13px; margin: 7px 0 0; }
+  .never-tag {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: .05em;
+    color: var(--private); border: 1px dashed var(--private); padding: 2px 7px; border-radius: var(--r-pill);
+    margin-left: auto;
+  }
+  .redact { margin-top: 8px; height: 7px; border-radius: 4px; width: 70%;
+    background: repeating-linear-gradient(90deg, var(--private) 0 9px, transparent 9px 14px); opacity: .45; }
+  .privacy-warn {
+    display: flex; gap: 9px; align-items: flex-start; margin-top: 9px; padding: 9px 11px;
+    background: var(--question-wash); border: 1px solid var(--question-edge); border-radius: var(--r-sm);
+    font-size: 11.5px; color: var(--ink-2); line-height: 1.45;
+  }
+  .privacy-warn svg { width: 15px; height: 15px; stroke: var(--question-ink); fill: none; stroke-width: 2; flex: none; margin-top: 1px; }
+  .privacy-warn b { color: var(--question-ink); }
+
+  /* 4 — "shared = visible, not editable" read-only note */
+  .ro-note {
+    display: flex; gap: 10px; align-items: flex-start; padding: 11px 13px;
+    border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface-2);
+    font-size: 12px; color: var(--ink-2); line-height: 1.5;
+  }
+  .ro-note .ico { width: 30px; height: 30px; border-radius: 8px; flex: none; display: grid; place-items: center;
+    background: var(--surface); border: 1px solid var(--line); color: var(--muted); }
+  .ro-note .ico svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.9; }
+  .ro-note b { color: var(--ink); }
+
+  /* footer transport line */
+  .transport {
+    display: flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--faint); letter-spacing: .02em;
+  }
+  .transport svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  .transport .koi { color: var(--request-ink); font-weight: 600; }
+
+  /* ---- The signature motion: subgraph syncing to the dashboard ------ */
+  /* A thin "sync rail" runs from the panel's edge to a mini dashboard tile.
+     On push, node dots flow along it; then the toast slides in. CSS-only
+     when reduced-motion; JS only re-triggers it. */
+  .sync-stage { position: relative; z-index: 3; }
+
+  .sync-rail {
+    position: absolute; right: 30px; bottom: 150px; width: 150px; height: 96px;
+    pointer-events: none;
+  }
+  @media (max-width: 900px){ .sync-rail { display: none; } }
+  .sync-rail .dash-tile {
+    position: absolute; right: 0; top: 0; width: 150px; padding: 9px 10px;
+    background: #ffffff; border: 1px solid #e7e3d8; border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0,0,0,.18), 0 24px 60px rgba(0,0,0,.22);
+    --ink:#1c2024; --muted:#6b7280; --faint:#9aa0aa;
+  }
+  .sync-rail .dash-tile .dh { display:flex; align-items:center; gap:6px; font-family: var(--font-mono); font-size:9px; color:#6b7280; letter-spacing:.04em; }
+  .sync-rail .dash-tile .dh svg { width:11px; height:11px; stroke:#2f3a8c; fill:none; stroke-width:2; }
+  .sync-rail .dash-tile .cols { display:grid; grid-template-columns: repeat(3,1fr); gap:4px; margin-top:7px; }
+  .sync-rail .dash-tile .cols .c { height: 30px; border-radius:5px; background:#f4f2ec; border:1px solid #ece9e0; position:relative; overflow:hidden; }
+  .sync-rail .dash-tile .cols .c i { position:absolute; left:3px; right:3px; top:3px; height:5px; border-radius:2px; opacity:.0; transition: opacity .3s var(--ease); }
+  .sync-rail .dash-tile .cols .c i.q { background: var(--question-ink); }
+  .sync-rail .dash-tile .cols .c i.s { background: var(--study-ink); }
+  .sync-rail .dash-tile .cols .c i.e { background: var(--evidence-ink); }
+  .sync-rail .dash-tile .cols .c i.s2 { top:11px; background: var(--protocol-ink); }
+  .sync-rail .dash-tile .cols .c i.e2 { top:11px; background: var(--evidence-ink); opacity:0; }
+
+  .sync-rail .wire { position:absolute; left:-6px; bottom:14px; width:96px; height:60px; }
+  .sync-rail .wire path { fill:none; stroke:#aeb4eb; stroke-width:1.5; stroke-dasharray:4 4; opacity:.5; }
+  .sync-rail .pkt { opacity:0; }
+
+  /* when pushing: light up tiles + animate packets along the wire */
+  .pushing .sync-rail .dash-tile .cols .c i:not(.e2) { opacity:1; }
+  .pushing .sync-rail .dash-tile .cols .c i.e2 { opacity:1; transition-delay:.5s; }
+  .pushing .sync-rail .pkt { animation: flow 1.05s var(--ease-out) forwards; }
+  .pushing .sync-rail .pkt.p2 { animation-delay:.16s; }
+  .pushing .sync-rail .pkt.p3 { animation-delay:.32s; }
+  @keyframes flow {
+    0% { opacity:0; offset-distance:0%; }
+    12% { opacity:1; }
+    88% { opacity:1; }
+    100% { opacity:0; offset-distance:100%; }
+  }
+  .sync-rail .pkt {
+    offset-path: path('M0,52 C30,52 44,30 60,18 C72,9 84,6 96,6');
+    offset-rotate: 0deg;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .pushing .sync-rail .pkt { animation: none; opacity:0; }
+    .pushing .sync-rail .dash-tile .cols .c i { transition: none; }
+  }
+
+  .toast-dock {
+    position: absolute; left: 0; right: 0; bottom: 18px; display: flex; justify-content: center;
+    padding: 0 18px; pointer-events: none;
+  }
+  .pub-toast {
+    width: 100%; max-width: 572px; pointer-events: auto;
+    /* light, even inside the obsidian theme */
+    --surface: #ffffff; --surface-2: #f4f2ec; --ink: #1c2024; --ink-2: #3a3f47;
+    --muted: #6b7280; --line: #e7e3d8; --shadow-color: 28 32 36;
+    border-left-color: var(--request-ink);
+  }
+  .toast-dock[hidden] { display: none; }
+  .pub-toast.slide { animation: toast-in .5s var(--ease-out) both; }
+  @keyframes toast-in { from { opacity: 0; transform: translateY(16px) scale(.98); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce){ .pub-toast.slide { animation: none; } }
+  .pub-toast .dot { background: var(--request-ink); }
+  .pub-toast .body { font-size: 13px; min-width: 0; }
+  .pub-toast .body .hd { font-weight: 700; color: var(--ink); }
+  .pub-toast .urlrow {
+    display: flex; align-items: center; gap: 8px; margin-top: 7px; flex-wrap: wrap;
+  }
+  .pub-toast .url {
+    font-family: var(--font-mono); font-size: 11.5px; color: var(--brand); background: var(--surface-2);
+    border: 1px solid var(--line); border-radius: var(--r-sm); padding: 4px 9px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .pub-toast .open-dash {
+    font-family: var(--font-body); font-size: 11px; font-weight: 700; color: var(--brand);
+    border: 1px solid #aeb4eb; background: var(--brand-tint); border-radius: var(--r-sm);
+    padding: 4px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
+  }
+  .pub-toast .open-dash:hover { background: #e2e6fb; text-decoration: none; }
+  .pub-toast .open-dash svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+  .pub-toast .meta-done { margin-top: 6px; font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
+  .pub-toast .x2 { margin-left: auto; align-self: flex-start; color: var(--faint); cursor: pointer; border: 0; background: none; padding: 2px; }
+  .pub-toast .x2 svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  .footer-note {
+    text-align: center; font-family: var(--font-mono); font-size: 11.5px; color: var(--faint);
+    letter-spacing: .04em; margin-top: 24px;
+  }
+  .footer-note .dots { display:inline-block; border-top:2px dotted var(--line); width:46px; vertical-align:middle; margin:0 12px; }
+
+  @media (max-width: 720px) {
+    .filetree { display: none; }
+    .modal-body { max-height: none; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============ CAPTION ============ -->
+  <header class="frame-caption reveal d1">
+    <span class="eyebrow">Mockup 06 · share to the dashboard · push results to a shared web interface</span>
+    <h2>Sean shares a <em>selected subgraph</em> to the dashboard &mdash; a subset of his vault, on his terms.</h2>
+    <p>Selecting the <strong>Evidence</strong> in the Obsidian Discourse Graph plugin opens a <strong>Share to dashboard</strong> panel: the plugin proposes a self-describing bundle (Evidence + grounding Study + Protocol + pointers, never raw bytes) and <strong>offers connected nodes</strong>; Sean sets <strong>per-node visibility</strong> (raw stacks request-access-gated; working notes withheld without leaking), chooses <strong>public vs. password-protected</strong>, lets a <strong>candidate</strong> ride along, and <strong>pushes via KOI</strong> &mdash; shared is visible, not editable (R1, R2, R4, R5, R12).</p>
+  </header>
+
+  <!-- ============ SCREEN ============ -->
+  <div class="screen reveal d2">
+    <div class="winbar">
+      <div class="lights"><i></i><i></i><i></i></div>
+      <span class="addr">Obsidian — Vogel Lab vault — G3BP1 before PABP1.md</span>
+      <span class="grow"></span>
+      <span class="kbd">⌘ ⇧ S</span>
+    </div>
+
+    <!-- dark Obsidian pane -->
+    <div class="theme-obsidian">
+      <div class="obsidian-shell">
+
+        <!-- faux left ribbon -->
+        <nav class="ribbon" aria-label="Obsidian ribbon">
+          <div class="ic-btn active" title="Files"><svg viewBox="0 0 24 24"><path d="M4 5h7l2 2h7v12H4z"/></svg></div>
+          <div class="ic-btn" title="Search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></div>
+          <div class="ic-btn" title="Discourse Graph canvas"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="9" r="2.5"/><circle cx="9" cy="18" r="2.5"/><path d="M8 7l8 1M8 8l1 8"/></svg></div>
+          <div class="ic-btn koi active" title="KOI network — push to dashboard"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/></svg></div>
+          <div class="spacer"></div>
+          <div class="ic-btn" title="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></div>
+        </nav>
+
+        <!-- file / node list — the WHOLE vault; Sean shares only a subset -->
+        <aside class="filetree" aria-label="Vault files">
+          <div class="vault">Vault · stress granules</div>
+          <div class="f"><span class="swatch" style="background:var(--question-ink)"></span>Q · What sets recruitment order?</div>
+          <div class="f"><span class="swatch" style="background:var(--claim-ink)"></span>C · Fixed assembly order</div>
+          <div class="f sel"><span class="swatch" style="background:var(--evidence-ink)"></span>E · G3BP1 before PABP1</div>
+          <div class="f indent"><span class="swatch" style="background:var(--study-ink)"></span>S · Live two-channel imaging</div>
+          <div class="f indent"><span class="swatch" style="background:var(--protocol-ink)"></span>P · Culture → stress → segment</div>
+          <div class="f"><span class="swatch" style="background:var(--evidence-ink)"></span>E · PABP1 lags by ~40 s</div>
+          <div class="f"><span class="swatch cand-dot"></span>Candidate · Disassembly idea</div>
+          <div class="f dim"><span class="swatch" style="background:var(--private)"></span>Sean&rsquo;s working notes (private)</div>
+        </aside>
+
+        <!-- editor surface, dimmed under the panel -->
+        <main class="editor">
+          <div class="doc-h">G3BP1 is recruited to forming stress granules before PABP1</div>
+          <div class="doc-meta">EVIDENCE · supports → &ldquo;fixed assembly order&rdquo; · is_grounded_in → live-imaging study</div>
+          <div class="doc-line w1"></div>
+          <div class="doc-line w3"></div>
+          <div class="doc-line w2"></div>
+          <div class="doc-line w1"></div>
+          <div class="doc-line w2"></div>
+
+          <!-- =============== THE SHARE PANEL =============== -->
+          <div class="modal-wrap">
+            <section class="modal reveal d3" role="dialog" aria-label="Share a selected subgraph to the dashboard">
+
+              <!-- head -->
+              <div class="modal-head">
+                <span class="ntype evidence">Evidence</span>
+                <div class="title">
+                  <h3>Share to dashboard</h3>
+                  <small>from <b>G3BP1 is recruited to forming stress granules before PABP1</b></small>
+                  <div>
+                    <span class="dest-chip">
+                      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/></svg>
+                      dashboard.mira.science/vogel-kate
+                    </span>
+                  </div>
+                </div>
+                <div class="x" title="Cancel"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></div>
+              </div>
+
+              <div class="modal-body">
+
+                <!-- 1 · THE PROPOSED BUNDLE + OFFER CONNECTED NODES (R4 · self-describing subgraph) -->
+                <div class="sec">
+                  <div class="sec-label">
+                    <span class="sec-num">1</span>
+                    <span class="sec-title">What gets shared</span>
+                    <span class="sec-hint">R4 · self-describing bundle · a subset of the vault</span>
+                  </div>
+                  <div class="bundle">
+
+                    <!-- Evidence (the node selected) -->
+                    <div class="bcard evidence reveal d4">
+                      <input class="cbx" type="checkbox" checked aria-label="Include Evidence node">
+                      <div class="ttl">
+                        <div class="row"><span class="ntype evidence">Evidence</span><span class="auto-pill">selected</span></div>
+                        <div class="nm">G3BP1 is recruited to forming stress granules before PABP1</div>
+                        <div class="bd">In stressed HeLa cells, G3BP1 intensity rises earlier than PABP1 as granules assemble &mdash; a fixed recruitment order, reversing as they dissolve.</div>
+                        <!-- illustrative summary figure: two curves, G3BP1 (blue) leads PABP1 (coral) -->
+                        <div class="evspark">
+                          <svg class="spk" width="124" height="58" viewBox="0 0 124 58" aria-label="Illustrative: G3BP1 fluorescence intensity rises before PABP1 over time during granule assembly.">
+                            <line class="axis" x1="12" y1="8" x2="12" y2="50"/>
+                            <line class="axis" x1="12" y1="50" x2="118" y2="50"/>
+                            <line class="lead" x1="52" y1="8" x2="52" y2="50"/>
+                            <!-- PABP1 (coral) lags -->
+                            <path class="pa" d="M14,46 C46,45 58,42 70,33 C84,23 96,13 116,11"/>
+                            <!-- G3BP1 (blue) leads -->
+                            <path class="g3" d="M14,45 C38,43 50,32 62,21 C74,12 92,9 116,8"/>
+                          </svg>
+                          <div class="lg">
+                            <span class="leg"><i style="background:var(--study-ink)"></i>G3BP1</span> &nbsp;
+                            <span class="leg"><i style="background:var(--evidence-ink)"></i>PABP1</span>
+                            <span class="cap">illustrative · unpublished — workshop prototype</span>
+                          </div>
+                        </div>
+                      </div>
+                      <span class="pubmark"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span>
+                    </div>
+
+                    <!-- Study (auto-included via grounds) -->
+                    <div class="bcard study reveal d4">
+                      <input class="cbx" type="checkbox" checked disabled aria-label="Study auto-included">
+                      <div class="ttl">
+                        <div class="row"><span class="ntype study">Study</span><span class="auto-pill">grounds · auto</span></div>
+                        <div class="nm">Live two-channel fluorescence microscopy of stressed HeLa cells</div>
+                        <div class="bd">Tracking per-granule G3BP1/PABP1 intensity over time as granules form and dissolve.</div>
+                      </div>
+                      <span class="pubmark"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span>
+                    </div>
+
+                    <!-- Protocol (auto-included via follows) — carries the pointers (R2) -->
+                    <div class="bcard protocol reveal d5">
+                      <input class="cbx" type="checkbox" checked disabled aria-label="Protocol auto-included">
+                      <div class="ttl">
+                        <div class="row"><span class="ntype protocol">Protocol</span><span class="auto-pill">follows · auto</span></div>
+                        <div class="nm">HeLa culture → stress → live imaging → segmentation (threshold) → quantification</div>
+                        <div class="bd">The <b style="color:var(--protocol-ink)">segmentation threshold</b> is the load-bearing methods detail a reproducer traverses to.</div>
+                        <!-- POINTERS, not payloads (R2) -->
+                        <div class="ptr-line">
+                          <span class="pointer"><span class="kind git">git</span><span class="path">vogel-lab/sg-imaging @ a3f9c21 · /segmentation/</span></span>
+                          <span class="pointer"><span class="kind data">data</span><span class="path">granule_intensity_by_time.csv</span></span>
+                          <span class="pointer gated"><span class="kind local">raw</span><span class="path">NDTiff ≈ 80 GB · 25 TB array</span></span>
+                          <span class="pointer"><span class="kind video">video</span><span class="path">2-min walkthrough</span></span>
+                        </div>
+                      </div>
+                      <span class="pubmark"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span>
+                    </div>
+
+                    <!-- OFFER connected nodes — a SUBSET, opt-in -->
+                    <div class="offer-note reveal d5">
+                      <svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="9" r="2.5"/><circle cx="9" cy="18" r="2.5"/><path d="M8 7l8 1M8 8l1 8"/></svg>
+                      <span><b>Connected nodes (optional).</b> Two more nodes touch this Evidence in your graph. Tick to include them &mdash; you share a <b>subset of your graph</b>, not the whole vault.</span>
+                    </div>
+
+                    <!-- offered: the Question -->
+                    <label class="bcard question offered on offered-card reveal d6">
+                      <input class="cbx" type="checkbox" checked aria-label="Include connected Question">
+                      <div class="ttl">
+                        <div class="row"><span class="ntype question">Question</span><span class="offer-pill">addresses · connected</span></div>
+                        <div class="nm">What sets the order in which proteins are recruited into stress granules?</div>
+                      </div>
+                      <span class="pubmark"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span>
+                    </label>
+
+                    <!-- offered: the second Evidence (unticked by default) -->
+                    <label class="bcard evidence offered offered-card reveal d6">
+                      <input class="cbx" type="checkbox" aria-label="Include connected second Evidence">
+                      <div class="ttl">
+                        <div class="row"><span class="ntype evidence">Evidence</span><span class="offer-pill">supports · connected</span></div>
+                        <div class="nm">PABP1 intensity lags G3BP1 by ~40 s at granule onset</div>
+                      </div>
+                      <span class="offer-pill" style="align-self:center">off</span>
+                    </label>
+
+                    <!-- CANDIDATE node riding along — shared as-is -->
+                    <label class="bcard candidate offered on offered-card reveal d6">
+                      <input class="cbx" type="checkbox" checked aria-label="Include candidate node as-is">
+                      <div class="ttl">
+                        <div class="row"><span class="ntype candidate">Candidate</span><span class="cand-pill">informal · shared as-is</span></div>
+                        <div class="nm">Disassembly time-course (idea &mdash; not yet formalized)</div>
+                        <div class="bd">Shared as-is &mdash; someone in Kate&rsquo;s lab can formalize it, or just view it as it is.</div>
+                      </div>
+                      <span class="pubmark"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span>
+                    </label>
+
+                  </div>
+                </div>
+
+                <!-- 2 · AUDIENCE: public (lab website) vs password-protected (consortium), default consortium -->
+                <div class="sec">
+                  <div class="sec-label">
+                    <span class="sec-num">2</span>
+                    <span class="sec-title">Who is this dashboard for</span>
+                    <span class="sec-hint">start closed · open on purpose</span>
+                  </div>
+                  <div class="aud" role="radiogroup" aria-label="Dashboard audience">
+
+                    <div class="aud-opt world-opt" role="radio" aria-checked="false" data-aud="public" tabindex="0">
+                      <span class="radio" aria-hidden="true"></span>
+                      <div class="atxt">
+                        <div class="an">
+                          <span class="share-level world" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
+                            Public
+                          </span>
+                          lab website
+                        </div>
+                        <div class="ad">anyone with the URL · open recruitment</div>
+                      </div>
+                    </div>
+
+                    <div class="aud-opt cons-opt" role="radio" aria-checked="true" data-aud="consortium" tabindex="0">
+                      <span class="radio" aria-hidden="true"></span>
+                      <div class="atxt">
+                        <div class="an">
+                          <span class="share-level consortium" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                            Consortium
+                          </span>
+                          password-protected
+                        </div>
+                        <div class="ad">Vogel × Kate · 20+ labs · account required</div>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="aud-note">
+                    <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    <span>Defaulting to <b>consortium</b>. It&rsquo;s easier to open a closed system than to close an open one &mdash; flip to public for the lab website later.</span>
+                  </div>
+                </div>
+
+                <!-- 3 · VISIBILITY per resource (R5) -->
+                <div class="sec">
+                  <div class="sec-label">
+                    <span class="sec-num">3</span>
+                    <span class="sec-title">Who can reach each piece</span>
+                    <span class="sec-hint">R5 · per-resource · permissions, no leaks</span>
+                  </div>
+                  <div class="vis-list">
+
+                    <div class="vis-row">
+                      <div class="vk"><div class="vn">The shared subgraph</div><div class="vp">Evidence · Study · Protocol · Question · Candidate</div></div>
+                      <span class="share-level consortium">
+                        <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                        Consortium
+                      </span>
+                    </div>
+
+                    <div class="vis-row">
+                      <div class="vk"><div class="vn">Analysis &amp; curated data</div><div class="vp">git @ a3f9c21 · granule_intensity_by_time.csv</div></div>
+                      <span class="share-level consortium">
+                        <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                        Consortium
+                      </span>
+                    </div>
+
+                    <div class="vis-row">
+                      <div class="vk"><div class="vn">Raw image stacks</div><div class="vp">NDTiff ≈ 80 GB · 25 TB lab array</div></div>
+                      <span class="share-level gated">
+                        <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                        Request-access
+                      </span>
+                    </div>
+
+                  </div>
+
+                  <!-- the withheld private working note — R5 progressive disclosure -->
+                  <div class="withheld-block">
+                    <div class="node private">
+                      <div class="node-head">
+                        <span class="ntype" style="color:var(--private);background:var(--surface-2);border-color:var(--line)">Private</span>
+                        <span class="never-tag">won&rsquo;t be shared</span>
+                      </div>
+                      <div class="node-title">Sean&rsquo;s working notes &mdash; &ldquo;not sure the ~40 s lag holds at lower stress&rdquo;</div>
+                      <div class="redact" aria-hidden="true"></div>
+                      <div class="redact" style="width:46%" aria-hidden="true"></div>
+                    </div>
+                    <div class="privacy-warn">
+                      <svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg>
+                      <span><b>Won&rsquo;t be shared &mdash; and won&rsquo;t leak its existence.</b> This note links to the Evidence you&rsquo;re sharing, so the relation could <em>imply</em> it exists. Routed through KOI, MIRA drops the dangling edge: the dashboard shows no title, no body, no &ldquo;1 note hidden.&rdquo; Private stays private.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 4 · SHARED = VISIBLE, NOT EDITABLE -->
+                <div class="sec">
+                  <div class="sec-label">
+                    <span class="sec-num">4</span>
+                    <span class="sec-title">How it arrives</span>
+                    <span class="sec-hint">read-only viewing surface</span>
+                  </div>
+                  <div class="ro-note">
+                    <span class="ico"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="2.6"/></svg></span>
+                    <span><b>Shared = visible, not editable.</b> The dashboard is a read-only viewing surface &mdash; Kate&rsquo;s lab can read, traverse, and request, but authoring stays here in your vault. Updates you make flow out; nothing flows back in without your say.</span>
+                  </div>
+                </div>
+
+              </div><!-- /modal-body -->
+
+              <!-- FOOTER ACTIONS + transport line (R12) -->
+              <div class="modal-foot">
+                <div class="transport" title="Transport over KOI — a structured expressway between MIRA-compatible tools, not the open internet">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8"/></svg>
+                  exports as JSON-LD over <span class="koi">KOI</span>
+                </div>
+                <div style="margin-left:auto;display:flex;gap:9px">
+                  <button class="btn ghost" type="button">Cancel</button>
+                  <button id="pushBtn" class="btn primary" type="button">
+                    <svg class="ic" viewBox="0 0 24 24"><path d="M12 3v12m0-12 4 4m-4-4-4 4M5 21h14"/></svg>
+                    Push to dashboard
+                  </button>
+                </div>
+              </div>
+
+            </section>
+          </div><!-- /modal-wrap -->
+
+          <!-- ===== SIGNATURE MOTION: subgraph syncing to the dashboard ===== -->
+          <!-- A sync rail runs from the panel toward a mini dashboard tile; on push,
+               coloured packets flow along it and the dashboard columns light up,
+               then the toast slides in. With JS disabled the rail sits idle and the
+               screen reads as a complete pre-push dialog. -->
+          <div class="sync-stage" id="syncStage">
+
+            <div class="sync-rail" aria-hidden="true">
+              <!-- the destination dashboard, in miniature -->
+              <div class="dash-tile">
+                <div class="dh">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/></svg>
+                  vogel-kate
+                </div>
+                <div class="cols">
+                  <div class="c"><i class="q"></i></div>
+                  <div class="c"><i class="s"></i><i class="s2"></i></div>
+                  <div class="c"><i class="e"></i><i class="e2"></i></div>
+                </div>
+              </div>
+              <!-- the wire + flowing packets -->
+              <svg class="wire" viewBox="0 0 96 60"><path d="M0,52 C30,52 44,30 60,18 C72,9 84,6 96,6"/></svg>
+              <svg class="pkt p1" width="150" height="96" viewBox="0 0 150 96" style="position:absolute;left:-6px;bottom:14px"><circle cx="0" cy="0" r="3.5" fill="var(--evidence-ink)"/></svg>
+              <svg class="pkt p2" width="150" height="96" viewBox="0 0 150 96" style="position:absolute;left:-6px;bottom:14px"><circle cx="0" cy="0" r="3.5" fill="var(--study-ink)"/></svg>
+              <svg class="pkt p3" width="150" height="96" viewBox="0 0 150 96" style="position:absolute;left:-6px;bottom:14px"><circle cx="0" cy="0" r="3.5" fill="var(--question-ink)"/></svg>
+            </div>
+
+            <div class="toast-dock" id="toastDock" hidden>
+              <div class="toast pub-toast slide" role="status" aria-live="polite">
+                <span class="dot"></span>
+                <div class="body">
+                  <div class="hd">Pushed to dashboard · via KOI</div>
+                  <div class="urlrow">
+                    <span class="url" id="pubUrl">dashboard.mira.science/vogel-kate</span>
+                    <a class="open-dash" href="07-shared-dashboard.html">
+                      <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                      open dashboard
+                    </a>
+                  </div>
+                  <div class="meta-done" id="metaDone">→ Consortium (Vogel × Kate) · read-only · 4 nodes + pointers · raw stacks request-access</div>
+                </div>
+                <button class="x2" id="toastX" type="button" aria-label="Dismiss"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <p class="footer-note reveal d8"><span class="dots"></span>MIRA × Discourse Graphs · push results to a shared web interface · draft v0.1<span class="dots"></span></p>
+
+  <!-- ===================================================================
+       Tiny vanilla JS — all progressive; the screen is complete & correct
+       with JS disabled (the audience defaults to consortium, the toast is
+       hidden via [hidden], the dialog reads pre-push):
+         (a) audience radio toggles consortium ↔ public
+         (b) connected-node checkboxes update their card's on/off look + count
+         (c) "Push to dashboard" runs the sync motion, then slides the toast in
+       =================================================================== -->
+  <script>
+    (function () {
+      /* (a) audience radio */
+      var auds = document.querySelectorAll('.aud-opt');
+      function pickAud(el) {
+        auds.forEach(function (a) { a.setAttribute('aria-checked', String(a === el)); });
+      }
+      auds.forEach(function (a) {
+        a.addEventListener('click', function () { pickAud(a); });
+        a.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickAud(a); }
+        });
+      });
+
+      /* (b) offered (connected) cards reflect their checkbox; keep a live count */
+      var offered = document.querySelectorAll('.offered-card');
+      function syncOffered() {
+        offered.forEach(function (card) {
+          var box = card.querySelector('.cbx');
+          card.classList.toggle('on', box.checked);
+          var off = card.querySelector('.pubmark, .offer-pill[style]');
+          if (box.checked) {
+            card.querySelectorAll('.offer-pill[style]').forEach(function (p) { if (p.textContent.trim() === 'off') p.textContent = 'consortium'; });
+          }
+        });
+      }
+      offered.forEach(function (card) {
+        var box = card.querySelector('.cbx');
+        box.addEventListener('change', syncOffered);
+      });
+      syncOffered();
+
+      /* (c) push → sync motion + toast slide-in (the signature moment) */
+      var btn = document.getElementById('pushBtn');
+      var stage = document.getElementById('syncStage');
+      var dock = document.getElementById('toastDock');
+      if (btn && dock && stage) {
+        btn.addEventListener('click', function () {
+          /* count what's actually ticked, for the toast line */
+          var n = 0;
+          document.querySelectorAll('.bundle .cbx').forEach(function (b) { if (b.checked) n++; });
+          var aud = document.querySelector('.aud-opt[aria-checked="true"]');
+          var audName = aud && aud.getAttribute('data-aud') === 'public'
+            ? 'Public (lab website)' : 'Consortium (Vogel × Kate)';
+          var meta = document.getElementById('metaDone');
+          if (meta) meta.textContent = '→ ' + audName + ' · read-only · ' + n + ' nodes + pointers · raw stacks request-access';
+          var url = document.getElementById('pubUrl');
+          if (url) url.textContent = 'dashboard.mira.science/vogel-kate';
+
+          /* run the flow animation along the rail */
+          stage.classList.remove('pushing'); void stage.offsetWidth; stage.classList.add('pushing');
+
+          /* slide the toast in just after the packets arrive */
+          var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          var delay = reduce ? 0 : 900;
+          setTimeout(function () {
+            dock.hidden = false;
+            var t = dock.querySelector('.pub-toast');
+            t.classList.remove('slide'); void t.offsetWidth; t.classList.add('slide');
+          }, delay);
+
+          btn.innerHTML = '<svg class="ic" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Pushed';
+        });
+      }
+
+      /* dismiss toast */
+      var x = document.getElementById('toastX');
+      if (x && dock) { x.addEventListener('click', function () { dock.hidden = true; }); }
+    })();
+  </script>
+</body>
+</html>

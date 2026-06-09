@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Publish to the public · MIRA × Discourse Graphs</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<style>
+  /* ===================================================================
+     Mockup 01 — "Publish to the public" (🥉 low shared context)
+     Brian, in Obsidian, selects the Evidence bundle and opens a Publish
+     dialog. Palette / components / fonts all come from tokens.css +
+     components.css; this block is only screen-specific composition.
+     Sibling-of: inter-lab 01 (share) → retargeted to PUBLISH to anyone.
+     =================================================================== */
+  body { padding: 36px 20px 56px; }
+
+  /* ---- Obsidian editor chrome (the dark pane behind the modal) ------ */
+  .obsidian-shell { display: flex; min-height: 620px; background: var(--paper); }
+
+  .ribbon {
+    width: 48px; flex: none; background: #18181c; display: flex;
+    flex-direction: column; align-items: center; gap: 14px; padding: 14px 0;
+    border-right: 1px solid #000;
+  }
+  .ribbon .ic-btn {
+    width: 30px; height: 30px; border-radius: 7px; display: grid; place-items: center;
+    color: #8b8b94; transition: background .18s var(--ease), color .18s var(--ease);
+  }
+  .ribbon .ic-btn svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  .ribbon .ic-btn.active { background: #2a2a30; color: #cfcfd6; }
+  .ribbon .spacer { flex: 1; }
+
+  .filetree {
+    width: 232px; flex: none; background: var(--surface-2); border-right: 1px solid var(--line);
+    padding: 12px 8px; font-size: 13px;
+  }
+  .filetree .vault {
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); font-weight: 700; padding: 4px 8px 10px;
+  }
+  .filetree .f {
+    display: flex; align-items: center; gap: 8px; padding: 6px 9px; border-radius: 6px;
+    color: var(--ink-2); cursor: default; line-height: 1.2;
+  }
+  .filetree .f .swatch { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+  .filetree .f.sel { background: var(--brand-tint); color: var(--ink); font-weight: 600; }
+  .filetree .f.sel::after {
+    content: 'right-click ›'; margin-left: auto; font-family: var(--font-mono);
+    font-size: 9.5px; color: var(--evidence-ink); letter-spacing: .04em;
+  }
+  .filetree .f.indent { padding-left: 22px; color: var(--muted); }
+  .filetree .f.dim { color: var(--faint); font-style: italic; }
+
+  .editor {
+    flex: 1; padding: 26px 30px; position: relative; min-width: 0;
+    background: radial-gradient(rgba(255,255,255,.02) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .editor .doc-h { font-family: var(--font-display); font-size: 22px; color: var(--ink); margin-bottom: 4px; }
+  .editor .doc-meta { font-family: var(--font-mono); font-size: 11px; color: var(--faint); margin-bottom: 18px; }
+  .editor .doc-line { height: 9px; border-radius: 5px; background: var(--line); margin: 11px 0; opacity: .6; }
+  .editor .doc-line.w1 { width: 86%; } .editor .doc-line.w2 { width: 72%; } .editor .doc-line.w3 { width: 90%; }
+
+  /* dim the editor while the modal is "open" */
+  .editor::before {
+    content: ''; position: absolute; inset: 0; background: rgba(8,8,10,.48);
+    backdrop-filter: blur(1.5px);
+  }
+
+  /* ---- The publish modal (light paper panel floating over Obsidian) - */
+  .modal-wrap {
+    position: relative; display: flex; align-items: flex-start; justify-content: center;
+    padding: 22px 18px 26px; overflow: visible; z-index: 2;
+  }
+  .modal {
+    width: 100%; max-width: 588px; background: var(--surface); color: var(--ink);
+    border-radius: var(--r-lg); box-shadow: var(--shadow-3); border: 1px solid var(--line);
+    overflow: hidden;
+    /* the modal is light even though it sits in .theme-obsidian — reset the vars locally */
+    --paper: #faf8f4; --surface: #ffffff; --surface-2: #f4f2ec;
+    --ink: #1c2024; --ink-2: #3a3f47; --muted: #6b7280; --faint: #9aa0aa;
+    --line: #e7e3d8; --line-2: #ece9e0; --shadow-color: 28 32 36; --brand-tint: #eceefb;
+  }
+  .modal-head {
+    display: flex; align-items: flex-start; gap: 13px; padding: 18px 20px 16px;
+    border-bottom: 1px solid var(--line); background: var(--surface);
+  }
+  .modal-head .title { flex: 1; min-width: 0; }
+  .modal-head h3 { font-size: 17px; margin-bottom: 2px; }
+  .modal-head .x {
+    width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center;
+    color: var(--faint); border: 1px solid transparent; cursor: pointer; flex: none;
+  }
+  .modal-head .x:hover { background: var(--surface-2); color: var(--ink); }
+  .modal-head .x svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  .modal-body { padding: 4px 20px; max-height: 70vh; overflow-y: auto; }
+  .modal-foot {
+    display: flex; align-items: center; gap: 12px; padding: 15px 20px;
+    border-top: 1px solid var(--line); background: var(--surface-2);
+  }
+
+  /* section scaffolding inside the modal */
+  .sec { padding: 16px 0; border-bottom: 1px dashed var(--line); }
+  .sec:last-child { border-bottom: 0; }
+  .sec-label { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .sec-num {
+    width: 19px; height: 19px; border-radius: 50%; flex: none;
+    display: grid; place-items: center; font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    background: var(--brand-tint); color: var(--brand);
+  }
+  .sec-title { font-family: var(--font-body); font-weight: 700; font-size: 13px; letter-spacing: .01em; }
+  .sec-hint { margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--faint); letter-spacing: .04em; }
+
+  /* 1 — the bundle that will be published (a stack/checklist of node cards) */
+  .bundle { display: flex; flex-direction: column; gap: 7px; }
+  .bcard {
+    display: grid; grid-template-columns: 26px 1fr auto; gap: 0 11px; align-items: center;
+    padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r-md);
+    background: var(--surface); border-left-width: 4px;
+    transition: box-shadow .18s var(--ease), transform .18s var(--ease);
+  }
+  .bcard:hover { box-shadow: var(--shadow-1); }
+  .bcard.evidence { border-left-color: var(--evidence-ink); }
+  .bcard.study    { border-left-color: var(--study-ink); }
+  .bcard.protocol { border-left-color: var(--protocol-ink); }
+  .bcard .ttl { min-width: 0; }
+  .bcard .ttl .nm { font-family: var(--font-display); font-size: 13.5px; font-weight: 600; line-height: 1.25; }
+  .bcard .ttl .bd { font-size: 11.5px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+  .bcard .ttl .row { gap: 7px; margin-bottom: 4px; }
+  .auto-pill {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: .05em;
+    color: var(--ok); background: var(--claim-wash); border: 1px solid var(--claim-edge);
+    padding: 2px 7px; border-radius: var(--r-pill);
+  }
+  .bundle .pubmark {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700;
+    color: var(--claim-ink); white-space: nowrap;
+  }
+  .bundle .pubmark svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+
+  /* checkbox (shared idiom) */
+  .cbx {
+    appearance: none; -webkit-appearance: none; width: 17px; height: 17px; border-radius: 5px;
+    border: 1.5px solid var(--line); background: var(--surface); cursor: pointer; position: relative;
+    transition: all .15s var(--ease); margin: 0;
+  }
+  .cbx:checked, .cbx:disabled:checked { background: var(--brand); border-color: var(--brand); }
+  .cbx:checked::after {
+    content: ''; position: absolute; left: 5px; top: 1.5px; width: 4px; height: 9px;
+    border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(43deg);
+  }
+  .cbx:disabled { opacity: .92; cursor: default; }
+
+  .ptr-line { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .ptr-line .pointer { font-size: 10.5px; padding: 4px 7px; }
+  .ptr-line .pointer .kind { font-size: 8px; }
+
+  /* illustrative MFE sparkline inside the evidence card */
+  .evspark {
+    margin-top: 9px; display: flex; gap: 11px; align-items: center;
+    background: var(--surface-2); border: 1px solid var(--line-2); border-radius: var(--r-sm);
+    padding: 8px 10px;
+  }
+  .evspark svg { flex: none; }
+  .evspark .lg { font-size: 10px; line-height: 1.5; color: var(--ink-2); }
+  .evspark .lg .cap { display: block; color: var(--faint); font-style: italic; font-family: var(--font-display); font-size: 9.5px; margin-top: 2px; }
+  .spk .axis { stroke: var(--line); stroke-width: 1; }
+  .spk .zero { stroke: var(--evidence-edge); stroke-width: 1; stroke-dasharray: 3 3; }
+  .spk .curve { fill: none; stroke: var(--evidence-ink); stroke-width: 2; stroke-linecap: round;
+    stroke-dasharray: 150; animation: drawline 1.1s var(--ease-out) .5s both; --len: 150; }
+  .spk .pt { fill: var(--evidence-ink); }
+  @media (prefers-reduced-motion: reduce){ .spk .curve { animation: none; stroke-dasharray: none; } }
+
+  /* 2 — destination picker (toggle chips behind one publish action) */
+  .dests { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media (max-width: 560px){ .dests { grid-template-columns: 1fr; } }
+  .dest {
+    display: flex; align-items: center; gap: 10px; padding: 11px 12px; cursor: pointer;
+    border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface);
+    transition: all .16s var(--ease); user-select: none;
+  }
+  .dest:hover { border-color: var(--ink-2); }
+  .dest .dico { width: 30px; height: 30px; border-radius: 8px; flex: none; display: grid; place-items: center; background: var(--surface-2); color: var(--muted); }
+  .dest .dico svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.9; }
+  .dest .dtxt { flex: 1; min-width: 0; }
+  .dest .dtxt .dn { font-weight: 700; font-size: 12.5px; }
+  .dest .dtxt .ds { font-size: 10.5px; color: var(--muted); font-family: var(--font-mono); letter-spacing: .01em; }
+  .dest .toggle {
+    width: 34px; height: 19px; border-radius: var(--r-pill); background: var(--line);
+    position: relative; flex: none; transition: background .18s var(--ease);
+  }
+  .dest .toggle::after {
+    content: ''; position: absolute; top: 2px; left: 2px; width: 15px; height: 15px; border-radius: 50%;
+    background: #fff; box-shadow: var(--shadow-1); transition: transform .18s var(--ease);
+  }
+  .dest[aria-pressed="true"] { border-color: var(--brand); background: var(--brand-tint); box-shadow: var(--shadow-1); }
+  .dest[aria-pressed="true"] .dico { background: var(--brand); color: #fff; }
+  .dest[aria-pressed="true"] .toggle { background: var(--brand); }
+  .dest[aria-pressed="true"] .toggle::after { transform: translateX(15px); }
+  .one-action {
+    display: flex; gap: 7px; align-items: flex-start; margin-top: 10px; font-size: 11.5px; color: var(--muted); line-height: 1.45;
+  }
+  .one-action svg { width: 13px; height: 13px; stroke: var(--brand); fill: none; stroke-width: 2; flex: none; margin-top: 1px; }
+
+  /* 3 — visibility: public vs request-access-gated, per resource (R5) */
+  .vis-list { display: flex; flex-direction: column; gap: 7px; }
+  .vis-row {
+    display: flex; align-items: center; gap: 11px; padding: 9px 12px;
+    border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface);
+  }
+  .vis-row .vk { flex: 1; min-width: 0; }
+  .vis-row .vk .vn { font-weight: 600; font-size: 12.5px; }
+  .vis-row .vk .vp { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .vis-row .share-level { flex: none; font-size: 11px; padding: 4px 10px; }
+  .vis-row .share-level svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  /* the withheld private working note (R5 — disclose existence is itself suppressed externally) */
+  .withheld-block { margin-top: 9px; }
+  .withheld-block .node.private { padding: 11px 13px; }
+  .withheld-block .node.private .node-head { display: flex; align-items: center; gap: 8px; }
+  .withheld-block .node.private .node-title { font-size: 13px; margin: 7px 0 0; }
+  .never-tag {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: .05em;
+    color: var(--private); border: 1px dashed var(--private); padding: 2px 7px; border-radius: var(--r-pill);
+    margin-left: auto;
+  }
+  .redact { margin-top: 8px; height: 7px; border-radius: 4px; width: 70%;
+    background: repeating-linear-gradient(90deg, var(--private) 0 9px, transparent 9px 14px); opacity: .45; }
+  .privacy-warn {
+    display: flex; gap: 9px; align-items: flex-start; margin-top: 9px; padding: 9px 11px;
+    background: var(--question-wash); border: 1px solid var(--question-edge); border-radius: var(--r-sm);
+    font-size: 11.5px; color: var(--ink-2); line-height: 1.45;
+  }
+  .privacy-warn svg { width: 15px; height: 15px; stroke: var(--question-ink); fill: none; stroke-width: 2; flex: none; margin-top: 1px; }
+  .privacy-warn b { color: var(--question-ink); }
+
+  /* 4 — context prompts */
+  .prompts { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .prompt {
+    display: flex; align-items: center; gap: 11px; padding: 10px 12px;
+    border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface);
+    transition: border-color .18s var(--ease), box-shadow .18s var(--ease);
+  }
+  .prompt:hover { border-color: var(--ink-2); box-shadow: var(--shadow-1); }
+  .prompt .picon { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; flex: none; }
+  .prompt .picon svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.9; }
+  .prompt .ptxt { flex: 1; min-width: 0; }
+  .prompt .ptxt .pt { font-weight: 600; font-size: 12.5px; }
+  .prompt .ptxt .ps { font-size: 11px; color: var(--muted); }
+  .prompt .picon.sum { background: var(--claim-wash); color: var(--claim-ink); }
+  .prompt .picon.dish { background: var(--study-wash); color: var(--study-ink); }
+  .prompt .picon.vid { background: #f6e3f1; color: #b3358f; }
+  .prompt .picon.fmt { background: var(--brand-tint); color: var(--brand); }
+  .pstate {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: .03em;
+    padding: 3px 9px; border-radius: var(--r-pill); white-space: nowrap; flex: none;
+  }
+  .pstate.done { color: var(--ok); background: var(--claim-wash); border: 1px solid var(--claim-edge); }
+  .pstate.todo { color: var(--muted); background: var(--surface-2); border: 1px solid var(--line); }
+  .pstate.opt  { color: var(--brand); background: var(--brand-tint); border: 1px solid transparent; }
+  .pstate.ai   { color: var(--brand); background: var(--brand-tint); border: 1px solid #aeb4eb; }
+
+  /* footer transport line */
+  .transport {
+    display: flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--faint); letter-spacing: .02em;
+  }
+  .transport svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  .transport .jsonld { color: var(--brand); font-weight: 600; }
+
+  /* ---- The signature motion: the published toast + minted URL ------- */
+  .publish-result { position: relative; z-index: 3; }
+  .toast-dock {
+    position: absolute; left: 0; right: 0; bottom: 18px; display: flex; justify-content: center;
+    padding: 0 18px; pointer-events: none;
+  }
+  .pub-toast {
+    width: 100%; max-width: 560px; pointer-events: auto;
+    /* light, even inside the obsidian theme */
+    --surface: #ffffff; --surface-2: #f4f2ec; --ink: #1c2024; --ink-2: #3a3f47;
+    --muted: #6b7280; --line: #e7e3d8; --shadow-color: 28 32 36;
+  }
+  /* hidden by default; shown via JS. Static fallback handled below. */
+  .toast-dock[hidden] { display: none; }
+  .pub-toast.slide { animation: toast-in .5s var(--ease-out) both; }
+  @keyframes toast-in { from { opacity: 0; transform: translateY(16px) scale(.98); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce){ .pub-toast.slide { animation: none; } }
+  .pub-toast .body { font-size: 13px; min-width: 0; }
+  .pub-toast .body .hd { font-weight: 700; color: var(--ink); }
+  .pub-toast .urlrow {
+    display: flex; align-items: center; gap: 8px; margin-top: 7px; flex-wrap: wrap;
+  }
+  .pub-toast .url {
+    font-family: var(--font-mono); font-size: 11.5px; color: var(--brand); background: var(--surface-2);
+    border: 1px solid var(--line); border-radius: var(--r-sm); padding: 4px 9px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .pub-toast .copy {
+    font-family: var(--font-body); font-size: 11px; font-weight: 700; color: var(--brand);
+    border: 1px solid #aeb4eb; background: var(--brand-tint); border-radius: var(--r-sm);
+    padding: 4px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .pub-toast .copy:hover { background: #e2e6fb; }
+  .pub-toast .copy svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+  .pub-toast .dests-done { margin-top: 6px; font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
+  .pub-toast .x2 { margin-left: auto; align-self: flex-start; color: var(--faint); cursor: pointer; border: 0; background: none; padding: 2px; }
+  .pub-toast .x2 svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  .footer-note {
+    text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--faint);
+    letter-spacing: .04em; margin-top: 22px;
+  }
+
+  @media (max-width: 720px) {
+    .filetree { display: none; }
+    .modal-body { max-height: none; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============ CAPTION ============ -->
+  <header class="frame-caption reveal d1">
+    <span class="eyebrow">Mockup 01 · 🥉 low shared context · publish</span>
+    <h2>Brian publishes a result to the public &mdash; addressable, citable, and only what he chooses.</h2>
+    <p>Selecting the <strong>Evidence</strong> node in the Obsidian Discourse Graph plugin opens a <strong>Publish</strong> dialog: a self-describing bundle (Evidence + grounding Study + Protocol + pointers, never raw data) goes to one or more public destinations behind a single action, each resource set <strong>public or request-access-gated</strong> &mdash; while a private working note is withheld without leaking its existence (R1, R2, R4, R5).</p>
+  </header>
+
+  <!-- ============ SCREEN ============ -->
+  <div class="screen reveal d2">
+    <div class="winbar">
+      <div class="lights"><i></i><i></i><i></i></div>
+      <span class="addr">Obsidian — Quantum Biology Institute vault — MagLOV2 MFE.md</span>
+      <span class="grow"></span>
+      <span class="kbd">⌘ ⇧ P</span>
+    </div>
+
+    <!-- dark Obsidian pane -->
+    <div class="theme-obsidian">
+      <div class="obsidian-shell">
+
+        <!-- faux left ribbon -->
+        <nav class="ribbon" aria-label="Obsidian ribbon">
+          <div class="ic-btn active" title="Files"><svg viewBox="0 0 24 24"><path d="M4 5h7l2 2h7v12H4z"/></svg></div>
+          <div class="ic-btn" title="Search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></div>
+          <div class="ic-btn" title="Discourse Graph canvas"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="9" r="2.5"/><circle cx="9" cy="18" r="2.5"/><path d="M8 7l8 1M8 8l1 8"/></svg></div>
+          <div class="ic-btn" title="KOI network"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/></svg></div>
+          <div class="spacer"></div>
+          <div class="ic-btn" title="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></div>
+        </nav>
+
+        <!-- file / node list -->
+        <aside class="filetree" aria-label="Vault files">
+          <div class="vault">Vault · magnetosensitivity</div>
+          <div class="f"><span class="swatch" style="background:var(--question-ink)"></span>Q · Does MagLOV2 sense fields?</div>
+          <div class="f"><span class="swatch" style="background:var(--claim-ink)"></span>C · Radical-pair model</div>
+          <div class="f sel"><span class="swatch" style="background:var(--evidence-ink)"></span>E · MFE sign flips with field</div>
+          <div class="f indent"><span class="swatch" style="background:var(--study-ink)"></span>S · Bacterioscope ×5 fields</div>
+          <div class="f indent"><span class="swatch" style="background:var(--protocol-ink)"></span>P · MagLOV2 + applied field</div>
+          <div class="f dim"><span class="swatch" style="background:var(--private)"></span>Working note (private)</div>
+        </aside>
+
+        <!-- editor surface, dimmed under the modal -->
+        <main class="editor">
+          <div class="doc-h">MFE sign flips from positive to negative with field</div>
+          <div class="doc-meta">EVIDENCE · supports → &ldquo;radical-pair model&rdquo; · is_grounded_in → bacterioscope study</div>
+          <div class="doc-line w1"></div>
+          <div class="doc-line w3"></div>
+          <div class="doc-line w2"></div>
+          <div class="doc-line w1"></div>
+          <div class="doc-line w2"></div>
+
+          <!-- =============== THE PUBLISH MODAL =============== -->
+          <div class="modal-wrap">
+            <section class="modal reveal d3" role="dialog" aria-label="Publish to a public repository or database">
+
+              <!-- head -->
+              <div class="modal-head">
+                <span class="ntype evidence">Evidence</span>
+                <div class="title">
+                  <h3>Publish to the public</h3>
+                  <small>from <b>MFE sign flips from positive to negative with field</b></small>
+                </div>
+                <div class="x" title="Cancel"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></div>
+              </div>
+
+              <div class="modal-body">
+
+                <!-- 1 · THE BUNDLE (R4 · self-describing subgraph) -->
+                <div class="sec">
+                  <div class="sec-label">
+                    <span class="sec-num">1</span>
+                    <span class="sec-title">What gets published</span>
+                    <span class="sec-hint">R4 · self-describing bundle</span>
+                  </div>
+                  <div class="bundle">
+
+                    <!-- Evidence (the node selected) -->
+                    <div class="bcard evidence reveal d4">
+                      <input class="cbx" type="checkbox" checked aria-label="Include Evidence node">
+                      <div class="ttl">
+                        <div class="row"><span class="ntype evidence">Evidence</span><span class="auto-pill">selected</span></div>
+                        <div class="nm">MFE sign flips from positive to negative with field</div>
+                        <div class="bd">In MagLOV2-expressing <em>E.&nbsp;coli</em>, the sign of the mean magnetic-field effect (MFE) flipped from positive to negative as field strength increased at low fields.</div>
+                        <!-- illustrative summary figure -->
+                        <div class="evspark">
+                          <svg class="spk" width="118" height="58" viewBox="0 0 118 58" aria-label="Illustrative: mean MFE positive at low field, crossing zero, negative by 2.5 mT">
+                            <line class="axis" x1="10" y1="8" x2="10" y2="50"/>
+                            <line class="axis" x1="10" y1="50" x2="112" y2="50"/>
+                            <line class="zero" x1="10" y1="29" x2="112" y2="29"/>
+                            <path class="curve" d="M20,15 C40,21 52,26 64,30 C80,35 92,40 108,44"/>
+                            <circle class="pt" cx="20" cy="15" r="2.6"/><circle class="pt" cx="42" cy="22" r="2.6"/>
+                            <circle class="pt" cx="64" cy="30" r="2.6"/><circle class="pt" cx="86" cy="38" r="2.6"/>
+                            <circle class="pt" cx="108" cy="44" r="2.6"/>
+                          </svg>
+                          <div class="lg">
+                            <b style="color:var(--evidence-ink)">● mean MFE</b> &middot; 0.5–2.5&nbsp;mT, n&nbsp;=&nbsp;74 colonies/field
+                            <span class="cap">illustrative · unpublished — workshop prototype</span>
+                          </div>
+                        </div>
+                      </div>
+                      <span class="pubmark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>public</span>
+                    </div>
+
+                    <!-- Study (auto-included via grounds) -->
+                    <div class="bcard study reveal d5">
+                      <input class="cbx" type="checkbox" checked disabled aria-label="Study auto-included">
+                      <div class="ttl">
+                        <div class="row"><span class="ntype study">Study</span><span class="auto-pill">grounds · auto</span></div>
+                        <div class="nm">Bacterioscope live imaging of MagLOV2 E. coli across 5 field strengths</div>
+                        <div class="bd">0.5–2.5&nbsp;mT, 74 colonies each; per-colony fluorescence under a Twinleaf-calibrated applied field.</div>
+                      </div>
+                      <span class="pubmark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>public</span>
+                    </div>
+
+                    <!-- Protocol (auto-included via follows) -->
+                    <div class="bcard protocol reveal d5">
+                      <input class="cbx" type="checkbox" checked disabled aria-label="Protocol auto-included">
+                      <div class="ttl">
+                        <div class="row"><span class="ntype protocol">Protocol</span><span class="auto-pill">follows · auto</span></div>
+                        <div class="nm">MagLOV2 expression + applied-field acquisition + per-colony MFE</div>
+                        <div class="bd">Express MagLOV2 in <em>E.&nbsp;coli</em>; acquire on the bacterioscope under applied field; compute MFE per colony.</div>
+                        <!-- POINTERS, not payloads (R2) -->
+                        <div class="ptr-line">
+                          <span class="pointer"><span class="kind git">git</span><span class="path">quantum-bio/mfe-analysis @ 7c1ae04 · /mfe_fit_analysis/</span></span>
+                          <span class="pointer"><span class="kind data">data</span><span class="path">curated mfe_by_field.csv</span></span>
+                          <span class="pointer"><span class="kind video">video</span><span class="path">3-min walkthrough</span></span>
+                        </div>
+                      </div>
+                      <span class="pubmark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>public</span>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- 2 · DESTINATIONS (R1 · one publish action, many destinations) -->
+                <div class="sec">
+                  <div class="sec-label">
+                    <span class="sec-num">2</span>
+                    <span class="sec-title">Publish to</span>
+                    <span class="sec-hint">R1 · one action, pick destinations</span>
+                  </div>
+                  <div class="dests" role="group" aria-label="Destinations">
+
+                    <div class="dest" role="button" aria-pressed="true" data-dest="DG web database">
+                      <span class="dico"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></span>
+                      <div class="dtxt"><div class="dn">DG web database</div><div class="ds">mira.science · a URL</div></div>
+                      <span class="toggle" aria-hidden="true"></span>
+                    </div>
+
+                    <div class="dest" role="button" aria-pressed="true" data-dest="Jupyter Book">
+                      <span class="dico"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h7v16H6a2 2 0 0 0-2 2zM20 5a0 0 0 0 0 0 0h-7v16h5a2 2 0 0 1 2 2z"/></svg></span>
+                      <div class="dtxt"><div class="dn">Jupyter Book</div><div class="ds">micropublication</div></div>
+                      <span class="toggle" aria-hidden="true"></span>
+                    </div>
+
+                    <div class="dest" role="button" aria-pressed="false" data-dest="desci / nanopub">
+                      <span class="dico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 7l3 3M17 7l-3 3M7 17l3-3M17 17l-3-3"/></svg></span>
+                      <div class="dtxt"><div class="dn">desci / nanopub record</div><div class="ds">KOI RID · LOD</div></div>
+                      <span class="toggle" aria-hidden="true"></span>
+                    </div>
+
+                    <div class="dest" role="button" aria-pressed="false" data-dest="PREreview request">
+                      <span class="dico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/><path d="M9 10h6M9 13h4"/></svg></span>
+                      <div class="dtxt"><div class="dn">Request a PREreview</div><div class="ds">open peer review</div></div>
+                      <span class="toggle" aria-hidden="true"></span>
+                    </div>
+
+                  </div>
+                  <div class="one-action">
+                    <svg viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>
+                    <span>One <b>Publish</b> action fans out to every selected destination &mdash; KOI mediates the transport, each gets the same self-describing bundle.</span>
+                  </div>
+                </div>
+
+                <!-- 3 · VISIBILITY: public vs request-access-gated, starting closed (R5) -->
+                <div class="sec">
+                  <div class="sec-label">
+                    <span class="sec-num">3</span>
+                    <span class="sec-title">Who can reach each piece</span>
+                    <span class="sec-hint">R5 · start closed · per-resource</span>
+                  </div>
+                  <div class="vis-list">
+
+                    <div class="vis-row">
+                      <div class="vk"><div class="vn">The three-node spine</div><div class="vp">Evidence · Study · Protocol</div></div>
+                      <span class="share-level world">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
+                        Public
+                      </span>
+                    </div>
+
+                    <div class="vis-row">
+                      <div class="vk"><div class="vn">Analysis &amp; curated data</div><div class="vp">git @ 7c1ae04 · mfe_by_field.csv</div></div>
+                      <span class="share-level world">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
+                        Public
+                      </span>
+                    </div>
+
+                    <div class="vis-row">
+                      <div class="vk"><div class="vn">Raw image stacks</div><div class="vp">NDTiff · institute drive (≈ large)</div></div>
+                      <span class="share-level gated">
+                        <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                        Request-access
+                      </span>
+                    </div>
+
+                  </div>
+
+                  <!-- the withheld private working note — R5 progressive disclosure -->
+                  <div class="withheld-block">
+                    <div class="node private">
+                      <div class="node-head">
+                        <span class="ntype" style="color:var(--private);background:var(--surface-2);border-color:var(--line)">Private</span>
+                        <span class="never-tag">never leaves your vault</span>
+                      </div>
+                      <div class="node-title">Sean&rsquo;s-style working note &mdash; &ldquo;not sure the low-field point is real yet&rdquo;</div>
+                      <div class="redact" aria-hidden="true"></div>
+                      <div class="redact" style="width:46%" aria-hidden="true"></div>
+                    </div>
+                    <div class="privacy-warn">
+                      <svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg>
+                      <span><b>Existence protected.</b> This note links to the Evidence you&rsquo;re publishing, so the relation could <em>imply</em> it exists. MIRA drops the dangling edge &mdash; the public record shows no title, no body, no &ldquo;1 note hidden&rdquo;. Nothing leaks.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 4 · CONTEXT PROMPTS (so a stranger can read it cold) -->
+                <div class="sec">
+                  <div class="sec-label">
+                    <span class="sec-num">4</span>
+                    <span class="sec-title">Make it readable cold</span>
+                    <span class="sec-hint">context for a stranger's first read</span>
+                  </div>
+                  <div class="prompts">
+                    <div class="prompt">
+                      <span class="picon sum"><svg viewBox="0 0 24 24"><path d="M5 5h14M5 10h14M5 15h9"/></svg></span>
+                      <div class="ptxt">
+                        <div class="pt">Add a one-line summary</div>
+                        <div class="ps">The first thing a glancing reviewer reads.</div>
+                      </div>
+                      <span class="pstate done">added ✓</span>
+                    </div>
+                    <div class="prompt">
+                      <span class="picon dish"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 9v11"/></svg></span>
+                      <div class="ptxt">
+                        <div class="pt">What&rsquo;s in the dish &mdash; methods table</div>
+                        <div class="ps">Organism · reporter · fields · colonies · modality.</div>
+                      </div>
+                      <span class="pstate done">added ✓</span>
+                    </div>
+                    <div class="prompt">
+                      <span class="picon vid"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="12" height="12" rx="2"/><path d="M15 10l6-3v10l-6-3z"/></svg></span>
+                      <div class="ptxt">
+                        <div class="pt">Record a short walkthrough</div>
+                        <div class="ps">Travels as a pointer, not a file (R2).</div>
+                      </div>
+                      <span class="pstate todo">not yet</span>
+                    </div>
+                    <div class="prompt">
+                      <span class="picon fmt"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h13"/><circle cx="19" cy="17" r="2.2"/></svg></span>
+                      <div class="ptxt">
+                        <div class="pt">Format in schema &mdash; AI-assisted</div>
+                        <div class="ps">Maps your note to Evidence · Study · Protocol fields.</div>
+                      </div>
+                      <span class="pstate ai">suggest</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div><!-- /modal-body -->
+
+              <!-- FOOTER ACTIONS + transport line (R12) -->
+              <div class="modal-foot">
+                <div class="transport" title="Transport over KOI-net">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8"/></svg>
+                  exports as <span class="jsonld">JSON-LD</span> over KOI-net
+                </div>
+                <div style="margin-left:auto;display:flex;gap:9px">
+                  <button class="btn ghost" type="button">Cancel</button>
+                  <button id="publishBtn" class="btn primary" type="button">
+                    <svg class="ic" viewBox="0 0 24 24"><path d="M12 3v12m0-12 4 4m-4-4-4 4M5 21h14"/></svg>
+                    Publish to public
+                  </button>
+                </div>
+              </div>
+
+            </section>
+          </div><!-- /modal-wrap -->
+
+          <!-- ===== SIGNATURE MOTION: published toast + minted public URL ===== -->
+          <!-- Shown by JS on publish. With JS disabled it is hidden (hidden attr) and the screen
+               still reads as a complete, pre-publish dialog. -->
+          <div class="publish-result">
+            <div class="toast-dock" id="toastDock" hidden>
+              <div class="toast pub-toast slide" role="status" aria-live="polite">
+                <span class="dot"></span>
+                <div class="body">
+                  <div class="hd">Published · public URL ready</div>
+                  <div class="urlrow">
+                    <span class="url" id="pubUrl">mira.science/n/maglov2-mfe-7c1ae04</span>
+                    <button class="copy" id="copyBtn" type="button">
+                      <svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+                      copy link
+                    </button>
+                  </div>
+                  <div class="dests-done">→ DG web database · Jupyter Book &nbsp;·&nbsp; CC-BY · version frozen @ 7c1ae04</div>
+                </div>
+                <button class="x2" id="toastX" type="button" aria-label="Dismiss"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <p class="footer-note reveal d8">MIRA × Discourse Graphs · publish to a public repository · draft v0.1</p>
+
+  <!-- ===================================================================
+       Tiny vanilla JS — two tiny interactions, both progressive:
+         (a) destination chips toggle on click
+         (b) "Publish to public" slides in the toast + mints the URL
+       The screen is complete & correct with JS disabled (the toast is
+       hidden via the [hidden] attribute, the dialog reads pre-publish).
+       =================================================================== -->
+  <script>
+    (function () {
+      /* (a) destination toggle chips */
+      var dests = document.querySelectorAll('.dest');
+      dests.forEach(function (d) {
+        d.addEventListener('click', function () {
+          var on = d.getAttribute('aria-pressed') === 'true';
+          d.setAttribute('aria-pressed', String(!on));
+        });
+      });
+
+      /* (b) publish → toast slide-in + minted URL (the signature motion) */
+      var btn = document.getElementById('publishBtn');
+      var dock = document.getElementById('toastDock');
+      if (btn && dock) {
+        btn.addEventListener('click', function () {
+          /* reflect the live destination selection in the toast */
+          var picked = [];
+          dests.forEach(function (d) {
+            if (d.getAttribute('aria-pressed') === 'true') picked.push(d.getAttribute('data-dest'));
+          });
+          var line = dock.querySelector('.dests-done');
+          if (line) {
+            var to = picked.length ? picked.join(' · ') : 'no destination selected';
+            line.firstChild.nodeValue = '→ ' + to + ' ';
+          }
+          dock.hidden = false;
+          /* restart the slide animation if re-clicked */
+          var t = dock.querySelector('.pub-toast');
+          t.classList.remove('slide'); void t.offsetWidth; t.classList.add('slide');
+          btn.innerHTML = '<svg class="ic" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Published';
+        });
+      }
+
+      /* copy-link affordance */
+      var copy = document.getElementById('copyBtn');
+      if (copy) {
+        copy.addEventListener('click', function () {
+          var url = 'https://' + document.getElementById('pubUrl').textContent.trim();
+          var done = function () { copy.innerHTML = '✓ copied'; setTimeout(function () {
+            copy.innerHTML = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg> copy link';
+          }, 1600); };
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(done, done);
+          } else { done(); }
+        });
+      }
+
+      /* dismiss toast */
+      var x = document.getElementById('toastX');
+      if (x && dock) { x.addEventListener('click', function () { dock.hidden = true; }); }
+    })();
+  </script>
+</body>
+</html>

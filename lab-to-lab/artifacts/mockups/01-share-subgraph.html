@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Share a subgraph · MIRA × Discourse Graphs</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<style>
+  /* ===================================================================
+     Screen-specific layout only. Palette, components, fonts come from
+     tokens.css + components.css. Nothing redefined here.
+     =================================================================== */
+  body { padding: 36px 20px 56px; }
+
+  /* ---- Obsidian editor chrome (the dark pane behind the modal) ------ */
+  .obsidian-shell { display: flex; min-height: 560px; background: var(--paper); }
+
+  .ribbon {
+    width: 48px; flex: none; background: #18181c; display: flex;
+    flex-direction: column; align-items: center; gap: 14px; padding: 14px 0;
+    border-right: 1px solid #000;
+  }
+  .ribbon .ic-btn {
+    width: 30px; height: 30px; border-radius: 7px; display: grid; place-items: center;
+    color: #8b8b94; transition: background .18s var(--ease), color .18s var(--ease);
+  }
+  .ribbon .ic-btn svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  .ribbon .ic-btn.active { background: #2a2a30; color: #cfcfd6; }
+  .ribbon .spacer { flex: 1; }
+
+  .filetree {
+    width: 224px; flex: none; background: var(--surface-2); border-right: 1px solid var(--line);
+    padding: 12px 8px; font-size: 13px;
+  }
+  .filetree .vault {
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); font-weight: 700; padding: 4px 8px 10px;
+  }
+  .filetree .f {
+    display: flex; align-items: center; gap: 8px; padding: 6px 9px; border-radius: 6px;
+    color: var(--ink-2); cursor: default; line-height: 1.2;
+  }
+  .filetree .f .swatch { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+  .filetree .f.sel { background: var(--brand-tint); color: var(--ink); font-weight: 600; }
+  .filetree .f.sel::after {
+    content: 'right-click ›'; margin-left: auto; font-family: var(--font-mono);
+    font-size: 9.5px; color: var(--evidence-ink); letter-spacing: .04em;
+  }
+  .filetree .f.indent { padding-left: 22px; color: var(--muted); }
+
+  .editor {
+    flex: 1; padding: 26px 30px; position: relative; min-width: 0;
+    background:
+      radial-gradient(rgba(255,255,255,.02) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .editor .doc-h { font-family: var(--font-display); font-size: 22px; color: var(--ink); margin-bottom: 4px; }
+  .editor .doc-meta { font-family: var(--font-mono); font-size: 11px; color: var(--faint); margin-bottom: 18px; }
+  .editor .doc-line { height: 9px; border-radius: 5px; background: var(--line); margin: 11px 0; opacity: .65; }
+  .editor .doc-line.w1 { width: 86%; } .editor .doc-line.w2 { width: 72%; } .editor .doc-line.w3 { width: 90%; }
+
+  /* dim the editor while the modal is "open" */
+  .editor::before {
+    content: ''; position: absolute; inset: 0; background: rgba(8,8,10,.46);
+    backdrop-filter: blur(1.5px);
+  }
+
+  /* ---- The share modal (light paper panel floating over Obsidian) --- */
+  .modal-wrap {
+    position: relative; display: flex; align-items: flex-start; justify-content: center;
+    padding: 22px 18px 26px; overflow: visible; z-index: 2;
+  }
+  .modal {
+    width: 100%; max-width: 560px; background: var(--surface); color: var(--ink);
+    border-radius: var(--r-lg); box-shadow: var(--shadow-3); border: 1px solid var(--line);
+    overflow: hidden;
+  }
+  /* the modal is light even though it sits in .theme-obsidian — reset the vars locally */
+  .modal {
+    --paper: #faf8f4; --surface: #ffffff; --surface-2: #f4f2ec;
+    --ink: #1c2024; --ink-2: #3a3f47; --muted: #6b7280; --faint: #9aa0aa;
+    --line: #e7e3d8; --line-2: #ece9e0; --shadow-color: 28 32 36; --brand-tint: #eceefb;
+  }
+  .modal-head {
+    display: flex; align-items: flex-start; gap: 13px; padding: 18px 20px 16px;
+    border-bottom: 1px solid var(--line); background: var(--surface);
+  }
+  .modal-head .title { flex: 1; min-width: 0; }
+  .modal-head h3 { font-size: 17px; margin-bottom: 2px; }
+  .modal-head .x {
+    width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center;
+    color: var(--faint); border: 1px solid transparent; cursor: pointer; flex: none;
+  }
+  .modal-head .x:hover { background: var(--surface-2); color: var(--ink); }
+  .modal-head .x svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  .modal-body { padding: 18px 20px 4px; }
+  .modal-foot {
+    display: flex; align-items: center; gap: 12px; padding: 15px 20px;
+    border-top: 1px solid var(--line); background: var(--surface-2);
+  }
+
+  /* section scaffolding inside the modal */
+  .sec { padding: 14px 0; border-bottom: 1px dashed var(--line); }
+  .sec:last-child { border-bottom: 0; }
+  .sec-label {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 11px;
+  }
+  .sec-num {
+    width: 19px; height: 19px; border-radius: 50%; flex: none;
+    display: grid; place-items: center; font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    background: var(--brand-tint); color: var(--brand);
+  }
+  .sec-title { font-family: var(--font-body); font-weight: 700; font-size: 13px; letter-spacing: .01em; }
+  .sec-hint { margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--faint); letter-spacing: .04em; }
+
+  /* 1 — recipient */
+  .recipient {
+    display: flex; align-items: center; gap: 12px; padding: 11px 13px;
+    background: var(--surface-2); border: 1px solid var(--line-2); border-radius: var(--r-md);
+  }
+  .recipient .avatar { width: 34px; height: 34px; font-size: 13px; }
+  .recipient .who { flex: 1; min-width: 0; }
+  .recipient .who .nm { font-weight: 700; font-size: 14px; }
+  .recipient .who .sub { font-size: 12px; color: var(--muted); }
+  .p2p {
+    display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono);
+    font-size: 10.5px; font-weight: 600; letter-spacing: .03em; color: var(--source-ink);
+    background: var(--source-wash); border: 1px solid var(--source-edge);
+    padding: 4px 9px; border-radius: var(--r-pill); white-space: nowrap;
+  }
+  .p2p svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  /* 2 — share-level segmented control */
+  .levels { display: flex; flex-wrap: wrap; gap: 7px; }
+  .levels .share-level { cursor: pointer; transition: all .16s var(--ease); }
+  .levels .share-level[aria-pressed="true"] {
+    box-shadow: 0 0 0 2px var(--brand) inset, var(--shadow-1);
+  }
+  .levels .share-level.lab .chk { display: none; }
+  .levels .share-level[aria-pressed="true"] .chk { display: inline; }
+  .level-note { margin-top: 9px; font-size: 11.5px; color: var(--muted); display: flex; gap: 7px; align-items: flex-start; }
+  .level-note svg { width: 13px; height: 13px; stroke: var(--study-ink); fill: none; stroke-width: 2; flex: none; margin-top: 1px; }
+
+  /* 3 — what travels (traversal tree) */
+  .tree { position: relative; }
+  .tnode {
+    display: grid; grid-template-columns: 26px 1fr; gap: 0 10px; align-items: start;
+  }
+  .tnode + .tnode { margin-top: 4px; }
+  .rail {
+    position: relative; display: flex; flex-direction: column; align-items: center; padding-top: 6px;
+  }
+  .rail .chk-wrap { position: relative; z-index: 1; }
+  .rail .vline { width: 2px; flex: 1; background: var(--line); min-height: 10px; margin-top: 4px; }
+  .tnode:last-child .rail .vline { display: none; }
+
+  /* connecting elbow + edge label */
+  .edge-row { display: flex; align-items: center; gap: 8px; margin: 6px 0 6px 4px; padding-left: 24px; }
+  .edge-row .auto {
+    font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .05em; color: var(--ok);
+    background: var(--claim-wash); border: 1px solid var(--claim-edge); padding: 2px 7px; border-radius: var(--r-pill);
+    font-weight: 700;
+  }
+
+  /* checkbox */
+  .cbx {
+    appearance: none; -webkit-appearance: none; width: 17px; height: 17px; border-radius: 5px;
+    border: 1.5px solid var(--line); background: var(--surface); cursor: pointer; position: relative;
+    transition: all .15s var(--ease); margin: 0;
+  }
+  .cbx:checked { background: var(--brand); border-color: var(--brand); }
+  .cbx:checked::after {
+    content: ''; position: absolute; left: 5px; top: 1.5px; width: 4px; height: 9px;
+    border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(43deg);
+  }
+  .cbx:disabled { background: var(--ok); border-color: var(--ok); opacity: .9; cursor: default; }
+  .cbx:disabled::after { content: ''; position: absolute; left: 5px; top: 1.5px; width: 4px; height: 9px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(43deg); }
+
+  .tcard { /* a .node lives here; just spacing */ }
+  .tcard .node { padding: 11px 13px; }
+  .tcard .node .node-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .tcard .node .node-title { font-size: 14px; margin: 7px 0 3px; }
+  .tcard .node .node-body { font-size: 12.5px; line-height: 1.45; }
+  .tcard .node .lock-mini { margin-left: auto; }
+
+  /* illustrative sparkline figure for the evidence node */
+  .evfig {
+    margin-top: 9px; display: flex; gap: 11px; align-items: center;
+    background: var(--surface-2); border: 1px solid var(--line-2); border-radius: var(--r-sm);
+    padding: 8px 10px;
+  }
+  .evfig svg { flex: none; }
+  .evfig .legend { font-size: 10.5px; line-height: 1.5; }
+  .evfig .legend b { font-family: var(--font-mono); font-weight: 600; font-size: 10px; }
+  .evfig .g3 { color: var(--evidence-ink); }
+  .evfig .pa { color: var(--study-ink); }
+  .evfig .cap { display: block; color: var(--faint); font-style: italic; margin-top: 2px; font-family: var(--font-display); font-size: 9.5px; }
+
+  .spark .line { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .spark .g3line { stroke: var(--evidence-ink); stroke-dasharray: 200; animation: drawline 1.1s var(--ease-out) .55s both; --len: 200; }
+  .spark .paline { stroke: var(--study-ink);    stroke-dasharray: 200; animation: drawline 1.1s var(--ease-out) .85s both; --len: 200; }
+  .spark .tick { stroke: var(--line); stroke-width: 1; }
+  .spark .lag  { stroke: var(--faint); stroke-width: 1; stroke-dasharray: 2 3; }
+  .spark .lagtxt { font-family: var(--font-mono); font-size: 7px; fill: var(--muted); }
+
+  /* pointer chips that slide in (signature motion) */
+  .pointers { margin-top: 9px; display: flex; flex-direction: column; gap: 6px; }
+  .pointers .phead { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); font-weight: 700; }
+  .pointer { font-size: 11px; padding: 5px 8px; }
+  .pointer .kind { font-size: 8.5px; }
+  .slidein { opacity: 0; transform: translateX(-10px); animation: ptr-slide .5s var(--ease-out) forwards; }
+  .slidein.s1 { animation-delay: .62s; } .slidein.s2 { animation-delay: .74s; } .slidein.s3 { animation-delay: .86s; }
+  @keyframes ptr-slide { to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .slidein { animation: none; opacity: 1; transform: none; }
+    .spark .g3line, .spark .paline { animation: none; stroke-dasharray: none; }
+  }
+
+  /* 4 — private node protection */
+  .private-block { }
+  .private-block .node.private { padding: 11px 13px; }
+  .private-block .node.private .node-title { font-size: 13.5px; margin: 0; }
+  .redact {
+    margin-top: 4px; height: 7px; border-radius: 4px; width: 70%;
+    background: repeating-linear-gradient(90deg, var(--private) 0 9px, transparent 9px 14px);
+    opacity: .5;
+  }
+  .privacy-warn {
+    display: flex; gap: 9px; align-items: flex-start; margin-top: 9px; padding: 9px 11px;
+    background: var(--question-wash); border: 1px solid var(--question-edge); border-radius: var(--r-sm);
+    font-size: 11.5px; color: var(--ink-2); line-height: 1.45;
+  }
+  .privacy-warn svg { width: 15px; height: 15px; stroke: var(--question-ink); fill: none; stroke-width: 2; flex: none; margin-top: 1px; }
+  .privacy-warn b { color: var(--question-ink); }
+  .excl-tag {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: .06em;
+    color: var(--private); border: 1px dashed var(--private); padding: 2px 7px; border-radius: var(--r-pill);
+    margin-left: auto;
+  }
+
+  /* 5 — pre-send prompt cards */
+  .prompts { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .prompt {
+    display: flex; align-items: center; gap: 11px; padding: 10px 12px;
+    border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface);
+    transition: border-color .18s var(--ease), box-shadow .18s var(--ease);
+  }
+  .prompt:hover { border-color: var(--ink-2); box-shadow: var(--shadow-1); }
+  .prompt .picon { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; flex: none; }
+  .prompt .picon svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.9; }
+  .prompt .ptxt { flex: 1; min-width: 0; }
+  .prompt .ptxt .pt { font-weight: 600; font-size: 13px; }
+  .prompt .ptxt .ps { font-size: 11px; color: var(--muted); }
+  .prompt .picon.sum { background: var(--claim-wash); color: var(--claim-ink); }
+  .prompt .picon.vid { background: #f6e3f1; color: #b3358f; }
+  .prompt .picon.fmt { background: var(--brand-tint); color: var(--brand); }
+  .pstate {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: .03em;
+    padding: 3px 9px; border-radius: var(--r-pill); white-space: nowrap; flex: none;
+  }
+  .pstate.done { color: var(--ok); background: var(--claim-wash); border: 1px solid var(--claim-edge); }
+  .pstate.todo { color: var(--muted); background: var(--surface-2); border: 1px solid var(--line); }
+  .pstate.opt  { color: var(--brand); background: var(--brand-tint); border: 1px solid transparent; }
+
+  /* footer transport line */
+  .transport {
+    display: flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--faint); letter-spacing: .02em;
+  }
+  .transport svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  .transport .jsonld { color: var(--brand); font-weight: 600; }
+
+  .footer-note {
+    text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--faint);
+    letter-spacing: .04em; margin-top: 22px;
+  }
+
+  @media (max-width: 720px) {
+    .filetree { display: none; }
+    .modal-body { max-height: none; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============ CAPTION ============ -->
+  <header class="frame-caption reveal d1">
+    <span class="eyebrow">Mockup 01 · Producer-side · Share a subgraph</span>
+    <h2>Sean shares a result with Kate&rsquo;s Lab — and only what he chooses.</h2>
+    <p>Right-clicking an Evidence node in the Obsidian Discourse Graph plugin opens a share panel: a self-describing subgraph (Evidence + grounding Study + Protocol + pointers, never raw data) travels peer-to-peer at a share level Sean controls — and an un-shared private node is held back without leaking its existence (R1, R2, R4, R5).</p>
+  </header>
+
+  <!-- ============ SCREEN ============ -->
+  <div class="screen reveal d2">
+    <div class="winbar">
+      <div class="lights"><i></i><i></i><i></i></div>
+      <span class="addr">Obsidian — Vogel Lab vault — Stress-granule assembly.md</span>
+    </div>
+
+    <!-- dark Obsidian pane -->
+    <div class="theme-obsidian">
+      <div class="obsidian-shell">
+
+        <!-- faux left ribbon -->
+        <nav class="ribbon" aria-label="Obsidian ribbon">
+          <div class="ic-btn active" title="Files"><svg viewBox="0 0 24 24"><path d="M4 5h7l2 2h7v12H4z"/></svg></div>
+          <div class="ic-btn" title="Search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></div>
+          <div class="ic-btn" title="Discourse Graph canvas"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="9" r="2.5"/><circle cx="9" cy="18" r="2.5"/><path d="M8 7l8 1M8 8l1 8"/></svg></div>
+          <div class="ic-btn" title="KOI network"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/></svg></div>
+          <div class="spacer"></div>
+          <div class="ic-btn" title="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></div>
+        </nav>
+
+        <!-- file / node list -->
+        <aside class="filetree" aria-label="Vault files">
+          <div class="vault">Vault · stress-granules</div>
+          <div class="f"><span class="swatch" style="background:var(--question-ink)"></span>Q · SG protein recruitment</div>
+          <div class="f"><span class="swatch" style="background:var(--claim-ink)"></span>C · G3BP1 before PABP1</div>
+          <div class="f sel"><span class="swatch" style="background:var(--evidence-ink)"></span>E · G3BP1 rises first</div>
+          <div class="f indent"><span class="swatch" style="background:var(--study-ink)"></span>S · LLSM arsenite HeLa</div>
+          <div class="f indent"><span class="swatch" style="background:var(--protocol-ink)"></span>P · Arsenite + LLSM track</div>
+          <div class="f"><span class="swatch" style="background:var(--private)"></span>Sean&rsquo;s thoughts (private)</div>
+        </aside>
+
+        <!-- editor surface, dimmed under the modal -->
+        <main class="editor">
+          <div class="doc-h">G3BP1 rises first under arsenite stress</div>
+          <div class="doc-meta">EVIDENCE · supports → &ldquo;G3BP1 before PABP1&rdquo; · is_grounded_in → LLSM study</div>
+          <div class="doc-line w1"></div>
+          <div class="doc-line w2"></div>
+          <div class="doc-line w3"></div>
+          <div class="doc-line w2"></div>
+          <div class="doc-line w1"></div>
+
+          <!-- =============== THE MODAL =============== -->
+          <div class="modal-wrap">
+            <section class="modal reveal d3" role="dialog" aria-label="Share subgraph">
+
+              <!-- head -->
+              <div class="modal-head">
+                <span class="ntype evidence">Evidence</span>
+                <div class="title">
+                  <h3>Share subgraph</h3>
+                  <small>from <b>G3BP1 rises first under arsenite stress</b></small>
+                </div>
+                <div class="x" title="Cancel"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></div>
+              </div>
+
+              <div class="modal-body">
+
+                <!-- 1 · RECIPIENT (R1 · P2P) -->
+                <div class="sec">
+                  <div class="sec-label">
+                    <span class="sec-num">1</span>
+                    <span class="sec-title">Share with</span>
+                    <span class="sec-hint">R1 · peer-to-peer</span>
+                  </div>
+                  <div class="recipient">
+                    <span class="avatar lab">KL</span>
+                    <div class="who">
+                      <div class="nm">Kate&rsquo;s Lab</div>
+                      <div class="sub">established collaborator · 6 members</div>
+                    </div>
+                    <span class="p2p">
+                      <svg viewBox="0 0 24 24"><path d="M7 17a4 4 0 0 1 0-8h2M17 7a4 4 0 0 1 0 8h-2"/><path d="M8 12h8"/></svg>
+                      peer-to-peer
+                    </span>
+                  </div>
+                  <div class="level-note" style="margin-top:9px">
+                    <svg viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg>
+                    <span>No central authority — this is a <b>bilateral share you control</b>. You can revoke or change the level any time.</span>
+                  </div>
+                </div>
+
+                <!-- 2 · SHARE LEVEL (R5 · start closed) -->
+                <div class="sec">
+                  <div class="sec-label">
+                    <span class="sec-num">2</span>
+                    <span class="sec-title">Share level</span>
+                    <span class="sec-hint">R5 · default for this project: lab</span>
+                  </div>
+                  <div class="levels" role="group" aria-label="Share level">
+                    <span class="share-level private" role="button" aria-pressed="false">Private</span>
+                    <span class="share-level lab"     role="button" aria-pressed="false">Just Kate</span>
+                    <span class="share-level lab"     role="button" aria-pressed="true">
+                      <span class="chk">✓</span> Kate&rsquo;s whole Lab
+                    </span>
+                    <span class="share-level public"  role="button" aria-pressed="false">Public web link</span>
+                  </div>
+                  <div class="level-note">
+                    <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                    <span>Starts <b>closed</b>. This project defaults to a lab-level share — easier to open later than to claw back an over-shared one.</span>
+                  </div>
+                </div>
+
+                <!-- 3 · WHAT TRAVELS (R4 + R2) — the traversal tree -->
+                <div class="sec">
+                  <div class="sec-label">
+                    <span class="sec-num">3</span>
+                    <span class="sec-title">What travels</span>
+                    <span class="sec-hint">R4 · self-describing subgraph</span>
+                  </div>
+
+                  <div class="tree">
+
+                    <!-- Evidence (the thing shared) -->
+                    <div class="tnode reveal d4">
+                      <div class="rail">
+                        <span class="chk-wrap"><input class="cbx" type="checkbox" checked aria-label="Include Evidence node"></span>
+                        <span class="vline"></span>
+                      </div>
+                      <div class="tcard">
+                        <div class="node evidence">
+                          <div class="node-head">
+                            <span class="ntype evidence">Evidence</span>
+                            <span class="tag" style="margin-left:auto">the node you&rsquo;re sharing</span>
+                          </div>
+                          <div class="node-title">G3BP1 rises first under arsenite stress</div>
+                          <div class="node-body">Under arsenite stress, G3BP1 fluorescence intensity rose first; PABP1 intensity rose ~40&nbsp;s later.</div>
+
+                          <!-- illustrative figure -->
+                          <div class="evfig">
+                            <svg class="spark" width="110" height="56" viewBox="0 0 110 56" aria-label="Illustrative intensity trace">
+                              <line class="tick" x1="6" y1="50" x2="104" y2="50"/>
+                              <line class="tick" x1="6" y1="6"  x2="6"  y2="50"/>
+                              <!-- G3BP1: climbs early -->
+                              <path class="line g3line" d="M6 46 C 18 44, 26 18, 40 12 C 54 8, 72 8, 104 7"/>
+                              <!-- PABP1: flat, then climbs ~40s later -->
+                              <path class="line paline" d="M6 47 C 30 47, 44 47, 54 44 C 66 40, 78 22, 104 16"/>
+                              <line class="lag" x1="40" y1="6" x2="40" y2="50"/>
+                              <line class="lag" x1="62" y1="6" x2="62" y2="50"/>
+                              <text class="lagtxt" x="44" y="14">~40s</text>
+                            </svg>
+                            <div class="legend">
+                              <span class="g3"><b>● G3BP1</b></span> recruited first<br>
+                              <span class="pa"><b>● PABP1</b></span> ~40&nbsp;s later
+                              <span class="cap">illustrative · unpublished — workshop prototype</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- edge: grounds -->
+                    <div class="edge-row reveal d5">
+                      <span class="edge grounds">grounds</span>
+                      <span class="auto">auto-included</span>
+                      <small style="color:var(--faint)">a result without its study can&rsquo;t be trusted</small>
+                    </div>
+
+                    <!-- Study -->
+                    <div class="tnode reveal d5">
+                      <div class="rail">
+                        <span class="chk-wrap"><input class="cbx" type="checkbox" checked disabled aria-label="Study auto-included"></span>
+                        <span class="vline"></span>
+                      </div>
+                      <div class="tcard">
+                        <div class="node study">
+                          <div class="node-head">
+                            <span class="ntype study">Study</span>
+                            <span class="lock lock-mini">required</span>
+                          </div>
+                          <div class="node-title">Live LLSM of arsenite-stressed HeLa</div>
+                          <div class="node-body">Lattice light-sheet imaging tracking G3BP1 &amp; PABP1 intensity at high spatial resolution as granules form.</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- edge: follows -->
+                    <div class="edge-row reveal d6">
+                      <span class="edge follows">follows</span>
+                      <span class="auto">auto-included</span>
+                      <small style="color:var(--faint)">the methods so Kate&rsquo;s grad student can re-run it</small>
+                    </div>
+
+                    <!-- Protocol + pointers -->
+                    <div class="tnode reveal d6">
+                      <div class="rail">
+                        <span class="chk-wrap"><input class="cbx" type="checkbox" checked disabled aria-label="Protocol auto-included"></span>
+                      </div>
+                      <div class="tcard">
+                        <div class="node protocol">
+                          <div class="node-head">
+                            <span class="ntype protocol">Protocol</span>
+                            <span class="lock lock-mini">required</span>
+                          </div>
+                          <div class="node-title">Arsenite induction + LLSM acquisition + intensity tracking</div>
+                          <div class="node-body">Literature-standard SG segmentation threshold; carries the &ldquo;what&rsquo;s in the dish&rdquo; table (HeLa · arsenite · dose · batch).</div>
+
+                          <!-- POINTERS, not payloads (R2) — slide in -->
+                          <div class="pointers">
+                            <span class="phead">Pointers · references, not raw data (R2)</span>
+                            <span class="pointer slidein s1">
+                              <span class="kind git">git</span>
+                              <span class="path">vogel-lab/sg-assembly @ a9f3e21 · /analysis/track_intensity.py</span>
+                            </span>
+                            <span class="pointer slidein s2">
+                              <span class="kind local">local</span>
+                              <span class="path">raw LLSM stack ≈ 80&nbsp;GB · lab 25&nbsp;TB array <em style="font-style:italic;color:var(--faint)">(resolution: open Q)</em></span>
+                            </span>
+                            <span class="pointer slidein s2">
+                              <span class="kind s3">s3</span>
+                              <span class="path">processed CSV — the shareable artifact</span>
+                            </span>
+                            <span class="pointer slidein s3">
+                              <span class="kind video">video</span>
+                              <span class="path">3-min Loom walkthrough · recorded on share</span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div><!-- /tree -->
+                </div>
+
+                <!-- 4 · PRIVATE NODE PROTECTION (R5 progressive disclosure) -->
+                <div class="sec">
+                  <div class="sec-label">
+                    <span class="sec-num">4</span>
+                    <span class="sec-title">Held back</span>
+                    <span class="sec-hint">R5 · progressive disclosure</span>
+                  </div>
+                  <div class="private-block">
+                    <div class="node private">
+                      <div class="node-head">
+                        <span class="ntype" style="color:var(--private);background:var(--surface-2);border-color:var(--line)">Private</span>
+                        <span class="excl-tag">excluded · not shared</span>
+                      </div>
+                      <div class="node-title">Sean&rsquo;s thoughts — is the PABP1 lag real, or a photobleaching artifact?</div>
+                      <div class="redact" aria-hidden="true"></div>
+                      <div class="redact" style="width:48%" aria-hidden="true"></div>
+                    </div>
+                    <div class="privacy-warn">
+                      <svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg>
+                      <span><b>Existence protected.</b> This node links to the Evidence you&rsquo;re sharing — so the relation could <em>imply</em> it exists. MIRA drops the dangling edge: Kate&rsquo;s Lab sees no title, no body, no &ldquo;1 related node hidden&rdquo;. Nothing leaks.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 5 · PRE-SEND PROMPTS (R10 · canvas feels-like column) -->
+                <div class="sec">
+                  <div class="sec-label">
+                    <span class="sec-num">5</span>
+                    <span class="sec-title">Before you send</span>
+                    <span class="sec-hint">R10 · suggest, you confirm</span>
+                  </div>
+                  <div class="prompts">
+                    <div class="prompt">
+                      <span class="picon sum"><svg viewBox="0 0 24 24"><path d="M5 5h14M5 10h14M5 15h9"/></svg></span>
+                      <div class="ptxt">
+                        <div class="pt">Add a plain-language summary</div>
+                        <div class="ps">One paragraph Kate can trust from a single figure.</div>
+                      </div>
+                      <span class="pstate done">added ✓</span>
+                    </div>
+                    <div class="prompt">
+                      <span class="picon vid"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="12" height="12" rx="2"/><path d="M15 10l6-3v10l-6-3z"/></svg></span>
+                      <div class="ptxt">
+                        <div class="pt">Record a 3-min walkthrough video</div>
+                        <div class="ps">Travels as a pointer, not a file (R2).</div>
+                      </div>
+                      <span class="pstate todo">not yet</span>
+                    </div>
+                    <div class="prompt">
+                      <span class="picon fmt"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h13"/><circle cx="19" cy="17" r="2.2"/></svg></span>
+                      <div class="ptxt">
+                        <div class="pt">Format in schema — let MIRA help present it</div>
+                        <div class="ps">Maps your note to Evidence · Study · Protocol fields.</div>
+                      </div>
+                      <span class="pstate opt">suggest</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div><!-- /modal-body -->
+
+              <!-- FOOTER ACTIONS + transport line (R7) -->
+              <div class="modal-foot">
+                <div class="transport" title="Transport over KOI-net">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8"/></svg>
+                  sends as <span class="jsonld">JSON-LD</span> over KOI-net
+                </div>
+                <div style="margin-left:auto;display:flex;gap:9px">
+                  <button class="btn ghost">Cancel</button>
+                  <button class="btn primary">
+                    <svg class="ic" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg>
+                    Share subgraph
+                  </button>
+                </div>
+              </div>
+
+            </section>
+          </div><!-- /modal-wrap -->
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <p class="footer-note reveal d8">MIRA × Discourse Graphs · inter-lab exchange · draft v0.1</p>
+
+  <!-- Tiny vanilla JS: ONE interaction — select share level. Screen is complete without it. -->
+  <script>
+    (function () {
+      var chips = document.querySelectorAll('.levels .share-level');
+      chips.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          chips.forEach(function (c) {
+            c.setAttribute('aria-pressed', 'false');
+            var mark = c.querySelector('.chk');
+            if (mark) mark.remove();
+          });
+          chip.setAttribute('aria-pressed', 'true');
+          if (!chip.querySelector('.chk')) {
+            var s = document.createElement('span');
+            s.className = 'chk';
+            s.textContent = '✓ ';
+            chip.insertBefore(s, chip.firstChild);
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

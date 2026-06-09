@@ -1,2 +1,5 @@
 .DS_Store
-context/transcript-2026-06-08.md
+
+# Local-only meeting transcripts — raw transcripts stay local; distilled into artifacts/_grounding*.md
+**/context/transcript-*.md
+context/*-transcript.md

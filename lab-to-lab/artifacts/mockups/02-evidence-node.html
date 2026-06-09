@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MIRA · Evidence node, read cold</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<style>
+  /* ========================================================================
+     Mockup 02 — screen-specific composition only.
+     Palette, fonts, and component classes come from the shared stylesheets.
+     ===================================================================== */
+  body { padding: 34px 20px 56px; }
+
+  /* ---- Provenance ribbon -------------------------------------------------- */
+  .ribbon {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding: 12px 18px; border-bottom: 1px solid var(--line);
+    background:
+      linear-gradient(0deg, rgba(56,119,207,.04), rgba(56,119,207,.04)),
+      var(--surface-2);
+  }
+  .ribbon .who { display: flex; align-items: center; gap: 10px; }
+  .ribbon .who .meta { display: flex; flex-direction: column; line-height: 1.25; }
+  .ribbon .who .meta b { font-size: 13px; font-weight: 700; color: var(--ink); }
+  .ribbon .who .meta span { font-size: 11.5px; color: var(--muted); }
+  .ribbon .ctx {
+    margin-left: auto; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    font-size: 11.5px; color: var(--faint);
+  }
+  .ribbon .ctx .imp {
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .06em;
+    color: var(--study-ink); background: var(--study-wash);
+    border: 1px solid var(--study-edge); border-radius: var(--r-pill); padding: 3px 9px;
+  }
+
+  /* ---- Body grid ---------------------------------------------------------- */
+  .reading { padding: 26px 30px 28px; }
+  .summary-grid {
+    display: grid; grid-template-columns: 1.05fr .95fr; gap: 26px; align-items: start;
+  }
+  @media (max-width: 860px){ .summary-grid { grid-template-columns: 1fr; gap: 22px; } }
+
+  .lead h1.title {
+    font-size: clamp(23px, 3vw, 30px); line-height: 1.1; margin: 12px 0 12px;
+    max-width: 22ch;
+  }
+  .lead .abstract {
+    font-size: 15.5px; line-height: 1.62; color: var(--ink-2); max-width: 46ch;
+  }
+  .lead .abstract .k { color: var(--evidence-ink); font-weight: 600; }
+  .pi-trust {
+    margin-top: 16px; display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--muted);
+    border-left: 2px solid var(--evidence-edge); padding-left: 11px;
+  }
+
+  /* ---- Figure card -------------------------------------------------------- */
+  .figcard {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--shadow-1); overflow: hidden;
+  }
+  .figcard .fig-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; border-bottom: 1px solid var(--line-2); background: var(--surface-2);
+  }
+  .figcard .fig-head .ttl {
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--faint); font-weight: 600;
+  }
+  .figcard .fig-body { padding: 6px 8px 4px; }
+  .chart { display: block; width: 100%; height: auto; }
+  /* SVG chart styling — references the shared palette tokens (resolves reliably in CSS) */
+  .chart .ax-frame line { stroke: var(--line);   stroke-width: 1; }
+  .chart .ax-grid  line { stroke: var(--line-2); stroke-width: 1; stroke-dasharray: 2 4; }
+  .chart .ax-lbl  { font-family: var(--font-mono); font-size: 10px; fill: var(--faint); }
+  .chart .ax-tick { font-family: var(--font-mono); font-size: 9px;  fill: var(--faint); }
+  .chart .lag-rule { stroke: var(--evidence-edge); stroke-width: 1; stroke-dasharray: 3 4; }
+  .chart .lag-lbl  { font-family: var(--font-mono); font-size: 9px; fill: var(--evidence-ink); }
+  .chart .line-g3 { fill: none; stroke: var(--evidence-ink); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .chart .line-pa { fill: none; stroke: var(--study-ink);    stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .chart .pt-g3 { fill: var(--evidence-ink); }
+  .chart .pt-pa { fill: var(--study-ink); }
+  .fig-cap {
+    font-size: 11px; color: var(--faint); font-style: italic;
+    padding: 2px 14px 12px; text-align: right;
+  }
+  .legend { display: flex; gap: 16px; padding: 2px 14px 10px; flex-wrap: wrap; }
+  .legend .it { display: inline-flex; align-items: center; gap: 7px; font-size: 11.5px; color: var(--ink-2); font-weight: 600; }
+  .legend .sw { width: 16px; height: 3px; border-radius: 2px; }
+  .legend .sw.g3 { background: var(--evidence-ink); }
+  .legend .sw.pa { background: var(--study-ink); }
+
+  /* ---- Context table ("what's in the dish") ------------------------------ */
+  .dish {
+    margin-top: 16px; border: 1px solid var(--line); border-radius: var(--r-md);
+    overflow: hidden; background: var(--surface);
+  }
+  .dish .dish-head {
+    padding: 9px 14px; background: var(--surface-2); border-bottom: 1px solid var(--line-2);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .dish .dish-head .eyebrow { margin: 0; }
+  .dish .dish-head .pin { color: var(--evidence-ink); }
+  .dish table { width: 100%; border-collapse: collapse; }
+  .dish td { padding: 8px 14px; font-size: 12.5px; border-top: 1px solid var(--line-2); vertical-align: top; }
+  .dish tr:first-child td { border-top: 0; }
+  .dish td.key {
+    width: 44%; color: var(--muted); font-weight: 600;
+    background: linear-gradient(90deg, rgba(244,242,236,.5), transparent);
+  }
+  .dish td.val { color: var(--ink); font-family: var(--font-mono); font-size: 11.5px; }
+  .dish td.val .note { display:block; font-family: var(--font-body); font-size: 10.5px; color: var(--faint); margin-top: 2px; }
+
+  /* ---- Supports edge → Claim --------------------------------------------- */
+  .supports-rail { margin: 26px 0 4px; display: flex; flex-direction: column; align-items: center; }
+  .supports-rail .stub { width: 2px; height: 16px; background: var(--claim-edge); }
+  .supports-rail .arrow { color: var(--claim-ink); line-height: 0; margin: -1px 0; }
+  .claim-target {
+    width: 100%; max-width: 640px; margin: 6px auto 0;
+  }
+  .claim-target .node-title { font-size: 16.5px; }
+  .upstream-tag {
+    font-size: 11px; color: var(--faint); font-family: var(--font-mono);
+    letter-spacing: .06em; margin-bottom: 8px; text-align: center;
+  }
+
+  /* ---- Traverse (secondary, expandable) ---------------------------------- */
+  .traverse { margin-top: 30px; }
+  details.lineage { border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); }
+  details.lineage > summary {
+    list-style: none; cursor: pointer; padding: 16px 4px;
+    display: flex; align-items: center; gap: 13px;
+    transition: background .2s var(--ease);
+  }
+  details.lineage > summary::-webkit-details-marker { display: none; }
+  details.lineage > summary:hover { background: rgba(56,119,207,.03); }
+  .sum-chev {
+    width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center; flex: none;
+    color: var(--muted); background: var(--surface);
+    transition: transform .35s var(--ease), border-color .25s var(--ease), color .25s var(--ease);
+  }
+  details.lineage[open] .sum-chev { transform: rotate(90deg); border-color: var(--study-edge); color: var(--study-ink); }
+  .sum-txt { display: flex; flex-direction: column; }
+  .sum-txt b { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--ink); }
+  .sum-txt span { font-size: 12px; color: var(--muted); }
+  .sum-flag {
+    margin-left: auto; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .07em;
+    text-transform: uppercase; color: var(--faint);
+    border: 1px solid var(--line); border-radius: var(--r-pill); padding: 4px 10px;
+  }
+  details.lineage[open] .sum-flag { opacity: 0; }
+
+  /* the lineage reveal (signature motion) */
+  .lineage-body { padding: 4px 4px 22px; overflow: hidden; }
+  details.lineage[open] .lineage-body { animation: lineageOpen .6s var(--ease-out); }
+  @keyframes lineageOpen {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .chain { display: flex; flex-direction: column; align-items: stretch; gap: 0; max-width: 720px; margin: 0 auto; }
+  .chain .node { width: 100%; }
+  /* edge connector with a drawing-in line */
+  .chain .link { display: flex; align-items: center; gap: 12px; padding: 4px 0 4px 18px; }
+  .chain .link .vline {
+    width: 2px; height: 30px; background: var(--study-edge); position: relative; flex: none;
+    transform-origin: top; transform: scaleY(0);
+  }
+  details.lineage[open] .chain .link .vline { animation: growLine .5s var(--ease-out) forwards; }
+  details.lineage[open] .chain .link.l1 .vline { animation-delay: .18s; }
+  details.lineage[open] .chain .link.l2 .vline { animation-delay: .40s; }
+  @keyframes growLine { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+  .chain .link .edge { opacity: 0; }
+  details.lineage[open] .chain .link .edge { animation: rise .4s var(--ease-out) forwards; }
+  details.lineage[open] .chain .link.l1 .edge { animation-delay: .30s; }
+  details.lineage[open] .chain .link.l2 .edge { animation-delay: .52s; }
+
+  /* staggered reveal of the chain cards once opened */
+  .chain .c-reveal { opacity: 0; }
+  details.lineage[open] .chain .c-reveal { animation: rise .5s var(--ease-out) forwards; }
+  details.lineage[open] .chain .c1 { animation-delay: .10s; }
+  details.lineage[open] .chain .c2 { animation-delay: .34s; }
+  details.lineage[open] .chain .c3 { animation-delay: .58s; }
+  details.lineage[open] .chain .c4 { animation-delay: .74s; }
+
+  .node .node-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  /* ---- R5 redacted line: an un-shared related node, signalled not leaked ---- */
+  .redacted {
+    display: flex; align-items: center; gap: 12px; max-width: 720px;
+    margin: 14px auto 0; padding: 11px 16px; border-radius: var(--r-md);
+    border: 1px dashed var(--line); border-left: 4px dashed var(--private);
+    color: var(--faint);
+    background: repeating-linear-gradient(45deg, var(--surface-2), var(--surface-2) 8px, #efece4 8px, #efece4 16px);
+  }
+  /* fades in with the lineage stagger; visible by default (static-first) */
+  details.lineage[open] .redacted { animation: rise .5s var(--ease-out) .74s backwards; }
+  .redacted .redacted-ic { color: var(--private); flex: none; line-height: 0; }
+  .redacted .redacted-txt { display: flex; flex-direction: column; gap: 2px; }
+  .redacted .redacted-txt b { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--private); }
+  .redacted .redacted-txt span { font-size: 11.5px; color: var(--faint); }
+  .redacted .redacted-flag {
+    margin-left: auto; font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--private);
+    border: 1px solid var(--line); border-radius: var(--r-pill); padding: 3px 9px;
+    background: var(--surface);
+  }
+
+  /* ---- Pointers block ----------------------------------------------------- */
+  .pointers-wrap {
+    margin-top: 12px; padding: 16px; border: 1px solid var(--line-2);
+    border-radius: var(--r-md); background: var(--surface-2);
+  }
+  .pointers-wrap .ph {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    margin-bottom: 12px; flex-wrap: wrap;
+  }
+  .pointers-wrap .ph .eyebrow { margin: 0; }
+  .pointers-wrap .ph .r2 {
+    font-size: 11px; color: var(--muted); display: inline-flex; align-items: center; gap: 6px;
+  }
+  .ptr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 720px){ .ptr-grid { grid-template-columns: 1fr; } }
+  .ptr-grid .pointer { align-items: flex-start; }
+  .pointer .pmeta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .pointer .pmeta .sub { font-family: var(--font-body); font-size: 10.5px; color: var(--faint); white-space: normal; }
+  .pointer .access {
+    margin-left: auto; font-family: var(--font-body); font-size: 10px; font-weight: 700;
+    color: var(--warn); background: var(--question-wash); border: 1px solid var(--question-edge);
+    border-radius: var(--r-pill); padding: 1px 7px; white-space: nowrap; align-self: center;
+  }
+
+  /* video pointer with poster */
+  .video-ptr {
+    grid-column: 1 / -1; display: flex; gap: 14px; align-items: center;
+    padding: 10px; border-radius: var(--r-sm);
+    background: var(--surface); border: 1px solid var(--line-2);
+  }
+  .video-ptr .poster {
+    position: relative; width: 132px; height: 78px; flex: none; border-radius: var(--r-sm);
+    overflow: hidden; background:
+      radial-gradient(120% 120% at 30% 20%, #2a3350, #11131f 70%);
+    border: 1px solid var(--line);
+  }
+  .video-ptr .poster .glow { position: absolute; inset: 0; background:
+    radial-gradient(60% 80% at 28% 36%, rgba(217,87,63,.55), transparent 60%),
+    radial-gradient(50% 70% at 70% 64%, rgba(56,119,207,.5), transparent 60%); }
+  .video-ptr .poster .play {
+    position: absolute; inset: 0; margin: auto; width: 34px; height: 34px; border-radius: 50%;
+    background: rgba(255,255,255,.92); display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 14px rgba(0,0,0,.35);
+  }
+  .video-ptr .poster .play::after {
+    content: ''; width: 0; height: 0; margin-left: 3px;
+    border-left: 11px solid var(--ink); border-top: 7px solid transparent; border-bottom: 7px solid transparent;
+  }
+  .video-ptr .poster .dur {
+    position: absolute; right: 6px; bottom: 6px; font-family: var(--font-mono); font-size: 10px;
+    color: #fff; background: rgba(0,0,0,.55); border-radius: 4px; padding: 1px 5px;
+  }
+  .video-ptr .vmeta { min-width: 0; }
+  .video-ptr .vmeta .vt { font-weight: 700; font-size: 13px; color: var(--ink); }
+  .video-ptr .vmeta .vs { font-size: 11.5px; color: var(--muted); }
+
+  /* ---- Footer ------------------------------------------------------------- */
+  .screen-foot {
+    padding: 14px 30px; border-top: 1px solid var(--line); background: var(--surface-2);
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  }
+  .screen-foot .ft { font-size: 11px; color: var(--faint); letter-spacing: .02em; }
+  .screen-foot .acts { display: flex; gap: 8px; }
+
+  /* Respect reduced-motion for this screen's bespoke animations too
+     (the shared CSS already covers .reveal; settle everything to its static state). */
+  @media (prefers-reduced-motion: reduce){
+    details.lineage[open] .lineage-body,
+    details.lineage[open] .chain .link .vline,
+    details.lineage[open] .chain .link .edge,
+    details.lineage[open] .chain .c-reveal,
+    details.lineage[open] .redacted { animation: none; }
+    .chain .c-reveal, .chain .link .edge { opacity: 1; }
+    .chain .link .vline { transform: scaleY(1); }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ====== Frame caption ====== -->
+  <header class="frame-caption reveal d1">
+    <span class="eyebrow">Mockup 02 · Evidence node, read cold</span>
+    <h2>A shared result, read the way a recipient first meets it</h2>
+    <p>The same Evidence node serves two readers (R4): summary up front for the busy PI, the full lineage on demand for the grad student. Pointers, never payloads (R2).</p>
+  </header>
+
+  <!-- ====== Screen ====== -->
+  <main class="screen reveal d2">
+
+    <!-- window chrome (this view is reused on web + in-app, so chrome stays minimal) -->
+    <div class="winbar">
+      <div class="lights"><i></i><i></i><i></i></div>
+      <div class="addr">mira.link/n/evidence/g3bp1-before-pabp1</div>
+    </div>
+
+    <!-- 1 · Provenance ribbon -->
+    <div class="ribbon reveal d3">
+      <div class="who">
+        <span class="avatar sean">SM</span>
+        <span class="meta">
+          <b>Shared by Sean Moore</b>
+          <span>Vogel Lab · cell biology</span>
+        </span>
+      </div>
+      <div class="ctx">
+        <span class="share-level lab">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"></path></svg>
+          View only
+        </span>
+        <span class="imp">imported · viewing</span>
+      </div>
+    </div>
+
+    <div class="reading">
+
+      <!-- 2 · SUMMARY UP FRONT (the PI view) -->
+      <section class="summary-grid">
+
+        <div class="lead reveal d4">
+          <span class="ntype evidence">Evidence</span>
+          <h1 class="title">G3BP1 is recruited before PABP1 during stress-granule assembly</h1>
+          <p class="abstract">
+            Under arsenite stress, <span class="k">G3BP1</span> fluorescence intensity rose first;
+            <span class="k">PABP1</span> intensity stayed flat, then climbed
+            <strong>~40&nbsp;s later</strong>. The two markers do not arrive together — granule
+            assembly is sequential, not simultaneous.
+          </p>
+          <div class="pi-trust">
+            One panel, one claim — enough to trust and act on without leaving the page.
+          </div>
+
+          <!-- "what's in the dish" context table (Anton's ask) -->
+          <div class="dish">
+            <div class="dish-head">
+              <svg class="pin" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6m0 0a4 4 0 0 1 4 4c0 2-1.5 3-4 8-2.5-5-4-6-4-8a4 4 0 0 1 4-4Z"></path></svg>
+              <span class="eyebrow">What's in the dish</span>
+            </div>
+            <table>
+              <tbody>
+                <tr><td class="key">Cell line</td><td class="val">HeLa</td></tr>
+                <tr><td class="key">Perturbation</td><td class="val">Sodium arsenite (NaAsO₂)</td></tr>
+                <tr><td class="key">Dose</td><td class="val">0.5 mM · acute<span class="note">stress induction at t = 0&nbsp;s</span></td></tr>
+                <tr><td class="key">Imaging</td><td class="val">Lattice light-sheet (LLSM)<span class="note">live, high spatial resolution</span></td></tr>
+                <tr><td class="key">SG segmentation</td><td class="val">Literature-standard threshold</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- the illustrative figure -->
+        <div class="figcard reveal d5">
+          <div class="fig-head">
+            <span class="ttl">Marker intensity vs. time</span>
+            <span class="ntype evidence" style="font-size:9.5px;padding:2px 7px">fig 1</span>
+          </div>
+          <div class="fig-body">
+            <!-- hand-drawn inline SVG line chart. Colours come from the shared
+                 tokens via the .chart-* classes in <style> (var() resolves there). -->
+            <svg class="chart" viewBox="0 0 380 240" role="img"
+                 aria-label="Line chart: G3BP1 intensity climbs early; PABP1 stays flat then climbs about 40 seconds later.">
+              <!-- plot frame -->
+              <g class="ax-frame">
+                <line x1="48" y1="22" x2="48" y2="196"></line>
+                <line x1="48" y1="196" x2="360" y2="196"></line>
+              </g>
+              <!-- gridlines -->
+              <g class="ax-grid">
+                <line x1="48" y1="150" x2="360" y2="150"></line>
+                <line x1="48" y1="104" x2="360" y2="104"></line>
+                <line x1="48" y1="58"  x2="360" y2="58"></line>
+              </g>
+              <!-- axis labels -->
+              <text class="ax-lbl" x="14" y="112" transform="rotate(-90 14 112)">Intensity (a.u.)</text>
+              <text class="ax-lbl" x="204" y="224" text-anchor="middle">Time after stress (s)</text>
+              <g class="ax-tick" text-anchor="middle">
+                <text x="48"  y="210">0</text>
+                <text x="126" y="210">20</text>
+                <text x="204" y="210">40</text>
+                <text x="282" y="210">60</text>
+                <text x="360" y="210">80</text>
+              </g>
+
+              <!-- ~40s marker -->
+              <line class="lag-rule" x1="204" y1="40" x2="204" y2="196"></line>
+              <text class="lag-lbl" x="208" y="36">~40 s lag</text>
+
+              <!-- G3BP1: climbs early (coral). Drawn solid by default (static-first);
+                   JS opts into the draw-in animation only when enabled. -->
+              <path class="line-g3" d="M48,190 C 78,150 96,86 126,64 C 156,46 200,42 360,38" pathLength="100"></path>
+              <!-- PABP1: flat, then climbs ~40s later (blue) -->
+              <path class="line-pa" d="M48,191 C 120,189 176,186 204,178 C 236,168 268,120 300,96 C 326,78 344,72 360,70" pathLength="100"></path>
+
+              <!-- inline point markers -->
+              <circle class="pt-g3" cx="126" cy="64" r="3"></circle>
+              <circle class="pt-pa" cx="300" cy="96" r="3"></circle>
+            </svg>
+          </div>
+          <div class="legend">
+            <span class="it"><span class="sw g3"></span>G3BP1 (rises first)</span>
+            <span class="it"><span class="sw pa"></span>PABP1 (rises ~40&nbsp;s later)</span>
+          </div>
+          <div class="fig-cap">illustrative · unpublished — workshop prototype</div>
+        </div>
+      </section>
+
+      <!-- 3 · supports edge → Claim node -->
+      <section class="supports-rail reveal d6">
+        <div class="upstream-tag">this Evidence — supports →</div>
+        <div class="claim-target node claim c-reveal" style="opacity:1;animation:none">
+          <div class="node-head">
+            <span class="ntype claim">Claim</span>
+            <span class="edge supports">supports</span>
+          </div>
+          <div class="node-title">In stressed HeLa cells, G3BP1 is recruited to stress granules before PABP1 (sequential, not simultaneous, assembly).</div>
+          <div class="node-body muted">The reader can stop here. Everything below is optional lineage.</div>
+        </div>
+        <div class="stub" aria-hidden="true"></div>
+        <div class="arrow" aria-hidden="true">
+          <svg width="18" height="14" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 1v9M4 6l5 5 5-5"></path></svg>
+        </div>
+      </section>
+
+      <!-- 4 · Traverse the lineage (secondary, expandable — the grad-student path) -->
+      <section class="traverse">
+        <details class="lineage reveal d7">
+          <summary>
+            <span class="sum-chev" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+            </span>
+            <span class="sum-txt">
+              <b>Traverse the lineage</b>
+              <span>Study → Protocol → data, code &amp; video pointers — for the bench scientist who wants to re-analyze.</span>
+            </span>
+            <span class="sum-flag">grad-student path</span>
+          </summary>
+
+          <div class="lineage-body">
+            <div class="chain">
+
+              <!-- Study (grounds the Evidence) -->
+              <div class="link l1">
+                <div class="vline" aria-hidden="true"></div>
+                <span class="edge grounds">grounds</span>
+              </div>
+              <div class="node study c-reveal c1">
+                <div class="node-head">
+                  <span class="ntype study">Study</span>
+                  <span class="tag">is_grounded_in ↑ Evidence</span>
+                </div>
+                <div class="node-title">Live LLSM imaging of arsenite-stressed HeLa cells</div>
+                <div class="node-body">Tracking G3BP1 &amp; PABP1 intensity at high spatial resolution as granules form, frame by frame, from the moment of stress induction.</div>
+              </div>
+
+              <!-- Protocol (the Study follows) -->
+              <div class="link l2">
+                <div class="vline" aria-hidden="true"></div>
+                <span class="edge follows">follows</span>
+              </div>
+              <div class="node protocol c-reveal c2">
+                <div class="node-head">
+                  <span class="ntype protocol">Protocol</span>
+                </div>
+                <div class="node-title">Arsenite induction + LLSM acquisition + intensity tracking</div>
+                <div class="node-body">Stress induction, lattice light-sheet acquisition, and per-granule intensity tracking with a literature-standard SG segmentation threshold.</div>
+
+                <!-- pointers (R2 — pointers, not payloads) -->
+                <div class="pointers-wrap c-reveal c3">
+                  <div class="ph">
+                    <span class="eyebrow">Pointers</span>
+                    <span class="r2">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"></path><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"></path></svg>
+                      references, not raw data — nothing is downloaded here
+                    </span>
+                  </div>
+
+                  <div class="ptr-grid">
+                    <!-- git -->
+                    <span class="pointer" title="github.com/vogel-lab/sg-assembly @ a9f3e21 · /analysis/track_intensity.py">
+                      <span class="kind git">git</span>
+                      <span class="pmeta">
+                        <span class="path">vogel-lab/sg-assembly @ a9f3e21</span>
+                        <span class="sub">/analysis/track_intensity.py</span>
+                      </span>
+                    </span>
+
+                    <!-- processed CSV -->
+                    <span class="pointer" title="processed intensity traces — the shareable artifact">
+                      <span class="kind s3">csv</span>
+                      <span class="pmeta">
+                        <span class="path">g3bp1_pabp1_traces.csv</span>
+                        <span class="sub">processed · the shareable artifact</span>
+                      </span>
+                    </span>
+
+                    <!-- S3 / local raw stack -->
+                    <span class="pointer" title="raw LLSM stack ≈ 80 GB on the lab's 25 TB array">
+                      <span class="kind local">local</span>
+                      <span class="pmeta">
+                        <span class="path">raw LLSM stack · ≈ 80 GB</span>
+                        <span class="sub">vogel-array:/llsm/2026-05/run07 · on the 25 TB array</span>
+                      </span>
+                      <span class="access">access needed</span>
+                    </span>
+
+                    <!-- video walkthrough -->
+                    <div class="video-ptr" title="3-min walkthrough Sean recorded on share">
+                      <div class="poster" aria-hidden="true">
+                        <span class="glow"></span>
+                        <span class="play"></span>
+                        <span class="dur">3:04</span>
+                      </div>
+                      <div class="vmeta">
+                        <span class="pointer" style="background:transparent;border:0;padding:0 0 6px">
+                          <span class="kind video">video</span>
+                          <span class="path">walkthrough.loom</span>
+                        </span>
+                        <div class="vt">Sean walks through the assay</div>
+                        <div class="vs">3-min Loom · recorded on share · pointer only</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /chain -->
+
+            <!-- R5 · progressive disclosure: a related node exists but was NOT shared.
+                 The system signals its existence without leaking title/body/metadata. -->
+            <div class="redacted" role="note"
+                 aria-label="One related node was not shared by the producer.">
+              <span class="redacted-ic" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+              </span>
+              <span class="redacted-txt">
+                <b>1 related node not shared</b>
+                <span>Withheld by the producer. Its content and metadata stay private (R5).</span>
+              </span>
+              <span class="redacted-flag">private</span>
+            </div>
+
+          </div>
+        </details>
+      </section>
+
+    </div><!-- /reading -->
+
+    <!-- footer -->
+    <div class="screen-foot">
+      <span class="ft">MIRA × Discourse Graphs · inter-lab exchange · draft v0.1</span>
+      <div class="acts">
+        <button class="btn sm ghost" type="button">Request access</button>
+        <button class="btn sm primary" type="button">Import to my graph</button>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    /* ONE tiny progressive-enhancement touch: draw the two chart lines in on load.
+       Static-first — with JS disabled the lines render fully solid. JS opts INTO
+       the draw-in by first hiding them (dashoffset) then transitioning to 0. */
+    (function () {
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) return;                       // honour reduced-motion: leave solid
+      var g3 = document.querySelector('.line-g3');
+      var pa = document.querySelector('.line-pa');
+      if (!g3 || !pa) return;
+
+      [g3, pa].forEach(function (p) {           // pathLength=100 → dasharray of 100 covers the whole line
+        p.style.strokeDasharray = '100';
+        p.style.strokeDashoffset = '100';       // hidden
+      });
+      // commit the hidden state, then transition to revealed on the next frame
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          g3.style.transition = 'stroke-dashoffset 1.1s cubic-bezier(.16,1,.3,1) 0.55s';
+          pa.style.transition = 'stroke-dashoffset 1.1s cubic-bezier(.16,1,.3,1) 1.0s';
+          g3.style.strokeDashoffset = '0';
+          pa.style.strokeDashoffset = '0';
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stress-granule assembly order — shared dashboard · dashboard.mira.science/vogel-kate</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<style>
+  /* ============================================================================
+     Mockup 07 — "The shared dashboard" (the headline screen, Sean → Kate)
+     A read-only web view of discourse-graph data at a URL: Graph · Kanban · Table
+     views, audience presets, node cards, and the PI's glance-and-trust. Palette,
+     type and components come from tokens.css + components.css; this block only
+     does screen-specific layout.
+     ============================================================================ */
+
+  body { padding: 34px 18px 64px; }
+  .web { background: radial-gradient(120% 60% at 50% -10%, var(--brand-tint) 0%, transparent 55%), var(--paper); }
+
+  /* ---- Dashboard masthead -------------------------------------------------- */
+  .masthead { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    padding:16px 24px; border-bottom:1px solid var(--line);
+    background: rgba(255,255,255,.66); backdrop-filter: saturate(1.1) blur(3px); }
+  .wordmark { display:flex; align-items:center; gap:11px; }
+  .wordmark .glyph { width:30px; height:30px; flex:none; display:block; }
+  .wordmark .name { font-family: var(--font-display); font-weight:600; font-size:17px; letter-spacing:-.01em; color: var(--ink); }
+  .wordmark .name b { color: var(--brand); font-weight:600; }
+  .wordmark .proj { font-family: var(--font-mono); font-size:11px; color: var(--faint); margin-top:1px; }
+  .viewer { display:flex; align-items:center; gap:9px; font-size:12.5px; color: var(--muted); }
+  .viewer .avatar { width:26px; height:26px; font-size:10.5px; }
+
+  /* ---- Toolbar: view switch · presets · search · read-only ----------------- */
+  .toolbar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:14px 24px; border-bottom:1px solid var(--line); background: var(--surface); }
+  .presets { display:flex; gap:7px; flex-wrap:wrap; }
+  .ro-pill { display:inline-flex; align-items:center; gap:7px; font-size:11.5px; font-weight:600; color: var(--muted);
+    background: var(--surface-2); border:1px solid var(--line); border-radius: var(--r-pill); padding:5px 11px; }
+  .ro-pill svg { width:13px; height:13px; stroke: currentColor; fill:none; stroke-width:2; }
+  .a11y { display:inline-flex; align-items:center; gap:7px; font-size:11px; color: var(--faint); }
+  .a11y .sw { width:11px; height:11px; border-radius:3px; display:inline-block; }
+
+  /* ---- Body: board + inspector -------------------------------------------- */
+  .body-grid { display:grid; grid-template-columns: minmax(0,1fr) 318px; gap:22px; padding:22px 24px 12px; align-items:start; }
+  @media (max-width: 900px){ .body-grid { grid-template-columns:1fr; } .inspector { order:-1; position:static !important; } }
+
+  /* kanban board */
+  .board { min-width:0; }
+  .board-head { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .board-head .lbl { font-family: var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color: var(--faint); }
+  .board-head .rule { flex:1; height:1px; background: var(--line); }
+  .kanban { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:14px; }
+  @media (max-width: 640px){ .kanban { grid-template-columns:1fr; } }
+  .kcol { background: var(--surface-2); border:1px solid var(--line); border-radius: var(--r-lg); padding:11px; display:flex; flex-direction:column; gap:10px; }
+  .kcol > .col-h { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:2px 2px 0; }
+  .kcol .col-h .ttl { font-size:12.5px; font-weight:700; color: var(--ink-2); display:flex; align-items:center; gap:7px; }
+  .kcol .col-h .ttl .dot { width:8px; height:8px; border-radius:2px; }
+  .kcol .col-h .ct { font-family: var(--font-mono); font-size:11px; color: var(--faint); }
+
+  /* compact node card on the board */
+  .kcard { background: var(--surface); border:1px solid var(--line); border-left:3px solid var(--faint); border-radius: var(--r-md);
+    padding:11px 12px; box-shadow: var(--shadow-1); cursor:pointer; transition: transform .18s var(--ease), box-shadow .18s var(--ease), border-color .18s var(--ease); }
+  .kcard:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
+  .kcard.question { border-left-color: var(--question-ink); }
+  .kcard.study    { border-left-color: var(--study-ink); }
+  .kcard.evidence { border-left-color: var(--evidence-ink); }
+  .kcard.request  { border-left-color: var(--request-ink); }
+  .kcard.candidate{ border-left-color: var(--faint); border-style:dashed; }
+  .kcard.sel { outline:2px solid var(--brand); outline-offset:1px; border-left-color: var(--evidence-ink); }
+  .kcard .kt { font-family: var(--font-display); font-size:13.5px; font-weight:600; line-height:1.32; margin:7px 0 0; color: var(--ink); }
+  .kcard .kmeta { display:flex; align-items:center; gap:8px; margin-top:9px; font-size:11px; color: var(--faint); }
+  .kcard .kmeta .avatar { width:18px; height:18px; font-size:8.5px; }
+  .kcard .kmeta .grow { flex:1; }
+  .kcard .pin-mini { display:inline-flex; align-items:center; gap:4px; font-family: var(--font-mono); font-size:10px; color: var(--muted); }
+  .kcard .pin-mini svg { width:11px; height:11px; stroke: currentColor; fill:none; stroke-width:2; }
+  .kcard .vis { width:7px; height:7px; border-radius:50%; }
+  .kcard .vis.consortium { background: var(--request-ink); }
+  .kcard .vis.world { background: var(--claim-ink); }
+  .kcard.inprog .kt::after { content:' · in progress'; color: var(--faint); font-weight:400; font-family: var(--font-body); font-size:11px; }
+
+  /* ---- Inspector (the clicked node, full content) -------------------------- */
+  .inspector { position:sticky; top:18px; display:grid; gap:13px; }
+  .insp-card { padding:16px; }
+  .insp-top { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:9px; }
+  .insp h3 { font-family: var(--font-display); font-size:16.5px; line-height:1.28; margin:4px 0 0; }
+  .insp .obs { font-size:12.5px; color: var(--ink-2); line-height:1.5; margin-top:8px; }
+  .insp .obs .accent { color: var(--evidence-ink); font-weight:600; font-style:italic; }
+
+  /* mini two-curve plot: G3BP1 (blue) leads PABP1 (coral) */
+  .miniplot { margin-top:12px; border:1px solid var(--line); border-radius: var(--r-md); overflow:hidden; background: var(--surface); }
+  .miniplot svg { width:100%; height:auto; display:block; }
+  .miniplot .pcap { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 11px; border-top:1px solid var(--line); background: var(--paper); }
+  .mlegend { display:flex; gap:11px; }
+  .mlegend span { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:600; color: var(--ink-2); }
+  .mlegend i { width:11px; height:11px; border-radius:50%; }
+  .illus { font-family: var(--font-mono); font-size:9px; letter-spacing:.06em; text-transform:uppercase; color: var(--warn); background: var(--question-wash); border:1px solid var(--question-edge); padding:2px 6px; border-radius: var(--r-pill); font-weight:700; }
+  .pdraw { stroke-dasharray: 300; stroke-dashoffset: 300; animation: drawline 1.3s var(--ease-out) .35s forwards; }
+  @media (prefers-reduced-motion: reduce){ .pdraw { animation:none; stroke-dashoffset:0; } }
+
+  .insp .byline { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:12px; font-size:11.5px; color: var(--muted); }
+  .insp .byline .avatar { width:21px; height:21px; font-size:9px; }
+  .insp .ptr-row { display:flex; gap:6px; flex-wrap:wrap; margin-top:12px; }
+  .insp .pointer { font-size:11px; padding:4px 8px; }
+  .insp .pointer .kind { font-size:8.5px; }
+  .insp .pointer.gated { border-style:dashed; border-color: var(--question-edge); background: var(--question-wash); }
+
+  /* the PI glance-and-trust strip */
+  .trust { margin-top:13px; padding:11px 13px; border-radius: var(--r-md); background: var(--claim-wash); border:1px solid var(--claim-edge); }
+  .trust .q { font-size:12px; color: var(--claim-ink); font-style:italic; line-height:1.45; }
+  .trust .q b { font-style:normal; }
+  .trust .act { display:flex; gap:8px; margin-top:10px; }
+  .insp .btn { width:100%; }
+  .open-lineage { margin-top:11px; }
+  .req-note { margin-top:10px; font-size:11px; color: var(--request-ink); display:flex; align-items:center; gap:7px; }
+  .req-note svg { width:13px; height:13px; stroke: currentColor; fill:none; stroke-width:2; }
+
+  /* stat strip + footer band */
+  .statband { display:flex; align-items:center; gap:18px; flex-wrap:wrap; padding:14px 24px; border-top:1px solid var(--line); margin-top:6px; }
+  .stat { display:flex; align-items:baseline; gap:7px; }
+  .stat b { font-family: var(--font-display); font-size:18px; color: var(--ink); }
+  .stat span { font-size:12px; color: var(--muted); }
+  .statband .grow { flex:1; }
+  .buildline { display:flex; align-items:center; gap:9px; font-size:11.5px; color: var(--faint); font-family: var(--font-mono); }
+  .buildline svg { width:14px; height:14px; stroke: var(--faint); fill:none; stroke-width:1.8; }
+  .buildline b { color: var(--brand); font-weight:600; }
+
+  /* graph-view placeholder (shown when the Graph tab is chosen) */
+  .graphview { display:none; padding:18px; border:1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); }
+  .graphview svg { width:100%; height:auto; display:block; }
+  body.show-graph .kanban { display:none; }
+  body.show-graph .graphview { display:block; }
+
+  .dgfoot { max-width:1080px; margin:26px auto 0; text-align:center; font-family: var(--font-mono); font-size:11.5px; color: var(--faint); letter-spacing:.04em; }
+  .dgfoot .dots { display:inline-block; border-top:2px dotted var(--line); width:46px; vertical-align:middle; margin:0 12px; }
+</style>
+</head>
+<body>
+
+<!-- ============================ FRAME CAPTION ============================= -->
+<div class="frame-caption reveal d1">
+  <span class="eyebrow">Mockup 07 · shared dashboard · push results to a shared web interface</span>
+  <h2>Kate's lab reads Sean's result in a browser — no Discourse Graph app</h2>
+  <p>Sean's shared subgraph renders as a <strong>read-only</strong> dashboard at a URL: switch between <strong>Graph · Kanban · Table</strong>, pick an <strong>audience preset</strong>, click a node for its full content — and, as the PI, <strong>glance at the summary and trust it</strong> (R6, R8). Public for the lab website, or password-protected for the consortium.</p>
+</div>
+
+<!-- ============================ THE SCREEN =============================== -->
+<div class="screen reveal d2">
+
+  <div class="winbar">
+    <div class="lights"><i></i><i></i><i></i></div>
+    <span class="addr">🔒 dashboard.mira.science/vogel-kate</span>
+    <span class="grow"></span>
+    <span class="kbd">⌘ K</span>
+  </div>
+
+  <div class="web">
+
+    <!-- ---- Dashboard masthead ------------------------------------------- -->
+    <header class="masthead">
+      <div class="wordmark">
+        <svg class="glyph" viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="9" cy="9" r="3.2" style="fill:var(--question-ink)"/>
+          <circle cx="23" cy="8" r="3.2" style="fill:var(--study-ink)"/>
+          <circle cx="22" cy="23" r="3.2" style="fill:var(--evidence-ink)"/>
+          <circle cx="8" cy="22" r="3.2" style="fill:var(--request-ink)"/>
+          <g style="stroke:var(--line)" stroke-width="1.6">
+            <line x1="9" y1="9" x2="23" y2="8"/><line x1="23" y1="8" x2="22" y2="23"/>
+            <line x1="22" y1="23" x2="8" y2="22"/><line x1="8" y1="22" x2="9" y2="9"/>
+          </g>
+        </svg>
+        <div>
+          <div class="name"><b>MIRA</b> · shared dashboard</div>
+          <div class="proj">Stress-granule assembly order · Vogel × Kate</div>
+        </div>
+      </div>
+      <div class="viewer">
+        <span class="share-level consortium">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          Consortium · 6 labs
+        </span>
+        <span class="avatar kate" title="viewing as Kate (PI)">K</span>
+        <span>viewing as <b style="color:var(--ink)">Kate</b></span>
+      </div>
+    </header>
+
+    <!-- ---- Toolbar ------------------------------------------------------- -->
+    <div class="toolbar reveal d3">
+      <div class="viewswitch" role="tablist" aria-label="dashboard view">
+        <button type="button" role="tab" onclick="document.body.classList.add('show-graph');this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active');">
+          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="7" r="2.5"/><circle cx="16" cy="18" r="2.5"/><path d="M8 7l8 .6M17 9.4 16 15.5"/></svg>
+          Graph
+        </button>
+        <button type="button" role="tab" class="active" aria-selected="true" onclick="document.body.classList.remove('show-graph');this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active');">
+          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="11" rx="1"/><rect x="17" y="4" width="4" height="14" rx="1"/></svg>
+          Kanban
+        </button>
+        <button type="button" role="tab" onclick="document.body.classList.add('show-graph');this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active');">
+          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          Table
+        </button>
+      </div>
+
+      <span class="dash-search" style="min-width:184px;">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        search 142 nodes…
+      </span>
+
+      <span class="grow" style="flex:1;"></span>
+
+      <div class="presets" aria-label="audience presets">
+        <button class="preset active" type="button">Results</button>
+        <button class="preset" type="button">Experiments in progress</button>
+        <button class="preset" type="button">Questions &amp; requests</button>
+      </div>
+
+      <span class="ro-pill" title="The dashboard is a read-only viewing surface; authoring happens in the vault">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="2.6"/></svg>
+        read-only
+      </span>
+    </div>
+
+    <!-- ---- Body: board + inspector -------------------------------------- -->
+    <div class="body-grid">
+
+      <!-- ====================== KANBAN BOARD ======================= -->
+      <section class="board">
+        <div class="board-head reveal d3">
+          <span class="lbl">Kanban · preset “Results” · question → experiment → result</span>
+          <span class="rule"></span>
+        </div>
+
+        <div class="kanban">
+
+          <!-- QUESTIONS -->
+          <div class="kcol reveal d4">
+            <div class="col-h"><span class="ttl"><span class="dot" style="background:var(--question-ink)"></span>Questions</span><span class="ct">2</span></div>
+            <article class="kcard question">
+              <span class="ntype question">Question</span>
+              <div class="kt">What sets the order in which proteins are recruited into stress granules?</div>
+              <div class="kmeta"><span class="avatar kate">K</span><span>Kate's lab</span><span class="grow"></span><span class="vis consortium" title="consortium"></span></div>
+            </article>
+            <article class="kcard question">
+              <span class="ntype question">Question</span>
+              <div class="kt">Does disassembly reverse the recruitment order?</div>
+              <div class="kmeta"><span class="avatar sean">S</span><span>Sean</span><span class="grow"></span><span class="vis consortium"></span></div>
+            </article>
+          </div>
+
+          <!-- EXPERIMENTS (Study) -->
+          <div class="kcol reveal d5">
+            <div class="col-h"><span class="ttl"><span class="dot" style="background:var(--study-ink)"></span>Experiments</span><span class="ct">3</span></div>
+            <article class="kcard study">
+              <span class="ntype study">Study</span>
+              <div class="kt">Live two-channel imaging of G3BP1/PABP1 during granule assembly</div>
+              <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel</span><span class="grow"></span><span class="pin-mini"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>4</span><span class="vis consortium"></span></div>
+            </article>
+            <article class="kcard study inprog">
+              <span class="ntype study">Study</span>
+              <div class="kt">Arsenite dose–response</div>
+              <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel</span><span class="grow"></span><span class="vis consortium"></span></div>
+            </article>
+            <article class="kcard candidate">
+              <span class="ntype candidate">Candidate</span>
+              <div class="kt">Disassembly time-course (idea — not yet formalized)</div>
+              <div class="kmeta"><span class="avatar grad">M</span><span>Kate's student</span><span class="grow"></span><span class="vis consortium"></span></div>
+            </article>
+          </div>
+
+          <!-- RESULTS (Evidence) -->
+          <div class="kcol reveal d6">
+            <div class="col-h"><span class="ttl"><span class="dot" style="background:var(--evidence-ink)"></span>Results</span><span class="ct">2</span></div>
+            <article class="kcard evidence sel" aria-current="true">
+              <span class="ntype evidence">Evidence</span>
+              <div class="kt">G3BP1 is recruited to forming granules before PABP1</div>
+              <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel</span><span class="grow"></span><span class="pin-mini"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>4</span><span class="vis consortium"></span></div>
+            </article>
+            <article class="kcard evidence">
+              <span class="ntype evidence">Evidence</span>
+              <div class="kt">PABP1 intensity lags G3BP1 by ~40 s at granule onset</div>
+              <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel</span><span class="grow"></span><span class="vis consortium"></span></div>
+            </article>
+          </div>
+
+        </div><!-- /.kanban -->
+
+        <!-- Graph view (revealed by the Graph/Table tabs) -->
+        <div class="graphview reveal d4">
+          <svg viewBox="0 0 760 230" role="img" aria-label="Graph view: a question linked to an experiment and a result, with a request attached.">
+            <g style="stroke:var(--line)" stroke-width="1.6">
+              <line x1="130" y1="115" x2="330" y2="70"/><line x1="330" y1="70" x2="540" y2="115"/>
+              <line x1="540" y1="115" x2="640" y2="180"/>
+            </g>
+            <g font-size="10" style="font-family:var(--font-mono);fill:var(--faint)">
+              <text x="210" y="84">addresses</text><text x="425" y="84">grounds</text><text x="575" y="158">request_for</text>
+            </g>
+            <g>
+              <circle cx="130" cy="115" r="13" style="fill:var(--question-ink)"/>
+              <circle cx="330" cy="70" r="13" style="fill:var(--study-ink)"/>
+              <circle cx="540" cy="115" r="15" style="fill:var(--evidence-ink)"/>
+              <circle cx="640" cy="180" r="11" style="fill:var(--request-ink)"/>
+            </g>
+            <g font-size="11" font-weight="600" style="font-family:var(--font-body);fill:var(--ink)">
+              <text x="130" y="148" text-anchor="middle">Question</text>
+              <text x="330" y="44" text-anchor="middle">Study</text>
+              <text x="540" y="146" text-anchor="middle">Evidence</text>
+              <text x="640" y="206" text-anchor="middle">Request</text>
+            </g>
+            <text x="380" y="222" text-anchor="middle" font-size="10" style="font-family:var(--font-mono);fill:var(--muted)">drag nodes to arrange · click to open · same data, different view</text>
+          </svg>
+        </div>
+      </section>
+
+      <!-- ====================== INSPECTOR ========================== -->
+      <aside class="inspector reveal d4">
+        <div class="panel insp-card insp">
+          <div class="insp-top">
+            <span class="ntype evidence">Evidence · open</span>
+            <span class="share-level consortium" style="font-size:11px;padding:3px 9px;">consortium</span>
+          </div>
+          <h3>G3BP1 is recruited to forming stress granules before PABP1</h3>
+          <p class="obs">In stressed HeLa cells, <span class="accent">G3BP1 intensity rises earlier than PABP1</span> as granules assemble — a fixed recruitment order, reversing as granules dissolve.</p>
+
+          <!-- mini two-curve plot: G3BP1 leads (blue), PABP1 lags (coral) -->
+          <div class="miniplot">
+            <svg viewBox="0 0 318 168" role="img" aria-label="Illustrative: G3BP1 fluorescence intensity rises before PABP1 over time during granule assembly.">
+              <rect width="318" height="168" style="fill:var(--surface)"/>
+              <g style="stroke:var(--line)" stroke-width="1"><line x1="40" y1="14" x2="40" y2="134"/><line x1="40" y1="134" x2="300" y2="134"/></g>
+              <g font-size="8.5" style="font-family:var(--font-mono);fill:var(--faint)">
+                <text x="34" y="26" text-anchor="end">max</text>
+                <text x="34" y="134" text-anchor="end">0</text>
+                <text x="40" y="148" text-anchor="middle">stress</text>
+                <text x="300" y="148" text-anchor="end">time →</text>
+              </g>
+              <text x="13" y="74" text-anchor="middle" font-size="8.5" transform="rotate(-90 13 74)" style="font-family:var(--font-mono);fill:var(--muted)">intensity (a.u.)</text>
+              <!-- PABP1 (coral) lags -->
+              <path class="pdraw" d="M40,128 C120,126 150,120 180,96 C210,72 235,40 300,30" style="fill:none;stroke:var(--evidence-ink)" stroke-width="2.4" stroke-linecap="round"/>
+              <!-- G3BP1 (blue) leads -->
+              <path class="pdraw" d="M40,126 C95,122 120,96 150,62 C178,34 205,26 300,22" style="fill:none;stroke:var(--study-ink)" stroke-width="2.4" stroke-linecap="round"/>
+              <!-- lead gap marker -->
+              <line x1="150" y1="20" x2="150" y2="134" style="stroke:var(--question-edge)" stroke-width="1" stroke-dasharray="2 4"/>
+              <line x1="186" y1="20" x2="186" y2="134" style="stroke:var(--question-edge)" stroke-width="1" stroke-dasharray="2 4"/>
+              <text x="168" y="13" text-anchor="middle" font-size="8.5" font-weight="700" style="font-family:var(--font-body);fill:var(--question-ink)">G3BP1 leads</text>
+            </svg>
+            <div class="pcap">
+              <div class="mlegend">
+                <span><i style="background:var(--study-ink)"></i> G3BP1</span>
+                <span><i style="background:var(--evidence-ink)"></i> PABP1</span>
+              </div>
+              <span class="illus">illustrative · unpublished</span>
+            </div>
+          </div>
+
+          <div class="byline">
+            <span class="avatar sean">S</span>
+            <span><b style="color:var(--ink)">Sean</b> · Vogel Lab</span>
+            <span style="color:var(--line)">·</span>
+            <span>shared with Kate's lab</span>
+            <span style="color:var(--line)">·</span>
+            <span>updated 2 h ago</span>
+          </div>
+
+          <div class="ptr-row">
+            <span class="pointer"><span class="kind git">git</span><span class="path">vogel-lab/sg-imaging @ a3f9c21</span></span>
+            <span class="pointer"><span class="kind data">data</span><span class="path">granule_intensity_by_time.csv</span></span>
+            <span class="pointer gated"><span class="kind local">raw</span><span class="path">NDTiff ≈ 80 GB</span></span>
+            <span class="pointer"><span class="kind video">video</span><span class="path">2-min walkthrough</span></span>
+          </div>
+
+          <!-- PI glance-and-trust -->
+          <div class="trust">
+            <div class="q">“As the PI, often that's sufficient. <b>I see you have this new information — I trust you.</b>”</div>
+            <div class="act">
+              <button class="btn sm primary" type="button"
+                onclick="this.textContent='✓ Endorsed';this.disabled=true;this.style.opacity=.7;">
+                <svg class="ic" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px;"><path d="M20 6 9 17l-5-5"/></svg>
+                Endorse
+              </button>
+              <a class="btn sm" href="08-traverse-and-request.html">For the grad student → how was it done?</a>
+            </div>
+          </div>
+
+          <a class="btn open-lineage" href="08-traverse-and-request.html">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h12M12 6l6 6-6 6"/></svg>
+            Open full lineage &amp; pointers
+          </a>
+          <div class="req-note">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            1 open <b style="color:var(--request-ink)">Request</b> from Kate's lab on this result
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- ---- Stat strip + build line -------------------------------------- -->
+    <div class="statband reveal d8">
+      <div class="stat"><b>142</b><span>nodes shared</span></div>
+      <div class="stat"><b>6</b><span>labs · 1 consortium</span></div>
+      <div class="stat"><b>3</b><span>open requests</span></div>
+      <span class="grow"></span>
+      <span class="a11y" title="Accessibility is a stated requirement: colorblind-safe palette; legible for a 60-year-old-plus reader.">
+        <span class="sw" style="background:var(--study-ink)"></span><span class="sw" style="background:var(--evidence-ink)"></span>
+        colorblind-safe · legible at 60+
+      </span>
+    </div>
+    <div class="statband" style="border-top:0; padding-top:0;">
+      <div class="buildline">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m0 8v3a2 2 0 0 0 2 2h3m8 0h3a2 2 0 0 0 2-2v-3m0-8V5a2 2 0 0 0-2-2h-3"/></svg>
+        Read-only · rendered from MIRA JSON-LD over <b>KOI</b> · a published subset of Sean's vault
+      </div>
+    </div>
+
+  </div><!-- /.web -->
+</div><!-- /.screen -->
+
+<footer class="dgfoot reveal d8">
+  <span class="dots"></span>MIRA × Discourse Graphs · push results to a shared web interface · draft v0.1<span class="dots"></span>
+</footer>
+
+</body>
+</html>

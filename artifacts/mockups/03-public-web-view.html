@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MagLOV2 magnetic-field effect — Evidence · mira.science</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<style>
+  /* ============================================================================
+     Mockup 03 — "Public web view" (the reference screen for this repo)
+     A published discourse node, rendered as a credible public scholarly page at
+     a URL, for ANY reader — with no DG tooling. Palette/type/components come from
+     tokens.css + components.css; this block only does screen-specific layout.
+     ============================================================================ */
+
+  body { padding: 34px 18px 64px; }
+
+  .web { background: radial-gradient(120% 60% at 50% -10%, var(--brand-tint) 0%, transparent 55%), var(--paper); }
+
+  /* ---- Public masthead: a journal page, not an app ------------------------- */
+  .masthead {
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    padding:18px 28px; border-bottom:1px solid var(--line);
+    background: rgba(255,255,255,.66); backdrop-filter: saturate(1.1) blur(3px);
+  }
+  .wordmark { display:flex; align-items:center; gap:11px; }
+  .wordmark .glyph { width:30px; height:30px; flex:none; display:block; }
+  .wordmark .name { font-family: var(--font-display); font-weight:600; font-size:18px; letter-spacing:-.01em; color: var(--ink); }
+  .wordmark .name b { color: var(--brand); font-weight:600; }
+  .crumb { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-family: var(--font-mono); font-size:11.5px; color: var(--faint); }
+  .crumb .sep { color: var(--line); }
+  .crumb a { color: var(--muted); }
+
+  /* ---- Layout grid: document + sticky conversion sidebar ------------------- */
+  .doc-grid { display:grid; grid-template-columns: minmax(0,1fr) 300px; gap:34px; padding:30px 28px 36px; align-items:start; }
+  .doc { min-width:0; }
+  @media (max-width: 880px){ .doc-grid { grid-template-columns:1fr; } .aside { order:2; position:static !important; } }
+
+  /* ---- Evidence summary header --------------------------------------------- */
+  .lede h1 { font-size: clamp(26px,3.4vw,34px); margin:12px 0 0; max-width:24ch; }
+  .lede .summary { font-size:16px; color: var(--ink-2); line-height:1.6; margin:14px 0 0; max-width:60ch; }
+  .lede .summary .accent { color: var(--evidence-ink); font-weight:600; font-style:italic; }
+  .byline { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:18px; font-size:12.5px; color: var(--muted); }
+  .byline .avatar { width:24px; height:24px; font-size:10px; }
+  .byline .avstack { display:flex; }
+  .byline .avstack .avatar:nth-child(2){ margin-left:-7px; }
+  .dotsep { color: var(--line); }
+  .lic { font-family: var(--font-mono); font-size:10.5px; font-weight:700; letter-spacing:.06em; color: var(--claim-ink); background: var(--claim-wash); border:1px solid var(--claim-edge); padding:2px 7px; border-radius: var(--r-pill); }
+
+  /* ---- Figure block (illustrative MFE-vs-field plot + context table) ------- */
+  .figure { margin-top:26px; border:1px solid var(--line); border-radius: var(--r-lg); overflow:hidden; background: var(--surface); box-shadow: var(--shadow-1); }
+  .figure .plotwrap { display:grid; grid-template-columns: minmax(0,1.35fr) minmax(0,1fr); }
+  @media (max-width: 620px){ .figure .plotwrap { grid-template-columns:1fr; } }
+  .figure svg.plot { width:100%; height:auto; display:block; background: var(--surface); }
+  .figure .ctx { border-left:1px solid var(--line); padding:16px 18px; background: var(--surface-2); }
+  @media (max-width: 620px){ .figure .ctx { border-left:0; border-top:1px solid var(--line);} }
+  .figure .ctx h4 { font-family: var(--font-mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color: var(--faint); font-weight:700; margin-bottom:10px; }
+  table.ctx-tbl { width:100%; border-collapse:collapse; font-size:12.5px; }
+  table.ctx-tbl td { padding:6px 0; vertical-align:top; border-bottom:1px dashed var(--line); }
+  table.ctx-tbl tr:last-child td { border-bottom:0; }
+  table.ctx-tbl td.k { color: var(--muted); width:46%; }
+  table.ctx-tbl td.v { color: var(--ink); font-family: var(--font-mono); font-size:11.5px; }
+  .figcaption { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:11px 16px; border-top:1px solid var(--line); background: var(--paper); font-size:12px; color: var(--muted); }
+  .illus { font-family: var(--font-mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color: var(--warn); background: var(--question-wash); border:1px solid var(--question-edge); padding:3px 8px; border-radius: var(--r-pill); font-weight:700; }
+  .legend { display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
+  .legend span { display:inline-flex; align-items:center; gap:7px; font-size:12px; color: var(--ink-2); font-weight:600; }
+  .legend i { width:14px; height:14px; border-radius:50%; display:block; }
+
+  /* ---- Section heading ----------------------------------------------------- */
+  .sec-head { margin:38px 0 6px; display:flex; align-items:center; gap:12px; }
+  .sec-head h3 { font-size:17px; }
+  .sec-head .rule { flex:1; height:1px; background: var(--line); }
+  .sec-sub { font-size:13px; color: var(--muted); margin:0 0 18px; max-width:64ch; }
+
+  /* ---- Traversable subgraph ------------------------------------------------ */
+  .chain { display:grid; gap:0; }
+  .chain .node { z-index:2; }
+  .chain .node .ntype { margin-bottom:2px; }
+  .chain .node .node-body { margin-top:6px; }
+  .edge-rail { position:relative; display:flex; align-items:center; gap:12px; padding:8px 0 8px 18px; margin-left:18px; }
+  .edge-rail .edge-svg { position:absolute; left:0; top:-2px; height:calc(100% + 4px); width:24px; overflow:visible; }
+  .edge-rail .edge-svg path { fill:none; stroke: var(--study-edge); stroke-width:2; stroke-linecap:round; }
+  .edge-rail .edge-svg path.draw { stroke-dasharray: var(--len,120); stroke-dashoffset: var(--len,120); animation: drawline 1s var(--ease-out) forwards; }
+  @media (prefers-reduced-motion: reduce){ .edge-rail .edge-svg path.draw { animation:none; stroke-dashoffset:0; } .pulse { animation:none; } }
+  .edge-rail .dir { font-family: var(--font-mono); font-size:11px; color: var(--faint); }
+  .ptr-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+  .withheld { margin-top:8px; font-size:12px; color: var(--faint); display:flex; align-items:center; gap:8px; font-style:italic; }
+  .withheld svg { width:13px; height:13px; stroke: var(--faint); fill:none; stroke-width:2; }
+
+  /* a pointer rendered as a gated resource */
+  .pointer.gated { border-style:dashed; border-color: var(--question-edge); background: var(--question-wash); }
+  .pointer.gated .req { font-family: var(--font-body); font-weight:700; font-size:10.5px; color: var(--question-ink); margin-left:4px; }
+
+  /* ---- Embedded walkthrough video block ------------------------------------ */
+  .video { margin-top:16px; border:1px solid var(--line); border-radius: var(--r-md); overflow:hidden; background:#11131a; position:relative; box-shadow: var(--shadow-1); }
+  .video .poster { width:100%; height:184px; display:block; }
+  .video .play { position:absolute; inset:0; margin:auto; width:58px; height:58px; display:flex; align-items:center; justify-content:center; background: rgba(255,255,255,.92); border-radius:50%; border:0; cursor:pointer; box-shadow: var(--shadow-2); transition: transform .18s var(--ease); }
+  .video .play:hover { transform: scale(1.06); }
+  .video .play svg { width:20px; height:20px; margin-left:3px; fill: var(--brand); }
+  .video .meta { position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 13px; color:#eef0f6; background: linear-gradient(transparent, rgba(0,0,0,.66)); font-size:12px; }
+  .video .meta .lbl { display:flex; align-items:center; gap:8px; font-weight:600; }
+  .video .meta .vidtype { font-family: var(--font-mono); font-size:9.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; background:#b3358f; color:#fff; padding:2px 6px; border-radius:4px; }
+
+  /* ---- Conversion sidebar -------------------------------------------------- */
+  .aside { position:sticky; top:22px; display:grid; gap:14px; }
+  .cta-card { padding:18px; }
+  .cta-card h4 { font-family: var(--font-display); font-size:15.5px; margin-bottom:4px; }
+  .cta-card p { font-size:12.5px; color: var(--muted); margin:0 0 14px; line-height:1.5; }
+  .cta-card .btn { width:100%; }
+  .note { font-size:11px; color: var(--faint); margin-top:10px; line-height:1.45; }
+
+  /* the citation block revealed by "cite this" — the signature moment */
+  .cite-out { display:none; margin-top:14px; }
+  .cite-out.show { display:block; animation: rise .5s var(--ease-out); }
+  .cite-box { font-family: var(--font-mono); font-size:11px; line-height:1.55; color: var(--ink-2); background: var(--surface-2); border:1px solid var(--line-2); border-radius: var(--r-sm); padding:11px 12px; }
+  .cite-box .v { color: var(--brand); }
+  .pin { display:flex; align-items:center; gap:8px; margin-top:10px; font-size:11.5px; color: var(--brand); font-weight:600; }
+  .pin .chip { display:inline-flex; align-items:center; gap:6px; font-family: var(--font-mono); font-size:10.5px; background: var(--brand-tint); border:1px solid #aeb4eb; color: var(--brand); padding:3px 9px; border-radius: var(--r-pill); }
+  .pin svg { width:13px; height:13px; stroke: currentColor; fill:none; stroke-width:2; animation: pinsnap .6s var(--ease-out); }
+  @keyframes pinsnap { 0%{ transform: rotate(-25deg) scale(.6); opacity:0 } 60%{ transform: rotate(8deg) scale(1.08) } 100%{ transform:none; opacity:1 } }
+  @media (prefers-reduced-motion: reduce){ .pin svg { animation:none; } .cite-out.show { animation:none; } }
+
+  .access-state { display:none; }
+  .perm-mini { border:1px dashed var(--question-edge); background: var(--question-wash); border-radius: var(--r-md); padding:12px 14px; }
+  .perm-mini .row { gap:8px; }
+  .perm-mini .ttl { font-size:12.5px; font-weight:700; color: var(--question-ink); }
+  .perm-mini .sub { font-size:11.5px; color: var(--question-ink); opacity:.85; margin-top:4px; }
+  .perm-mini svg { width:15px; height:15px; stroke: var(--question-ink); fill:none; stroke-width:2; }
+
+  /* ---- Build line + JSON-LD whisper ---------------------------------------- */
+  .buildband { margin:0 28px; border-top:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; padding:16px 0 22px; }
+  .buildline { display:flex; align-items:center; gap:9px; font-size:12px; color: var(--faint); font-family: var(--font-mono); }
+  .buildline svg { width:14px; height:14px; stroke: var(--faint); fill:none; stroke-width:1.8; }
+  .buildline b { color: var(--brand); font-weight:600; }
+  .jsonld-toggle { font-family: var(--font-mono); font-size:11px; color: var(--muted); cursor:pointer; border:1px solid var(--line); background: var(--surface); border-radius: var(--r-pill); padding:5px 12px; }
+  .jsonld-toggle:hover { border-color: var(--ink-2); color: var(--ink); }
+  pre.jsonld { margin:4px 28px 0; padding:16px; border-radius: var(--r-md); background: var(--surface-2); border:1px solid var(--line-2); font-family: var(--font-mono); font-size:11.5px; line-height:1.6; color: var(--ink-2); overflow-x:auto; }
+  pre.jsonld .key { color: var(--brand); }
+  pre.jsonld .typ { color: var(--evidence-ink); }
+  pre.jsonld .str { color: var(--claim-ink); }
+
+  .dgfoot { max-width:1080px; margin:26px auto 0; text-align:center; font-family: var(--font-mono); font-size:11.5px; color: var(--faint); letter-spacing:.04em; }
+  .dgfoot .dots { display:inline-block; border-top:2px dotted var(--line); width:46px; vertical-align:middle; margin:0 12px; }
+</style>
+</head>
+<body>
+
+<!-- ============================ FRAME CAPTION ============================= -->
+<div class="frame-caption reveal d1">
+  <span class="eyebrow">Mockup 03 · 🥉 low shared context · public web view</span>
+  <h2>A published result, read cold by anyone — at a URL, with no Discourse Graph app</h2>
+  <p>The QBI <strong>Evidence</strong> node resolves at a public URL as a self-describing scholarly page — summary up front, traversable lineage and pointers on demand, provenance to trust a stranger's figure, a <strong>frozen</strong> citation, and a gentle path to request the gated raw data (R4, R5, R6, R7, R8, R9).</p>
+</div>
+
+<!-- ============================ THE SCREEN =============================== -->
+<div class="screen reveal d2">
+
+  <!-- browser window bar — a real-looking public node URL with a frozen version slug -->
+  <div class="winbar">
+    <div class="lights"><i></i><i></i><i></i></div>
+    <span class="addr">🔒 mira.science/n/maglov2-mfe-7c1ae04</span>
+    <span class="grow"></span>
+    <span class="kbd">⌘ L</span>
+  </div>
+
+  <div class="web">
+
+    <!-- ---- Public masthead ------------------------------------------------ -->
+    <header class="masthead">
+      <div class="wordmark">
+        <svg class="glyph" viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="9" cy="9" r="3.2" style="fill:var(--evidence-ink)"/>
+          <circle cx="23" cy="8" r="3.2" style="fill:var(--claim-ink)"/>
+          <circle cx="22" cy="23" r="3.2" style="fill:var(--study-ink)"/>
+          <circle cx="8" cy="22" r="3.2" style="fill:var(--protocol-ink)"/>
+          <g style="stroke:var(--line)" stroke-width="1.6">
+            <line x1="9" y1="9" x2="23" y2="8"/><line x1="23" y1="8" x2="22" y2="23"/>
+            <line x1="22" y1="23" x2="8" y2="22"/><line x1="8" y1="22" x2="9" y2="9"/>
+          </g>
+        </svg>
+        <span class="name"><b>MIRA</b> · open node</span>
+      </div>
+      <nav class="crumb" aria-label="node location">
+        <span class="ntype evidence">Evidence</span>
+        <span class="sep">/</span>
+        <a href="#">Quantum Biology Institute</a>
+        <span class="sep">/</span>
+        <span>Magnetosensitivity</span>
+      </nav>
+    </header>
+
+    <!-- ---- Document + conversion sidebar --------------------------------- -->
+    <div class="doc-grid">
+
+      <!-- =========================== DOCUMENT ========================== -->
+      <main class="doc">
+
+        <!-- permission / status band: public, but raw data gated (R5, R6, R9) -->
+        <div class="row wrap reveal d3" style="margin-bottom:4px;">
+          <span class="share-level world">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
+            Public · anyone with the link
+          </span>
+          <span class="lock">· version frozen ·</span>
+          <span class="lock">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+            raw data: request access
+          </span>
+        </div>
+
+        <!-- Evidence summary up front (R4) -->
+        <div class="lede reveal d3">
+          <span class="eyebrow" style="display:block;">Evidence · supports a Claim · grounded in a Study</span>
+          <h1>The magnetic-field effect in MagLOV2 flips sign as the field strengthens</h1>
+          <p class="summary">
+            In MagLOV2-expressing <em>E.&nbsp;coli</em>, <span class="accent">the sign of the mean magnetic-field
+            effect (MFE) flipped from positive to negative as magnetic field strength increased at low
+            fields</span> — positive near 0.5&nbsp;mT, crossing zero, negative by ~2.5&nbsp;mT. Measured by
+            bacterioscope live fluorescence imaging across five field strengths.
+          </p>
+          <div class="byline">
+            <span class="avstack"><span class="avatar brian">B</span><span class="avatar morgan">M</span></span>
+            <span>Brian &amp; Morgan · Quantum Biology Institute</span>
+            <span class="dotsep">·</span>
+            <span>published 9 Feb 2026</span>
+            <span class="dotsep">·</span>
+            <span class="lic">CC-BY 4.0</span>
+            <span class="dotsep">·</span>
+            <span>node <code>maglov2-mfe-7c1ae04</code></span>
+          </div>
+        </div>
+
+        <!-- Figure: illustrative MFE-vs-field plot + "what's in the dish" table -->
+        <figure class="figure reveal d4">
+          <div class="plotwrap">
+            <svg class="plot" viewBox="0 0 460 260" role="img" aria-label="Illustrative: mean magnetic-field effect versus field strength, positive at low field, crossing zero and turning negative by about 2.5 millitesla.">
+              <rect x="0" y="0" width="460" height="260" style="fill:var(--surface)"/>
+              <!-- axes -->
+              <g style="stroke:var(--line)" stroke-width="1">
+                <line x1="56" y1="30" x2="56" y2="212"/>
+                <line x1="56" y1="212" x2="430" y2="212"/>
+              </g>
+              <!-- zero line (MFE = 0) -->
+              <line x1="56" y1="130" x2="430" y2="130" style="stroke:var(--evidence-edge)" stroke-width="1.2" stroke-dasharray="4 4"/>
+              <text x="60" y="126" font-size="8.5" style="font-family:var(--font-mono);fill:var(--evidence-ink)">MFE = 0</text>
+              <!-- y ticks -->
+              <g font-size="9" style="font-family:var(--font-mono);fill:var(--faint)">
+                <text x="48" y="48"  text-anchor="end">+0.4</text>
+                <text x="48" y="92"  text-anchor="end">+0.2</text>
+                <text x="48" y="134" text-anchor="end">0</text>
+                <text x="48" y="178" text-anchor="end">−0.2</text>
+                <text x="48" y="210" text-anchor="end">−0.4</text>
+              </g>
+              <text x="18" y="121" text-anchor="middle" font-size="9.5" transform="rotate(-90 18 121)" style="font-family:var(--font-mono);fill:var(--muted)">mean MFE (a.u.)</text>
+              <!-- x ticks (mT) -->
+              <g font-size="9" style="font-family:var(--font-mono);fill:var(--faint)">
+                <text x="85"  y="226" text-anchor="middle">0.5</text>
+                <text x="170" y="226" text-anchor="middle">1.0</text>
+                <text x="255" y="226" text-anchor="middle">1.5</text>
+                <text x="340" y="226" text-anchor="middle">2.0</text>
+                <text x="420" y="226" text-anchor="middle">2.5</text>
+              </g>
+              <text x="243" y="240" text-anchor="middle" font-size="9.5" style="font-family:var(--font-mono);fill:var(--muted)">applied magnetic field (mT)</text>
+
+              <!-- fitted curve through the points: positive → zero → negative -->
+              <path d="M85,62 C120,74 140,82 170,89 C205,99 225,110 255,119 C292,130 305,141 340,152 C378,164 398,172 420,179"
+                    style="fill:none;stroke:var(--evidence-ink)" stroke-width="2.4" stroke-linecap="round"/>
+
+              <!-- error bars (SEM) + points -->
+              <g style="stroke:var(--evidence-ink)" stroke-width="1.4">
+                <line x1="85"  y1="52"  x2="85"  y2="72"/><line x1="80" y1="52" x2="90" y2="52"/><line x1="80" y1="72" x2="90" y2="72"/>
+                <line x1="170" y1="80"  x2="170" y2="99"/><line x1="165" y1="80" x2="175" y2="80"/><line x1="165" y1="99" x2="175" y2="99"/>
+                <line x1="255" y1="110" x2="255" y2="128"/><line x1="250" y1="110" x2="260" y2="110"/><line x1="250" y1="128" x2="260" y2="128"/>
+                <line x1="340" y1="143" x2="340" y2="162"/><line x1="335" y1="143" x2="345" y2="143"/><line x1="335" y1="162" x2="345" y2="162"/>
+                <line x1="420" y1="170" x2="420" y2="189"/><line x1="415" y1="170" x2="425" y2="170"/><line x1="415" y1="189" x2="425" y2="189"/>
+              </g>
+              <g style="fill:var(--evidence-ink)">
+                <circle cx="85"  cy="62"  r="3.6"/><circle cx="170" cy="89"  r="3.6"/>
+                <circle cx="255" cy="119" r="3.6"/><circle cx="340" cy="152" r="3.6"/><circle cx="420" cy="179" r="3.6"/>
+              </g>
+
+              <!-- sign-flip annotation near the zero crossing -->
+              <line x1="298" y1="40" x2="298" y2="212" style="stroke:var(--question-edge)" stroke-width="1" stroke-dasharray="2 4"/>
+              <text x="302" y="50" font-size="9" font-weight="700" style="font-family:var(--font-body);fill:var(--question-ink)">sign flips</text>
+            </svg>
+
+            <!-- "what's in the dish" context table -->
+            <div class="ctx">
+              <h4>What's in the dish</h4>
+              <table class="ctx-tbl">
+                <tr><td class="k">Organism</td><td class="v">E. coli</td></tr>
+                <tr><td class="k">Reporter</td><td class="v">MagLOV2</td></tr>
+                <tr><td class="k">Field strengths</td><td class="v">0.5–2.5 mT (×5)</td></tr>
+                <tr><td class="k">Colonies</td><td class="v">74 per field</td></tr>
+                <tr><td class="k">Modality</td><td class="v">bacterioscope</td></tr>
+                <tr><td class="k">Field cal.</td><td class="v">Twinleaf magnetometer</td></tr>
+              </table>
+            </div>
+          </div>
+          <figcaption class="figcaption">
+            <div class="legend">
+              <span><i style="background:var(--evidence-ink)"></i> mean MFE ± SEM · n = 74 colonies/field</span>
+            </div>
+            <span class="illus">illustrative · unpublished — workshop prototype</span>
+          </figcaption>
+        </figure>
+
+        <!-- =================== TRAVERSABLE SUBGRAPH ==================== -->
+        <div class="sec-head reveal d5">
+          <h3>Follow the reasoning</h3>
+          <span class="rule"></span>
+        </div>
+        <p class="sec-sub reveal d5">
+          Each card below is one discourse node, readable on its own like a paper's methods section.
+          Typed edges connect them to the analysis and data — <b>pointers only; no raw payloads travel over the web,</b>
+          and they resolve across system boundaries.
+        </p>
+
+        <div class="chain">
+
+          <!-- Claim / model -->
+          <article class="node claim reveal d5">
+            <span class="ntype claim">Claim · model</span>
+            <div class="node-title">A radical-pair quantum mechanism underlies MagLOV2 magnetosensitivity</div>
+            <div class="node-body">A field-dependent, sign-changing response at low fields is a signature predicted by the radical-pair model — several Evidence nodes support this model.</div>
+          </article>
+
+          <div class="edge-rail" aria-label="Evidence supports Claim">
+            <svg class="edge-svg" viewBox="0 0 24 40" preserveAspectRatio="none" aria-hidden="true"><path class="draw" style="--len:46" d="M12 0 L12 40"/></svg>
+            <span class="edge supports">supports ↑</span>
+            <span class="dir">Evidence → Claim</span>
+          </div>
+
+          <!-- Evidence (this node) -->
+          <article class="node evidence reveal d6" style="border-left-width:5px;">
+            <div class="spread">
+              <span class="ntype evidence">Evidence · this node</span>
+              <span class="tag">you are here</span>
+            </div>
+            <div class="node-title">MFE sign flipped from positive to negative as field strength increased</div>
+            <div class="node-body">Across 0.5–2.5 mT, the mean magnetic-field effect was positive at low field, crossed zero, and turned negative by ~2.5 mT (1 experiment per field, 74 colonies each) — the curve above.</div>
+            <div class="ptr-row">
+              <span class="pointer"><span class="kind git">git</span><span class="path">quantum-bio/mfe-analysis @ 7c1ae04 · /mfe_fit_analysis/</span></span>
+              <span class="pointer"><span class="kind data">data</span><span class="path">curated mfe_by_field.csv (this figure)</span></span>
+            </div>
+            <!-- R5 progressive disclosure: a withheld working note, signalled not leaked -->
+            <div class="withheld" title="An adjacent node exists but was not published">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+              1 working note withheld by the authors — not part of this publication.
+            </div>
+          </article>
+
+          <div class="edge-rail" aria-label="Study grounds Evidence">
+            <svg class="edge-svg" viewBox="0 0 24 40" preserveAspectRatio="none" aria-hidden="true"><path class="draw" style="--len:46" d="M12 0 L12 40"/></svg>
+            <span class="edge grounds">grounds ↑</span>
+            <span class="dir">Study → Evidence</span>
+          </div>
+
+          <!-- Study -->
+          <article class="node study reveal d6">
+            <span class="ntype study">Study</span>
+            <div class="node-title">Bacterioscope live imaging of MagLOV2 E. coli across 5 field strengths</div>
+            <div class="node-body">One experiment, five imaging sessions on five days at 0.5, 1.0, 1.5, 2.0 and 2.5 mT; per-colony fluorescence tracked under a Twinleaf-calibrated applied field, with the MFE computed per colony.</div>
+            <div class="ptr-row">
+              <span class="pointer gated"><span class="kind local">raw</span><span class="path">NDTiff stacks · institute drive</span><span class="req">request access</span></span>
+            </div>
+
+            <!-- embedded walkthrough video -->
+            <div class="video">
+              <svg class="poster" viewBox="0 0 460 184" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <defs><radialGradient id="vp" cx="38%" cy="40%" r="80%"><stop offset="0%" stop-color="#27314f"/><stop offset="100%" stop-color="#0c0e16"/></radialGradient></defs>
+                <rect width="460" height="184" fill="url(#vp)"/>
+                <!-- faux colony field: glowing puncta on a grid -->
+                <g>
+                  <circle cx="120" cy="70" r="10" fill="#2c9a61" opacity=".85"/><circle cx="120" cy="70" r="19" fill="#2c9a61" opacity=".16"/>
+                  <circle cx="180" cy="110" r="8" fill="#a6dcbd" opacity=".8"/>
+                  <circle cx="240" cy="64" r="7" fill="#3877cf" opacity=".7"/>
+                  <circle cx="300" cy="120" r="9" fill="#2c9a61" opacity=".7"/>
+                  <circle cx="260" cy="110" r="5" fill="#a6c6ef" opacity=".6"/>
+                  <circle cx="340" cy="78" r="6" fill="#2c9a61" opacity=".55"/>
+                </g>
+                <text x="22" y="34" font-size="10" fill="#9fb0d6" style="font-family:var(--font-mono)">bacterioscope · 1.0 mT applied</text>
+              </svg>
+              <button class="play" type="button" aria-label="Play 3-minute walkthrough" onclick="this.closest('.video').classList.add('played')">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              </button>
+              <div class="meta">
+                <span class="lbl"><span class="vidtype">video</span> 3-min walkthrough</span>
+                <span>2:51 · Loom</span>
+              </div>
+            </div>
+          </article>
+
+          <div class="edge-rail" aria-label="Protocol that the Study follows">
+            <svg class="edge-svg" viewBox="0 0 24 40" preserveAspectRatio="none" aria-hidden="true"><path class="draw" style="--len:46" d="M12 0 L12 40"/></svg>
+            <span class="edge follows">follows ↑</span>
+            <span class="dir">Study → Protocol</span>
+          </div>
+
+          <!-- Protocol -->
+          <article class="node protocol reveal d7">
+            <span class="ntype protocol">Protocol</span>
+            <div class="node-title">MagLOV2 expression + applied-field acquisition + per-colony MFE</div>
+            <div class="node-body">Express MagLOV2 in E. coli; acquire fluorescence on the bacterioscope under an applied field calibrated with a Twinleaf magnetometer; compute the magnetic-field effect per colony and average across the plate.</div>
+            <div class="ptr-row">
+              <span class="pointer"><span class="kind git">git</span><span class="path">quantum-bio/mfe-analysis @ 7c1ae04 · /protocols/bacterioscope_mfe.md</span></span>
+            </div>
+          </article>
+
+        </div>
+      </main>
+
+      <!-- =========================== SIDEBAR =========================== -->
+      <aside class="aside reveal d4">
+
+        <!-- primary conversion: CITE THIS (frozen version) — R9, the signature moment -->
+        <div class="panel cta-card">
+          <h4>Cite this result</h4>
+          <p>Reference the <strong>exact version you're reading</strong> — pinned to a frozen snapshot, so later edits never change what you cited.</p>
+          <button class="btn primary" type="button"
+            onclick="document.getElementById('citeOut').classList.add('show');this.style.display='none';">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg>
+            Cite · copy citation
+          </button>
+          <div id="citeOut" class="cite-out">
+            <div class="cite-box">
+              Quantum Biology Institute (2026). <span class="v">MagLOV2 magnetic-field effect flips sign with field strength.</span>
+              MIRA Evidence node <span class="v">maglov2-mfe-7c1ae04</span>. mira.science/n/maglov2-mfe-7c1ae04
+            </div>
+            <div class="pin">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17v5M9 3h6l-1 6 3 3H7l3-3-1-6z"/></svg>
+              <span class="chip">version frozen · v1 @ 7c1ae04 · 2026-02-09</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- secondary: request access to gated raw data (R5) -->
+        <div class="panel cta-card">
+          <h4>Want the raw data?</h4>
+          <p>The raw image stacks stay on the QBI drive. Send a one-click request — the authors approve per-resource.</p>
+          <button class="btn pulse" type="button"
+            onclick="document.getElementById('reqDefault').style.display='none';document.getElementById('reqSent').style.display='block';this.style.display='none';">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            Request access to the data
+          </button>
+          <div id="reqDefault">
+            <div class="perm-mini" style="margin-top:14px;">
+              <div class="row">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                <div>
+                  <div class="ttl">Public page, gated data</div>
+                  <div class="sub">Nothing un-published is exposed.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="reqSent" class="access-state">
+            <div class="toast" style="margin-top:14px;">
+              <span class="dot"></span>
+              <div style="font-size:12.5px;">
+                <strong>Request sent to the Quantum Biology Institute.</strong>
+                <div class="muted" style="margin-top:3px;">You'll hear back by email once approved.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- tertiary: import if you run a DG -->
+        <div class="panel cta-card">
+          <h4>Run a graph yourself?</h4>
+          <p>Pull this whole bundle in as JSON-LD and make edges from your own nodes.</p>
+          <button class="btn" type="button">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg>
+            Import into your graph
+          </button>
+          <div class="note">if you use Obsidian / Roam + Discourse Graphs.</div>
+        </div>
+
+      </aside>
+    </div>
+
+    <!-- ---- Build line: rendered from JSON-LD (R10) ---------------------- -->
+    <div class="buildband reveal d8">
+      <div class="buildline">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m0 8v3a2 2 0 0 0 2 2h3m8 0h3a2 2 0 0 0 2-2v-3m0-8V5a2 2 0 0 0-2-2h-3"/></svg>
+        Published via KOI · rendered from JSON-LD · powered by <b>Discourse Graphs</b>
+      </div>
+      <button class="jsonld-toggle" type="button" aria-expanded="false"
+        onclick="var p=document.getElementById('jsonld');var open=p.style.display==='block';p.style.display=open?'none':'block';this.setAttribute('aria-expanded',String(!open));this.textContent=open?'{ } view source (JSON-LD)':'×  hide source';">
+        { } view source (JSON-LD)
+      </button>
+    </div>
+    <pre id="jsonld" class="jsonld" style="display:none;"><span class="key">"@context"</span>: <span class="str">"https://mira.science/schema/v0"</span>,
+<span class="key">"@type"</span>: <span class="typ">"Evidence"</span>,
+<span class="key">"@id"</span>: <span class="str">"mira:n/maglov2-mfe-7c1ae04"</span>,
+<span class="key">"label"</span>: <span class="str">"MagLOV2 MFE flips sign as field strengthens"</span>,
+<span class="key">"supports"</span>: { <span class="key">"@id"</span>: <span class="str">"mira:n/radical-pair-model"</span> },
+<span class="key">"isGroundedIn"</span>: { <span class="key">"@id"</span>: <span class="str">"mira:n/bacterioscope-mfe-study"</span> },
+<span class="key">"pointer"</span>: [
+  { <span class="key">"kind"</span>: <span class="str">"git"</span>,  <span class="key">"ref"</span>: <span class="str">"quantum-bio/mfe-analysis@7c1ae04"</span> },
+  { <span class="key">"kind"</span>: <span class="str">"data"</span>, <span class="key">"uri"</span>: <span class="str">"…/mfe_by_field.csv"</span> },
+  { <span class="key">"kind"</span>: <span class="str">"raw"</span>,  <span class="key">"uri"</span>: <span class="str">"qbi-drive://…/ndtiff/"</span>, <span class="key">"access"</span>: <span class="str">"on-request"</span> }
+],
+<span class="key">"publishedAt"</span>: <span class="str">"mira.science/n/maglov2-mfe-7c1ae04"</span>, <span class="key">"license"</span>: <span class="str">"CC-BY-4.0"</span>, <span class="key">"version"</span>: <span class="str">"7c1ae04 (frozen)"</span></pre>
+
+  </div><!-- /.web -->
+</div><!-- /.screen -->
+
+<footer class="dgfoot reveal d8">
+  <span class="dots"></span>MIRA × Discourse Graphs · publish to a public repository · draft v0.1<span class="dots"></span>
+</footer>
+
+</body>
+</html>

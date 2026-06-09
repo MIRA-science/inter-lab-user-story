@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantum Biology Institute — public discourse graph · mira.science</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<style>
+  /* ============================================================================
+     Mockup 05 — "Public database / dashboard + reuse"
+     A gallery of PUBLISHED discourse nodes on the MIRA web interface, each at its
+     own public URL with provenance and a "cited by N" reuse signal; a focused
+     panel for citing one node (frozen-version pin — the signature motion); and an
+     author-side "who's using my work" feed. Palette/type/components come from
+     tokens.css + components.css; this block only does screen-specific layout, and
+     reuses the .cite block + frozen-version pin idiom from 03-public-web-view.html.
+     ============================================================================ */
+
+  body { padding: 34px 18px 64px; }
+
+  .web { background: radial-gradient(120% 60% at 50% -10%, var(--brand-tint) 0%, transparent 55%), var(--paper); }
+
+  /* ---- Database masthead: a lab's public graph, not a single node ---------- */
+  .masthead {
+    display:flex; align-items:flex-start; justify-content:space-between; gap:18px; flex-wrap:wrap;
+    padding:20px 28px 18px; border-bottom:1px solid var(--line);
+    background: rgba(255,255,255,.66); backdrop-filter: saturate(1.1) blur(3px);
+  }
+  .mast-id { display:flex; gap:13px; align-items:flex-start; }
+  .mast-id .glyph { width:34px; height:34px; flex:none; display:block; margin-top:2px; }
+  .mast-id h1 { font-size: clamp(20px,2.6vw,26px); margin:0; letter-spacing:-.015em; }
+  .mast-id .sub { font-size:12.5px; color: var(--muted); margin-top:4px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .mast-id .sub .lic { font-family: var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.06em; color: var(--claim-ink); background: var(--claim-wash); border:1px solid var(--claim-edge); padding:1px 7px; border-radius: var(--r-pill); }
+  .mast-id .sub .dotsep { color: var(--line); }
+  .mast-meta { display:flex; flex-direction:column; align-items:flex-end; gap:10px; }
+  .counts { display:flex; gap:7px; flex-wrap:wrap; justify-content:flex-end; font-family: var(--font-mono); font-size:11px; }
+  .counts .pillc { display:inline-flex; align-items:center; gap:6px; padding:3px 9px; border-radius: var(--r-pill); border:1px solid var(--line); background: var(--surface); color: var(--muted); }
+  .counts .pillc b { color: var(--ink); font-weight:600; }
+  .counts .pillc .sw { width:7px; height:7px; border-radius:2px; display:block; }
+  .ownerstack { display:flex; align-items:center; gap:9px; }
+  .ownerstack .avstack { display:flex; }
+  .ownerstack .avstack .avatar { width:26px; height:26px; font-size:10.5px; border:2px solid var(--surface); }
+  .ownerstack .avstack .avatar:nth-child(n+2){ margin-left:-9px; }
+  .ownerstack small { font-size:11.5px; }
+
+  /* ---- Toolbar: filter chips by node type ---------------------------------- */
+  .toolbar { display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; padding:14px 28px; border-bottom:1px solid var(--line); background: rgba(255,255,255,.4); }
+  .chips { display:flex; gap:8px; flex-wrap:wrap; }
+  .fchip {
+    display:inline-flex; align-items:center; gap:7px; cursor:pointer;
+    font-family: var(--font-mono); font-size:11px; font-weight:600; letter-spacing:.04em;
+    padding:5px 11px; border-radius: var(--r-pill); border:1px solid var(--line);
+    background: var(--surface); color: var(--muted); transition: all .16s var(--ease);
+  }
+  .fchip:hover { border-color: var(--ink-2); color: var(--ink); }
+  .fchip .sw { width:8px; height:8px; border-radius:2px; display:block; }
+  .fchip.on { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .fchip.on .sw { box-shadow:0 0 0 2px rgba(255,255,255,.35); }
+  .viewtoggle { display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color: var(--faint); font-family: var(--font-mono); }
+  .viewtoggle svg { width:14px; height:14px; stroke: var(--muted); fill:none; stroke-width:2; }
+
+  /* ---- Layout: gallery + sticky reuse/feed sidebar ------------------------- */
+  .db-grid { display:grid; grid-template-columns: minmax(0,1fr) 318px; gap:28px; padding:24px 28px 30px; align-items:start; }
+  .gallery-col { min-width:0; }
+  @media (max-width: 920px){ .db-grid { grid-template-columns:1fr; } .rail { order:2; position:static !important; } }
+
+  .col-head { display:flex; align-items:center; gap:12px; margin:0 0 14px; }
+  .col-head h3 { font-size:15px; }
+  .col-head .rule { flex:1; height:1px; background: var(--line); }
+  .col-head .n { font-family: var(--font-mono); font-size:11px; color: var(--faint); }
+
+  /* ---- The gallery of published nodes -------------------------------------- */
+  .gallery { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:14px; }
+  @media (max-width: 620px){ .gallery { grid-template-columns:1fr; } }
+
+  .gcard { display:flex; flex-direction:column; gap:0; cursor:pointer; }
+  .gcard .node { display:flex; flex-direction:column; height:100%; transition: box-shadow .25s var(--ease), transform .25s var(--ease), border-color .25s var(--ease); }
+  .gcard:hover .node { box-shadow: var(--shadow-2); transform: translateY(-2px); }
+  .gcard.selected .node { border-color: var(--brand); box-shadow: 0 0 0 2px var(--brand-tint), var(--shadow-2); }
+  .gcard .node .node-title { font-size:14.5px; line-height:1.22; margin:9px 0 6px; }
+  .gcard .node .node-body { font-size:12px; color: var(--muted); flex:1; }
+  .gcard .url {
+    display:flex; align-items:center; gap:6px; margin-top:11px;
+    font-family: var(--font-mono); font-size:10.5px; color: var(--faint);
+    overflow:hidden; white-space:nowrap;
+  }
+  .gcard .url svg { width:11px; height:11px; flex:none; stroke: var(--faint); fill:none; stroke-width:2; }
+  .gcard .url .u { overflow:hidden; text-overflow:ellipsis; }
+  .gcard .gfoot { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:10px; padding-top:10px; border-top:1px dashed var(--line); }
+  .gcard .gfoot .avstack { display:flex; }
+  .gcard .gfoot .avstack .avatar { width:21px; height:21px; font-size:9px; border:1.5px solid var(--surface); }
+  .gcard .gfoot .avstack .avatar:nth-child(n+2){ margin-left:-7px; }
+  /* a small "micropublication" card spanning the row */
+  .gcard.pub { grid-column: 1 / -1; }
+  .gcard.pub .node { border-left-color: var(--brand); background: linear-gradient(180deg, var(--brand-tint) 0%, var(--surface) 70%); }
+  .pubtype { display:inline-flex; align-items:center; gap:6px; font-family: var(--font-mono); font-size:10.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; padding:3px 8px; border-radius: var(--r-pill); color: var(--brand); background: var(--surface); border:1px solid #aeb4eb; }
+  .pubtype::before { content:''; width:7px; height:7px; border-radius:2px; background: currentColor; }
+
+  /* hide cards when a filter is active (pure-CSS via :has on the toolbar) */
+  .gallery[data-filter] { }
+
+  /* ---- Right rail: cite-a-result panel + activity feed --------------------- */
+  .rail { position:sticky; top:22px; display:grid; gap:16px; }
+  .cta-card { padding:18px; }
+  .cta-card h4 { font-family: var(--font-display); font-size:15.5px; margin:0 0 4px; }
+  .cta-card p { font-size:12px; color: var(--muted); margin:0 0 13px; line-height:1.5; }
+
+  /* the selected-node "cite this" target inside the panel */
+  .cite-target { display:flex; align-items:flex-start; gap:9px; padding:11px 12px; border:1px solid var(--line); border-left:4px solid var(--evidence-ink); border-radius: var(--r-sm); background: var(--surface-2); margin-bottom:13px; }
+  .cite-target .tt { font-family: var(--font-display); font-size:13px; font-weight:600; line-height:1.25; }
+  .cite-target .uu { font-family: var(--font-mono); font-size:10px; color: var(--faint); margin-top:4px; word-break:break-all; }
+
+  /* destination toggle for where the citation lands (MyST / Obsidian / Roam) */
+  .dest { display:flex; gap:6px; margin-bottom:13px; }
+  .dest .opt { flex:1; text-align:center; font-family: var(--font-mono); font-size:10.5px; font-weight:600; padding:6px 4px; border-radius: var(--r-sm); border:1px solid var(--line); background: var(--surface); color: var(--muted); cursor:pointer; transition: all .16s var(--ease); }
+  .dest .opt.on { background: var(--brand); border-color: var(--brand); color:#fff; }
+  .dest .opt:not(.on):hover { border-color: var(--ink-2); color: var(--ink); }
+
+  .btn.primary { width:100%; }
+
+  /* the citation block + frozen-version pin (reused idiom from screen 03) */
+  .cite-out { display:none; margin-top:13px; }
+  .cite-out.show { display:block; animation: rise .5s var(--ease-out); }
+  .cite-box { font-family: var(--font-mono); font-size:10.5px; line-height:1.55; color: var(--ink-2); background: var(--surface-2); border:1px solid var(--line-2); border-radius: var(--r-sm); padding:11px 12px; }
+  .cite-box .v { color: var(--brand); }
+  .pin { display:flex; align-items:center; gap:8px; margin-top:11px; }
+  .pin .chip { display:inline-flex; align-items:center; gap:6px; font-family: var(--font-mono); font-size:10px; background: var(--brand-tint); border:1px solid #aeb4eb; color: var(--brand); padding:4px 10px; border-radius: var(--r-pill); font-weight:600; }
+  .pin .chip svg { width:13px; height:13px; stroke: currentColor; fill:none; stroke-width:2; animation: pinsnap .6s var(--ease-out); }
+  /* SIGNATURE MOTION: the frozen-version pin snapping in (reuses the pinsnap idea from 03) */
+  @keyframes pinsnap { 0%{ transform: rotate(-25deg) scale(.6); opacity:0 } 60%{ transform: rotate(8deg) scale(1.08) } 100%{ transform:none; opacity:1 } }
+  .cite-done { display:flex; align-items:center; gap:7px; margin-top:11px; font-size:11.5px; color: var(--claim-ink); font-weight:600; }
+  .cite-done svg { width:14px; height:14px; stroke: currentColor; fill:none; stroke-width:2.4; }
+
+  /* ---- Author activity feed: "who's using my work" (R8) -------------------- */
+  .feed-card { padding:16px 18px; }
+  .feed-card .fhead { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:4px; }
+  .feed-card h4 { font-family: var(--font-display); font-size:15px; margin:0; }
+  .feed-card .you { font-family: var(--font-mono); font-size:9.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color: var(--brand); background: var(--brand-tint); border:1px solid #aeb4eb; padding:2px 7px; border-radius: var(--r-pill); }
+  .feed-card .fsub { font-size:11.5px; color: var(--muted); margin:0 0 12px; }
+  .feed { list-style:none; margin:0; padding:0; }
+  .feed li { display:flex; gap:11px; align-items:flex-start; padding:11px 0; border-bottom:1px dashed var(--line); }
+  .feed li:last-child { border-bottom:0; padding-bottom:2px; }
+  .feed li .av { flex:none; margin-top:1px; }
+  .feed li .av .avatar { width:26px; height:26px; font-size:10px; }
+  .feed li .ic-dot { width:26px; height:26px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; background: var(--surface-2); border:1px solid var(--line); margin-top:1px; }
+  .feed li .ic-dot svg { width:14px; height:14px; stroke: var(--muted); fill:none; stroke-width:2; }
+  .feed li .ftext { font-size:12.5px; color: var(--ink-2); line-height:1.4; min-width:0; }
+  .feed li .ftext b { color: var(--ink); font-weight:600; }
+  .feed li .ftext .n { font-family: var(--font-mono); font-size:10px; color: var(--faint); display:block; margin-top:3px; }
+  .feed li .ftext .target { color: var(--evidence-ink); }
+  /* the freshly-arrived "cited by" row that animates in */
+  .feed li.fresh { animation: rise .55s var(--ease-out) both; }
+  .feed li.fresh .ic-dot { background: var(--claim-wash); border-color: var(--claim-edge); }
+  .feed li.fresh .ic-dot svg { stroke: var(--claim-ink); }
+
+  @media (prefers-reduced-motion: reduce){
+    .pin .chip svg { animation:none; }
+    .cite-out.show { animation:none; }
+    .feed li.fresh { animation:none; }
+    .gcard:hover .node { transform:none; }
+  }
+
+  /* ---- Footer build line + dotted DG footer -------------------------------- */
+  .buildband { margin:0 28px; border-top:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; padding:16px 0 22px; }
+  .buildline { display:flex; align-items:center; gap:9px; font-size:12px; color: var(--faint); font-family: var(--font-mono); }
+  .buildline svg { width:14px; height:14px; stroke: var(--faint); fill:none; stroke-width:1.8; }
+  .buildline b { color: var(--brand); font-weight:600; }
+
+  .dgfoot { max-width:1080px; margin:26px auto 0; text-align:center; font-family: var(--font-mono); font-size:11.5px; color: var(--faint); letter-spacing:.04em; }
+  .dgfoot .dots { display:inline-block; border-top:2px dotted var(--line); width:46px; vertical-align:middle; margin:0 12px; }
+</style>
+</head>
+<body>
+
+<!-- ============================ FRAME CAPTION ============================= -->
+<div class="frame-caption reveal d1">
+  <span class="eyebrow">Mockup 05 · 🥉 low shared context · public database</span>
+  <h2>The public discourse graph — a dashboard of published nodes, and citing one into your own notebook</h2>
+  <p>Every published node from the QBI graph stands at its own <strong>public URL</strong> with visible provenance and a <strong>"cited by N"</strong> reuse signal; a reader cites a specific result against a <strong>frozen version</strong>, and the authors watch who is building on their work (R1, R6, R8, R9).</p>
+</div>
+
+<!-- ============================ THE SCREEN =============================== -->
+<div class="screen reveal d2">
+
+  <!-- browser window bar — the lab's public graph at a URL -->
+  <div class="winbar">
+    <div class="lights"><i></i><i></i><i></i></div>
+    <span class="addr">🔒 mira.science/g/quantum-biology-institute</span>
+    <span class="grow"></span>
+    <span class="kbd">⌘ K</span>
+  </div>
+
+  <div class="web">
+
+    <!-- ---- Database masthead ---------------------------------------------- -->
+    <header class="masthead reveal d3">
+      <div class="mast-id">
+        <svg class="glyph" viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="9" cy="9" r="3.2" style="fill:var(--evidence-ink)"/>
+          <circle cx="23" cy="8" r="3.2" style="fill:var(--claim-ink)"/>
+          <circle cx="22" cy="23" r="3.2" style="fill:var(--study-ink)"/>
+          <circle cx="8" cy="22" r="3.2" style="fill:var(--protocol-ink)"/>
+          <g style="stroke:var(--line)" stroke-width="1.6">
+            <line x1="9" y1="9" x2="23" y2="8"/><line x1="23" y1="8" x2="22" y2="23"/>
+            <line x1="22" y1="23" x2="8" y2="22"/><line x1="8" y1="22" x2="9" y2="9"/>
+          </g>
+        </svg>
+        <div>
+          <h1>Quantum Biology Institute</h1>
+          <div class="sub">
+            <span>public discourse graph</span>
+            <span class="dotsep">·</span>
+            <span class="share-level world" style="padding:2px 9px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
+              public
+            </span>
+            <span class="dotsep">·</span>
+            <span class="lic">CC-BY 4.0</span>
+          </div>
+        </div>
+      </div>
+      <div class="mast-meta">
+        <div class="ownerstack">
+          <div class="avstack">
+            <span class="avatar qbi" title="Quantum Biology Institute">Q</span>
+            <span class="avatar brian" title="Brian">B</span>
+            <span class="avatar morgan" title="Morgan">M</span>
+          </div>
+          <small>maintained by Brian &amp; Morgan</small>
+        </div>
+        <div class="counts">
+          <span class="pillc"><b>18</b> published nodes</span>
+          <span class="pillc"><span class="sw" style="background:var(--evidence-ink)"></span><b>7</b> Evidence</span>
+          <span class="pillc"><span class="sw" style="background:var(--claim-ink)"></span><b>5</b> Claims</span>
+          <span class="pillc"><span class="sw" style="background:var(--study-ink)"></span><b>3</b> Studies</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ---- Toolbar: filter by node type ----------------------------------- -->
+    <div class="toolbar reveal d3">
+      <div class="chips" role="group" aria-label="Filter by node type">
+        <button class="fchip on" type="button" aria-pressed="true">All</button>
+        <button class="fchip" type="button"><span class="sw" style="background:var(--question-ink)"></span>Question</button>
+        <button class="fchip" type="button"><span class="sw" style="background:var(--claim-ink)"></span>Claim</button>
+        <button class="fchip" type="button"><span class="sw" style="background:var(--evidence-ink)"></span>Evidence</button>
+        <button class="fchip" type="button"><span class="sw" style="background:var(--study-ink)"></span>Study</button>
+        <button class="fchip" type="button"><span class="sw" style="background:var(--protocol-ink)"></span>Protocol</button>
+      </div>
+      <span class="viewtoggle">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        gallery · kanban
+      </span>
+    </div>
+
+    <!-- ---- Gallery + reuse/feed rail -------------------------------------- -->
+    <div class="db-grid">
+
+      <!-- =========================== GALLERY ========================== -->
+      <section class="gallery-col">
+        <div class="col-head reveal d4">
+          <h3>Published nodes</h3>
+          <span class="rule"></span>
+          <span class="n">most-cited first</span>
+        </div>
+
+        <div class="gallery">
+
+          <!-- Claim / model — most cited -->
+          <article class="gcard reveal d4" tabindex="0">
+            <div class="node claim">
+              <span class="ntype claim">Claim · model</span>
+              <div class="node-title">Radical-pair quantum mechanism underlies MagLOV2 magnetosensitivity</div>
+              <div class="node-body">A field-dependent, sign-changing response at low fields is a signature predicted by the radical-pair model.</div>
+              <div class="url">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+                <span class="u">mira.science/n/radical-pair-model</span>
+              </div>
+              <div class="gfoot">
+                <span class="reuse"><span class="dotg"></span>cited by <b>5</b></span>
+                <div class="avstack"><span class="avatar brian" title="Brian">B</span><span class="avatar morgan" title="Morgan">M</span></div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Evidence — the canonical sign-flip node (the cite target), cited by 3 -->
+          <article class="gcard selected reveal d4" tabindex="0" aria-current="true">
+            <div class="node evidence">
+              <span class="ntype evidence">Evidence</span>
+              <div class="node-title">MFE sign flipped from positive to negative as field strength increased</div>
+              <div class="node-body">Across 0.5–2.5 mT the mean magnetic-field effect was positive at low field, crossed zero, and turned negative by ~2.5 mT.</div>
+              <div class="url">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+                <span class="u">mira.science/n/maglov2-mfe-7c1ae04</span>
+              </div>
+              <div class="gfoot">
+                <span class="reuse"><span class="dotg"></span>cited by <b id="citeCount">3</b></span>
+                <div class="avstack"><span class="avatar brian" title="Brian">B</span></div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Evidence — plateau node, cited by 1 -->
+          <article class="gcard reveal d5" tabindex="0">
+            <div class="node evidence">
+              <span class="ntype evidence">Evidence</span>
+              <div class="node-title">MFE is nonmonotonic — magnitude plateaus at higher field</div>
+              <div class="node-body">Beyond the sign change, the effect size levels off rather than growing without bound — consistent with a saturating mechanism.</div>
+              <div class="url">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+                <span class="u">mira.science/n/maglov2-mfe-plateau-b1f29d</span>
+              </div>
+              <div class="gfoot">
+                <span class="reuse"><span class="dotg"></span>cited by <b>1</b></span>
+                <div class="avstack"><span class="avatar brian" title="Brian">B</span></div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Study -->
+          <article class="gcard reveal d5" tabindex="0">
+            <div class="node study">
+              <span class="ntype study">Study</span>
+              <div class="node-title">Bacterioscope live imaging across 5 field strengths</div>
+              <div class="node-body">One experiment, five imaging sessions on five days at 0.5–2.5 mT; per-colony fluorescence under a Twinleaf-calibrated field.</div>
+              <div class="url">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+                <span class="u">mira.science/n/bacterioscope-mfe-study</span>
+              </div>
+              <div class="gfoot">
+                <span class="share-level gated" style="padding:2px 9px; font-size:11px;">raw data gated</span>
+                <div class="avstack"><span class="avatar morgan" title="Morgan">M</span></div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Protocol -->
+          <article class="gcard reveal d6" tabindex="0">
+            <div class="node protocol">
+              <span class="ntype protocol">Protocol</span>
+              <div class="node-title">MagLOV2 expression + applied-field + per-colony MFE</div>
+              <div class="node-body">Express MagLOV2 in E. coli; acquire on the bacterioscope under a calibrated applied field; compute MFE per colony.</div>
+              <div class="url">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+                <span class="u">mira.science/n/bacterioscope-mfe-protocol</span>
+              </div>
+              <div class="gfoot">
+                <span class="reuse"><span class="dotg" style="background:var(--study-ink)"></span>followed by <b>1</b> study</span>
+                <div class="avstack"><span class="avatar brian" title="Brian">B</span></div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Micropublication — spans the row, links to the compiled narrative (mockup 04) -->
+          <article class="gcard pub reveal d6" tabindex="0">
+            <div class="node">
+              <div class="spread">
+                <span class="pubtype">Micropublication</span>
+                <span class="tag">3 bundles compiled</span>
+              </div>
+              <div class="node-title">MagLOV2 magnetosensitivity — a radical-pair account across field strengths</div>
+              <div class="node-body">A Jupyter Book that renders the Claim above its supporting Evidence; each subfigure links back to its still-addressable node.</div>
+              <div class="url">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+                <span class="u">mira.science/pub/maglov2-magnetosensitivity</span>
+              </div>
+              <div class="gfoot">
+                <span class="reuse"><span class="dotg"></span>cited by <b>2</b> · viewed <b>142</b>×</span>
+                <div class="avstack"><span class="avatar brian" title="Brian">B</span><span class="avatar morgan" title="Morgan">M</span></div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- =========================== RAIL ============================= -->
+      <aside class="rail">
+
+        <!-- R9: cite a SPECIFIC result against a frozen version — signature moment -->
+        <div class="panel cta-card reveal d4">
+          <h4>Cite this result</h4>
+          <p>Drop a reference to the selected node into your own notebook — pinned to the <strong>exact version you're reading</strong>, frozen so later edits never change what you cited.</p>
+
+          <div class="cite-target" aria-label="Selected node to cite">
+            <span class="ntype evidence" style="flex:none;">EVD</span>
+            <div>
+              <div class="tt">MFE sign flipped from positive to negative</div>
+              <div class="uu">mira.science/n/maglov2-mfe-7c1ae04</div>
+            </div>
+          </div>
+
+          <div class="dest" role="group" aria-label="Where to cite">
+            <span class="opt on" role="button">MyST</span>
+            <span class="opt" role="button">Obsidian</span>
+            <span class="opt" role="button">Roam</span>
+            <span class="opt" role="button">BibTeX</span>
+          </div>
+
+          <button class="btn primary" type="button" id="citeBtn"
+            onclick="
+              document.getElementById('citeOut').classList.add('show');
+              this.style.display='none';
+              var c=document.getElementById('citeCount'); if(c){c.textContent='4';}
+              var f=document.getElementById('freshRow'); if(f){f.hidden=false;}
+            ">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg>
+            Cite · copy to notebook
+          </button>
+
+          <div id="citeOut" class="cite-out">
+            <div class="cite-box">
+              <span class="v">:::{evidence} maglov2-mfe-7c1ae04</span>
+              Quantum Biology Institute (2026). MFE flips sign with field strength.
+              <span class="v">mira.science/n/maglov2-mfe-7c1ae04</span> :::
+            </div>
+            <div class="pin">
+              <span class="chip">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17v5M9 3h6l-1 6 3 3H7l3-3-1-6z"/></svg>
+                version frozen · v1 @ 7c1ae04 · 2026-02-09
+              </span>
+            </div>
+            <div class="cite-done">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+              Copied — and the authors now see one more citation.
+            </div>
+          </div>
+        </div>
+
+        <!-- R8: author-side "who's using my work" activity feed -->
+        <div class="panel feed-card reveal d5">
+          <div class="fhead">
+            <h4>Who's using your work</h4>
+            <span class="you">your graph</span>
+          </div>
+          <p class="fsub">Reuse of QBI nodes across the open web — provenance flowing back to the producer.</p>
+          <ul class="feed">
+
+            <!-- the fresh row that appears when you cite above -->
+            <li class="fresh" id="freshRow" hidden>
+              <span class="ic-dot">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg>
+              </span>
+              <div class="ftext">
+                <b>You</b> cited <span class="target">MFE sign flip</span> from a MyST notebook
+                <span class="n">just now · version frozen @ 7c1ae04</span>
+              </div>
+            </li>
+
+            <li>
+              <span class="av"><span class="avatar world" title="R. Okafor">R</span></span>
+              <div class="ftext">
+                <b>R. Okafor</b> cited <span class="target">MFE sign flip</span> in a manuscript
+                <span class="n">2 days ago · frozen @ 7c1ae04</span>
+              </div>
+            </li>
+
+            <li>
+              <span class="ic-dot">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg>
+              </span>
+              <div class="ftext">
+                <b>Vogel Lab</b> imported the <span class="target">radical-pair</span> bundle into their graph
+                <span class="n">5 days ago · 3 nodes · JSON-LD</span>
+              </div>
+            </li>
+
+            <li>
+              <span class="ic-dot">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+              </span>
+              <div class="ftext">
+                <b>A reader</b> requested access to the <span class="target">raw NDTiff stacks</span>
+                <span class="n">6 days ago · awaiting your approval</span>
+              </div>
+            </li>
+
+            <li>
+              <span class="ic-dot">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              </span>
+              <div class="ftext">
+                The <span class="target">micropublication</span> was viewed <b>142×</b> this month
+                <span class="n">PREreview request pending</span>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+
+      </aside>
+    </div>
+
+    <!-- ---- Build line: rendered from JSON-LD (R6 / R1) -------------------- -->
+    <div class="buildband reveal d7">
+      <div class="buildline">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m0 8v3a2 2 0 0 0 2 2h3m8 0h3a2 2 0 0 0 2-2v-3m0-8V5a2 2 0 0 0-2-2h-3"/></svg>
+        KOI · DG nodes → dashboard on the web interface · each node addressable, every citation <b>frozen</b>
+      </div>
+      <span class="cite" style="border-style:dashed;">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17v5M9 3h6l-1 6 3 3H7l3-3-1-6z"/></svg>
+        <span class="frozen">pointers, not payloads — no raw data leaves the drive</span>
+      </span>
+    </div>
+
+  </div><!-- /.web -->
+</div><!-- /.screen -->
+
+<footer class="dgfoot reveal d8">
+  <span class="dots"></span>MIRA × Discourse Graphs · publish to a public repository · draft v0.1<span class="dots"></span>
+</footer>
+
+<!-- ----------------------------------------------------------------------------
+  Tiny vanilla-JS sugar (static-first; the page is complete with JS disabled):
+   • filter chips toggle their pressed state (the gallery still shows all nodes)
+   • destination toggle (MyST/Obsidian/Roam/BibTeX) switches the active option
+  The signature interaction (cite → frozen pin snaps in + counter ticks 3→4 +
+  feed row arrives) is wired inline on the Cite button above.
+---------------------------------------------------------------------------- -->
+<script>
+  (function(){
+    var chips = document.querySelectorAll('.toolbar .fchip');
+    chips.forEach(function(c){
+      c.addEventListener('click', function(){
+        chips.forEach(function(x){ x.classList.remove('on'); x.setAttribute('aria-pressed','false'); });
+        c.classList.add('on'); c.setAttribute('aria-pressed','true');
+      });
+    });
+    var opts = document.querySelectorAll('.dest .opt');
+    opts.forEach(function(o){
+      o.addEventListener('click', function(){
+        opts.forEach(function(x){ x.classList.remove('on'); });
+        o.classList.add('on');
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

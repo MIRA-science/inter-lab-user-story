@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G3BP1 before PABP1 — traverse the lineage &amp; request back · mira.science</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<style>
+  /* ============================================================================
+     Mockup 08 — "Traverse to the threshold, then request back" (Sean → Kate)
+     A grad student opens Sean's Evidence on the shared dashboard, traverses the
+     lineage DOWN to the segmentation-threshold Protocol, follows the pointers
+     and the video, hits the gated raw stacks → requests access, and sends a
+     Request back for a follow-up. Two currents: results out, requests back.
+     Palette/type/components come from tokens.css + components.css; this block
+     only does screen-specific layout.
+     ============================================================================ */
+
+  body { padding: 34px 18px 64px; }
+  .web { background: radial-gradient(120% 60% at 50% -10%, var(--brand-tint) 0%, transparent 55%), var(--paper); }
+
+  /* ---- Public masthead: the node on the dashboard, at a URL ---------------- */
+  .masthead {
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    padding:16px 26px; border-bottom:1px solid var(--line);
+    background: rgba(255,255,255,.66); backdrop-filter: saturate(1.1) blur(3px);
+  }
+  .wordmark { display:flex; align-items:center; gap:11px; }
+  .wordmark .glyph { width:30px; height:30px; flex:none; display:block; }
+  .wordmark .name { font-family: var(--font-display); font-weight:600; font-size:17px; letter-spacing:-.01em; color: var(--ink); }
+  .wordmark .name b { color: var(--brand); font-weight:600; }
+  .wordmark .proj { font-family: var(--font-mono); font-size:11px; color: var(--faint); margin-top:1px; }
+  .viewer { display:flex; align-items:center; gap:9px; font-size:12.5px; color: var(--muted); }
+  .viewer .avatar { width:26px; height:26px; font-size:10.5px; }
+
+  /* ---- Layout grid: document + sticky request/convert sidebar -------------- */
+  .doc-grid { display:grid; grid-template-columns: minmax(0,1fr) 312px; gap:32px; padding:28px 26px 30px; align-items:start; }
+  .doc { min-width:0; }
+  @media (max-width: 900px){ .doc-grid { grid-template-columns:1fr; } .aside { order:2; position:static !important; } }
+
+  /* ---- Evidence summary header --------------------------------------------- */
+  .lede h1 { font-size: clamp(24px,3.2vw,32px); margin:12px 0 0; max-width:24ch; }
+  .lede .summary { font-size:15.5px; color: var(--ink-2); line-height:1.6; margin:13px 0 0; max-width:60ch; }
+  .lede .summary .accent { color: var(--evidence-ink); font-weight:600; font-style:italic; }
+  .byline { display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin-top:16px; font-size:12.5px; color: var(--muted); }
+  .byline .avatar { width:22px; height:22px; font-size:9.5px; }
+  .dotsep { color: var(--line); }
+
+  /* ---- Figure block (illustrative two-curve plot + "what's in the dish") --- */
+  .figure { margin-top:24px; border:1px solid var(--line); border-radius: var(--r-lg); overflow:hidden; background: var(--surface); box-shadow: var(--shadow-1); }
+  .figure .plotwrap { display:grid; grid-template-columns: minmax(0,1.35fr) minmax(0,1fr); }
+  @media (max-width: 620px){ .figure .plotwrap { grid-template-columns:1fr; } }
+  .figure svg.plot { width:100%; height:auto; display:block; background: var(--surface); }
+  .figure .ctx { border-left:1px solid var(--line); padding:16px 18px; background: var(--surface-2); }
+  @media (max-width: 620px){ .figure .ctx { border-left:0; border-top:1px solid var(--line);} }
+  .figure .ctx h4 { font-family: var(--font-mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color: var(--faint); font-weight:700; margin-bottom:10px; }
+  table.ctx-tbl { width:100%; border-collapse:collapse; font-size:12.5px; }
+  table.ctx-tbl td { padding:6px 0; vertical-align:top; border-bottom:1px dashed var(--line); }
+  table.ctx-tbl tr:last-child td { border-bottom:0; }
+  table.ctx-tbl td.k { color: var(--muted); width:46%; }
+  table.ctx-tbl td.v { color: var(--ink); font-family: var(--font-mono); font-size:11.5px; }
+  .figcaption { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:11px 16px; border-top:1px solid var(--line); background: var(--paper); font-size:12px; color: var(--muted); }
+  .illus { font-family: var(--font-mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color: var(--warn); background: var(--question-wash); border:1px solid var(--question-edge); padding:3px 8px; border-radius: var(--r-pill); font-weight:700; }
+  .legend { display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
+  .legend span { display:inline-flex; align-items:center; gap:7px; font-size:12px; color: var(--ink-2); font-weight:600; }
+  .legend i { width:14px; height:14px; border-radius:50%; display:block; }
+  .pdraw { stroke-dasharray: 320; stroke-dashoffset: 320; animation: drawline 1.3s var(--ease-out) .4s forwards; }
+  @media (prefers-reduced-motion: reduce){ .pdraw { animation:none; stroke-dashoffset:0; } }
+
+  /* ---- The grad-student framing prompt — leads the eye DOWN ----------------- */
+  .ask {
+    margin-top:26px; display:flex; gap:13px; align-items:flex-start;
+    padding:15px 17px; border-radius: var(--r-lg);
+    background: var(--brand-tint); border:1px solid #aeb4eb;
+  }
+  .ask .who { display:flex; flex-direction:column; align-items:center; gap:5px; flex:none; }
+  .ask .who .avatar { width:30px; height:30px; font-size:12px; }
+  .ask .who small { font-size:9.5px; color: var(--brand); font-weight:700; letter-spacing:.04em; }
+  .ask .q { font-family: var(--font-display); font-size:17px; font-weight:600; color: var(--ink); line-height:1.3; }
+  .ask .q .em { color: var(--brand); }
+  .ask .sub { font-size:12.5px; color: var(--ink-2); margin-top:6px; line-height:1.5; }
+  .ask .sub i { color: var(--evidence-ink); font-style:italic; font-weight:600; }
+  .ask .down { display:flex; align-items:center; gap:7px; margin-top:9px; font-family: var(--font-mono); font-size:11px; color: var(--brand); font-weight:600; }
+  .ask .down svg { width:14px; height:14px; stroke: currentColor; fill:none; stroke-width:2; animation: nudge 1.8s var(--ease-out) infinite; }
+  @keyframes nudge { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(3px);} }
+  @media (prefers-reduced-motion: reduce){ .ask .down svg { animation:none; } }
+
+  /* ---- Section heading ----------------------------------------------------- */
+  .sec-head { margin:30px 0 6px; display:flex; align-items:center; gap:12px; }
+  .sec-head h3 { font-size:17px; }
+  .sec-head .rule { flex:1; height:1px; background: var(--line); }
+  .sec-sub { font-size:13px; color: var(--muted); margin:0 0 18px; max-width:64ch; }
+
+  /* ---- Traversable subgraph — drawing DOWN to the threshold ---------------- */
+  .chain { display:grid; gap:0; }
+  .chain .node { z-index:2; }
+  .chain .node .ntype { margin-bottom:2px; }
+  .chain .node .node-body { margin-top:6px; }
+  .edge-rail { position:relative; display:flex; align-items:center; gap:12px; padding:8px 0 8px 18px; margin-left:18px; }
+  .edge-rail .edge-svg { position:absolute; left:0; top:-2px; height:calc(100% + 4px); width:24px; overflow:visible; }
+  .edge-rail .edge-svg path { fill:none; stroke: var(--study-edge); stroke-width:2; stroke-linecap:round; }
+  .edge-rail .edge-svg path.draw { stroke-dasharray: var(--len,120); stroke-dashoffset: var(--len,120); animation: drawline 1s var(--ease-out) forwards; }
+  /* the rail draws DOWN, top-to-bottom, toward the payoff Protocol */
+  .edge-rail.d-a .edge-svg path.draw { animation-delay:.55s; }
+  .edge-rail.d-b .edge-svg path.draw { animation-delay:1.15s; }
+  @media (prefers-reduced-motion: reduce){ .edge-rail .edge-svg path.draw { animation:none; stroke-dashoffset:0; } .pulse { animation:none; } }
+  .edge-rail .dir { font-family: var(--font-mono); font-size:11px; color: var(--faint); }
+  .ptr-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+  .withheld { margin-top:9px; font-size:12px; color: var(--faint); display:flex; align-items:center; gap:8px; font-style:italic; }
+  .withheld svg { width:13px; height:13px; stroke: var(--faint); fill:none; stroke-width:2; }
+
+  /* the payoff node — the segmentation threshold — gets a soft highlight */
+  .node.payoff { box-shadow: 0 0 0 3px var(--protocol-wash), var(--shadow-2); }
+  .threshold-detail { margin-top:11px; padding:11px 13px; border-radius: var(--r-md); background: var(--protocol-wash); border:1px solid var(--protocol-edge); }
+  .threshold-detail .th-h { font-family: var(--font-mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color: var(--protocol-ink); font-weight:700; margin-bottom:7px; display:flex; align-items:center; gap:7px; }
+  .threshold-detail .th-h .tag { background: var(--surface); color: var(--protocol-ink); border-color: var(--protocol-edge); }
+  .th-tbl { width:100%; border-collapse:collapse; font-size:12px; }
+  .th-tbl td { padding:4px 0; vertical-align:top; border-bottom:1px dashed var(--protocol-edge); }
+  .th-tbl tr:last-child td { border-bottom:0; }
+  .th-tbl td.k { color: var(--protocol-ink); width:48%; opacity:.85; }
+  .th-tbl td.v { color: var(--ink); font-family: var(--font-mono); font-size:11px; }
+
+  /* a pointer rendered as a gated resource (R5) */
+  .pointer.gated { border-style:dashed; border-color: var(--question-edge); background: var(--question-wash); }
+  .pointer.gated .req { font-family: var(--font-body); font-weight:700; font-size:10.5px; color: var(--question-ink); margin-left:4px; }
+
+  /* ---- Embedded walkthrough video block (re-used idiom) -------------------- */
+  .video { margin-top:14px; border:1px solid var(--line); border-radius: var(--r-md); overflow:hidden; background:#11131a; position:relative; box-shadow: var(--shadow-1); }
+  .video .poster { width:100%; height:178px; display:block; }
+  .video .play { position:absolute; inset:0; margin:auto; width:56px; height:56px; display:flex; align-items:center; justify-content:center; background: rgba(255,255,255,.92); border-radius:50%; border:0; cursor:pointer; box-shadow: var(--shadow-2); transition: transform .18s var(--ease); }
+  .video .play:hover { transform: scale(1.06); }
+  .video .play svg { width:20px; height:20px; margin-left:3px; fill: var(--brand); }
+  .video .meta { position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 13px; color:#eef0f6; background: linear-gradient(transparent, rgba(0,0,0,.66)); font-size:12px; }
+  .video .meta .lbl { display:flex; align-items:center; gap:8px; font-weight:600; }
+  .video .meta .vidtype { font-family: var(--font-mono); font-size:9.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; background:#b3358f; color:#fff; padding:2px 6px; border-radius:4px; }
+  .video .caption { padding:10px 13px; font-size:12px; color: var(--muted); border-top:1px solid var(--line); background: var(--paper); }
+  .video .caption i { color: var(--ink-2); font-style:italic; }
+
+  /* ---- "why provenance matters" callout ------------------------------------ */
+  .why {
+    margin-top:24px; display:flex; gap:12px; align-items:flex-start;
+    padding:14px 16px; border-radius: var(--r-md);
+    background: var(--question-wash); border:1px solid var(--question-edge);
+  }
+  .why svg { width:18px; height:18px; stroke: var(--question-ink); fill:none; stroke-width:2; flex:none; margin-top:1px; }
+  .why .txt { font-size:12.5px; color: var(--ink-2); line-height:1.5; }
+  .why .txt b { color: var(--question-ink); }
+
+  /* ---- Sidebar: request-access + the Request-back current ------------------ */
+  .aside { position:sticky; top:22px; display:grid; gap:14px; }
+  .cta-card { padding:17px; }
+  .cta-card h4 { font-family: var(--font-display); font-size:15.5px; margin-bottom:4px; }
+  .cta-card p { font-size:12.5px; color: var(--muted); margin:0 0 13px; line-height:1.5; }
+  .cta-card .btn { width:100%; }
+  .note { font-size:11px; color: var(--faint); margin-top:10px; line-height:1.45; }
+
+  .access-state { display:none; }
+  .perm-mini { border:1px dashed var(--question-edge); background: var(--question-wash); border-radius: var(--r-md); padding:12px 14px; }
+  .perm-mini .row { gap:8px; align-items:flex-start; }
+  .perm-mini .ttl { font-size:12.5px; font-weight:700; color: var(--question-ink); }
+  .perm-mini .sub { font-size:11.5px; color: var(--question-ink); opacity:.85; margin-top:4px; }
+  .perm-mini svg { width:15px; height:15px; stroke: var(--question-ink); fill:none; stroke-width:2; margin-top:1px; }
+
+  /* the Request-back card — indigo, the reverse current */
+  .req-card { padding:17px; border-color: var(--request-edge); box-shadow: 0 0 0 3px var(--request-wash), var(--shadow-1); }
+  .req-card .req-head { display:flex; align-items:center; gap:9px; }
+  .req-card .req-head .ntype { margin-left:auto; }
+  .req-card h4 { font-family: var(--font-display); font-size:15.5px; margin:11px 0 4px; }
+  .req-card p { font-size:12.5px; color: var(--muted); margin:0 0 12px; line-height:1.5; }
+  /* the request_for edge to a new Study, drawn as a tiny typed connector */
+  .req-edge { display:flex; align-items:stretch; gap:10px; margin:0 0 13px; }
+  .req-edge .rail { display:flex; flex-direction:column; align-items:center; flex:none; padding-top:6px; }
+  .req-edge .rail .dot { width:9px; height:9px; border-radius:50%; background: var(--request-ink); }
+  .req-edge .rail .ln { width:2px; flex:1; background: var(--request-edge); min-height:18px; }
+  .req-edge .rail .dot.target { background: var(--surface); border:2px solid var(--study-ink); }
+  .req-edge .ends { display:grid; gap:9px; flex:1; min-width:0; }
+  .req-edge .end { font-size:11.5px; }
+  .req-edge .end .lab { font-family: var(--font-mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color: var(--faint); display:block; margin-bottom:3px; }
+  .req-edge .end .val { color: var(--ink); font-weight:600; line-height:1.35; }
+  .req-edge .reltag { font-family: var(--font-mono); font-size:9.5px; color: var(--request-ink); background: var(--request-wash); border:1px solid var(--request-edge); border-radius: var(--r-pill); padding:1px 7px; align-self:center; margin:-3px 0; }
+  /* the request body field */
+  .req-body { font-size:12px; color: var(--ink-2); background: var(--surface-2); border:1px solid var(--line-2); border-radius: var(--r-sm); padding:10px 11px; line-height:1.5; }
+  .req-body .ph { color: var(--faint); }
+  .req-card .btn { width:100%; margin-top:13px; }
+
+  .req-sent { margin-top:13px; }
+
+  /* a tiny "two currents" legend on the sidebar */
+  .currents { padding:13px 15px; }
+  .currents h4 { font-family: var(--font-mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color: var(--faint); font-weight:700; margin-bottom:11px; }
+  .cur { display:flex; align-items:center; gap:9px; font-size:12px; color: var(--ink-2); }
+  .cur + .cur { margin-top:9px; }
+  .cur svg { width:16px; height:16px; stroke-width:2; fill:none; flex:none; }
+  .cur.out svg { stroke: var(--evidence-ink); }
+  .cur.back svg { stroke: var(--request-ink); }
+  .cur b { color: var(--ink); }
+
+  /* ---- Build line ---------------------------------------------------------- */
+  .buildband { margin:0 26px; border-top:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; padding:16px 0 22px; }
+  .buildline { display:flex; align-items:center; gap:9px; font-size:12px; color: var(--faint); font-family: var(--font-mono); }
+  .buildline svg { width:14px; height:14px; stroke: var(--faint); fill:none; stroke-width:1.8; }
+  .buildline b { color: var(--brand); font-weight:600; }
+
+  .dgfoot { max-width:1080px; margin:26px auto 0; text-align:center; font-family: var(--font-mono); font-size:11.5px; color: var(--faint); letter-spacing:.04em; }
+  .dgfoot .dots { display:inline-block; border-top:2px dotted var(--line); width:46px; vertical-align:middle; margin:0 12px; }
+</style>
+</head>
+<body>
+
+<!-- ============================ FRAME CAPTION ============================= -->
+<div class="frame-caption reveal d1">
+  <span class="eyebrow">Mockup 08 · traverse &amp; request · push results to a shared web interface</span>
+  <h2>A grad student traverses to the threshold, then sends a Request back</h2>
+  <p>From Sean's <strong>Evidence</strong>, the reproducer follows the lineage <strong>down to the segmentation threshold</strong>, resolves the <code>git</code>/<code>data</code> pointers across system boundaries and watches the walkthrough, hits the <strong>gated</strong> raw stacks gracefully — then opens the reverse current and <strong>sends a Request</strong> for a follow-up (R2, R4, R5, R7, plus the first-class Request: results out, requests back).</p>
+</div>
+
+<!-- ============================ THE SCREEN =============================== -->
+<div class="screen reveal d2">
+
+  <!-- public web chrome — the node permalink, consortium lock -->
+  <div class="winbar">
+    <div class="lights"><i></i><i></i><i></i></div>
+    <span class="addr">🔒 mira.science/n/sg-recruit-order-a3f9c21</span>
+    <span class="grow"></span>
+    <span class="kbd">⌘ L</span>
+  </div>
+
+  <div class="web">
+
+    <!-- ---- Public masthead ------------------------------------------------ -->
+    <header class="masthead">
+      <div class="wordmark">
+        <svg class="glyph" viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="9" cy="9" r="3.2" style="fill:var(--evidence-ink)"/>
+          <circle cx="23" cy="8" r="3.2" style="fill:var(--study-ink)"/>
+          <circle cx="22" cy="23" r="3.2" style="fill:var(--protocol-ink)"/>
+          <circle cx="8" cy="22" r="3.2" style="fill:var(--request-ink)"/>
+          <g style="stroke:var(--line)" stroke-width="1.6">
+            <line x1="9" y1="9" x2="23" y2="8"/><line x1="23" y1="8" x2="22" y2="23"/>
+            <line x1="22" y1="23" x2="8" y2="22"/><line x1="8" y1="22" x2="9" y2="9"/>
+          </g>
+        </svg>
+        <div>
+          <div class="name"><b>MIRA</b> · shared dashboard</div>
+          <div class="proj">Stress-granule assembly order · Vogel × Kate</div>
+        </div>
+      </div>
+      <div class="viewer">
+        <span class="share-level consortium">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          Consortium · 6 labs
+        </span>
+        <span class="avatar grad" title="viewing as a grad student in Kate's lab (reproducer)">M</span>
+        <span>viewing as <b style="color:var(--ink)">Kate's student</b></span>
+      </div>
+    </header>
+
+    <!-- ---- Document + sidebar -------------------------------------------- -->
+    <div class="doc-grid">
+
+      <!-- =========================== DOCUMENT ========================== -->
+      <main class="doc">
+
+        <!-- status band: shared, read-only, raw gated (R5) -->
+        <div class="row wrap reveal d3" style="margin-bottom:4px;">
+          <span class="share-level consortium" style="background:var(--request-wash);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+            Shared with Kate's lab · read-only
+          </span>
+          <span class="lock">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+            raw stacks: request access
+          </span>
+        </div>
+
+        <!-- Evidence summary up front (R4) -->
+        <div class="lede reveal d3">
+          <span class="eyebrow" style="display:block;">Evidence · supports a Claim · grounded in a Study</span>
+          <h1>G3BP1 is recruited to forming stress granules before PABP1</h1>
+          <p class="summary">
+            In stressed HeLa cells, <span class="accent">G3BP1 intensity rises earlier than PABP1</span> as
+            granules assemble — a fixed recruitment order, reversing as granules dissolve. Tracked per granule by
+            live two-channel fluorescence microscopy.
+          </p>
+          <div class="byline">
+            <span class="avatar sean">S</span>
+            <span><b style="color:var(--ink)">Sean</b> · Vogel Lab</span>
+            <span class="dotsep">·</span>
+            <span>shared with Kate's lab</span>
+            <span class="dotsep">·</span>
+            <span>node <code>sg-recruit-order-a3f9c21</code></span>
+          </div>
+        </div>
+
+        <!-- Figure: illustrative two intensity-vs-time curves + context table -->
+        <figure class="figure reveal d4">
+          <div class="plotwrap">
+            <svg class="plot" viewBox="0 0 460 260" role="img" aria-label="Illustrative: G3BP1 fluorescence intensity (blue) rises before PABP1 (coral) over time during stress-granule assembly.">
+              <rect x="0" y="0" width="460" height="260" style="fill:var(--surface)"/>
+              <!-- axes -->
+              <g style="stroke:var(--line)" stroke-width="1">
+                <line x1="56" y1="26" x2="56" y2="212"/>
+                <line x1="56" y1="212" x2="430" y2="212"/>
+              </g>
+              <!-- y label -->
+              <g font-size="9" style="font-family:var(--font-mono);fill:var(--faint)">
+                <text x="48" y="46"  text-anchor="end">max</text>
+                <text x="48" y="212" text-anchor="end">0</text>
+              </g>
+              <text x="18" y="119" text-anchor="middle" font-size="9.5" transform="rotate(-90 18 119)" style="font-family:var(--font-mono);fill:var(--muted)">per-granule intensity (a.u.)</text>
+              <!-- x ticks -->
+              <g font-size="9" style="font-family:var(--font-mono);fill:var(--faint)">
+                <text x="56"  y="226" text-anchor="middle">stress</text>
+                <text x="430" y="226" text-anchor="end">time →</text>
+              </g>
+              <text x="243" y="240" text-anchor="middle" font-size="9.5" style="font-family:var(--font-mono);fill:var(--muted)">time since stress induction (s)</text>
+
+              <!-- PABP1 (coral) lags -->
+              <path class="pdraw" d="M56,200 C150,196 196,184 240,150 C286,114 326,70 430,52"
+                    style="fill:none;stroke:var(--evidence-ink)" stroke-width="2.6" stroke-linecap="round"/>
+              <!-- G3BP1 (blue) leads -->
+              <path class="pdraw" d="M56,198 C120,192 152,150 196,98 C236,54 272,42 430,38"
+                    style="fill:none;stroke:var(--study-ink)" stroke-width="2.6" stroke-linecap="round"/>
+
+              <!-- lead-gap markers between the two half-max crossings -->
+              <line x1="196" y1="30" x2="196" y2="212" style="stroke:var(--question-edge)" stroke-width="1" stroke-dasharray="2 4"/>
+              <line x1="244" y1="30" x2="244" y2="212" style="stroke:var(--question-edge)" stroke-width="1" stroke-dasharray="2 4"/>
+              <text x="220" y="22" text-anchor="middle" font-size="9.5" font-weight="700" style="font-family:var(--font-body);fill:var(--question-ink)">G3BP1 leads ≈ 40 s</text>
+
+              <!-- inline curve labels (redundant with legend, colorblind aid) -->
+              <text x="300" y="60" font-size="9" font-weight="700" style="font-family:var(--font-body);fill:var(--study-ink)">G3BP1</text>
+              <text x="320" y="92" font-size="9" font-weight="700" style="font-family:var(--font-body);fill:var(--evidence-ink)">PABP1</text>
+            </svg>
+
+            <!-- "what's in the dish" context table -->
+            <div class="ctx">
+              <h4>What's in the dish</h4>
+              <table class="ctx-tbl">
+                <tr><td class="k">Cell line</td><td class="v">HeLa</td></tr>
+                <tr><td class="k">Stress</td><td class="v">arsenite</td></tr>
+                <tr><td class="k">Channels</td><td class="v">G3BP1 · PABP1</td></tr>
+                <tr><td class="k">Modality</td><td class="v">live 2-ch fluor.</td></tr>
+                <tr><td class="k">Readout</td><td class="v">per-granule intensity</td></tr>
+                <tr><td class="k">Tracking</td><td class="v">per granule, over time</td></tr>
+              </table>
+            </div>
+          </div>
+          <figcaption class="figcaption">
+            <div class="legend">
+              <span><i style="background:var(--study-ink)"></i> G3BP1 (leads)</span>
+              <span><i style="background:var(--evidence-ink)"></i> PABP1 (lags)</span>
+            </div>
+            <span class="illus">illustrative · unpublished — workshop prototype</span>
+          </figcaption>
+        </figure>
+
+        <!-- ---- The grad-student framing prompt ----------------------------- -->
+        <div class="ask reveal d5">
+          <div class="who">
+            <span class="avatar grad">M</span>
+            <small>REPRODUCER</small>
+          </div>
+          <div>
+            <div class="q">“What <span class="em">segmentation threshold</span> did Sean use?”</div>
+            <div class="sub">Because <i>the thresholding can change all the measurements</i> — so before building on this, follow the lineage down to the method that produced the curve.</div>
+            <div class="down">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+              traverse: Evidence ← grounds ← Study → follows → Protocol
+            </div>
+          </div>
+        </div>
+
+        <!-- =================== TRAVERSABLE SUBGRAPH ==================== -->
+        <div class="sec-head reveal d5">
+          <h3>Follow the lineage to the method</h3>
+          <span class="rule"></span>
+        </div>
+        <p class="sec-sub reveal d5">
+          Each card is one discourse node. Typed edges connect the result to the experiment and the protocol —
+          <b>pointers only; no raw payloads travel over the web,</b> and they resolve across system boundaries
+          (vault → GitHub → the lab array). The rail draws down to the payoff: the <b>segmentation threshold</b>.
+        </p>
+
+        <div class="chain">
+
+          <!-- Evidence (this node) -->
+          <article class="node evidence reveal d6" style="border-left-width:5px;">
+            <div class="spread">
+              <span class="ntype evidence">Evidence · this node</span>
+              <span class="tag">you are here</span>
+            </div>
+            <div class="node-title">G3BP1 is recruited to forming granules before PABP1</div>
+            <div class="node-body">In stressed HeLa cells, G3BP1 intensity rises ~40 s before PABP1 at granule onset; the order reverses as granules dissolve — the curve above.</div>
+            <div class="ptr-row">
+              <span class="pointer"><span class="kind data">data</span><span class="path">granule_intensity_by_time.csv (this figure)</span></span>
+            </div>
+            <!-- R5 progressive disclosure: a withheld working note, signalled not leaked -->
+            <div class="withheld" title="An adjacent node exists in Sean's vault but was not shared">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+              1 of Sean's working notes withheld — present in his vault, not part of this share.
+            </div>
+          </article>
+
+          <div class="edge-rail d-a" aria-label="Study grounds Evidence">
+            <svg class="edge-svg" viewBox="0 0 24 40" preserveAspectRatio="none" aria-hidden="true"><path class="draw" style="--len:46" d="M12 0 L12 40"/></svg>
+            <span class="edge grounds">grounds ↑</span>
+            <span class="dir">Study → Evidence</span>
+          </div>
+
+          <!-- Study -->
+          <article class="node study reveal d6">
+            <span class="ntype study">Study · "the experiment"</span>
+            <div class="node-title">Live two-channel fluorescence microscopy of stressed HeLa cells</div>
+            <div class="node-body">Live two-channel fluorescence microscopy of stressed HeLa cells, tracking per-granule G3BP1/PABP1 intensity over time, at high spatial resolution.</div>
+            <div class="ptr-row">
+              <span class="pointer gated"><span class="kind local">raw</span><span class="path">NDTiff ≈ 80 GB · 25 TB lab array</span><span class="req">request access</span></span>
+            </div>
+
+            <!-- embedded walkthrough video (re-used idiom) -->
+            <div class="video">
+              <svg class="poster" viewBox="0 0 460 178" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <defs><radialGradient id="vp" cx="38%" cy="40%" r="80%"><stop offset="0%" stop-color="#27314f"/><stop offset="100%" stop-color="#0c0e16"/></radialGradient></defs>
+                <rect width="460" height="178" fill="url(#vp)"/>
+                <!-- faux granule field: glowing puncta, two channels -->
+                <g>
+                  <circle cx="120" cy="66" r="10" fill="#3877cf" opacity=".85"/><circle cx="120" cy="66" r="19" fill="#3877cf" opacity=".16"/>
+                  <circle cx="128" cy="70" r="6" fill="#d9573f" opacity=".7"/>
+                  <circle cx="240" cy="60" r="8" fill="#3877cf" opacity=".75"/><circle cx="246" cy="64" r="5" fill="#d9573f" opacity=".6"/>
+                  <circle cx="300" cy="116" r="9" fill="#3877cf" opacity=".7"/><circle cx="306" cy="120" r="5" fill="#d9573f" opacity=".55"/>
+                  <circle cx="180" cy="120" r="7" fill="#3877cf" opacity=".6"/>
+                  <circle cx="340" cy="76" r="6" fill="#d9573f" opacity=".5"/>
+                </g>
+                <text x="22" y="32" font-size="10" fill="#9fb0d6" style="font-family:var(--font-mono)">HeLa · arsenite · G3BP1 / PABP1</text>
+              </svg>
+              <button class="play" type="button" aria-label="Play 2-minute walkthrough" onclick="this.closest('.video').classList.add('played')">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              </button>
+              <div class="meta">
+                <span class="lbl"><span class="vidtype">video</span> 2-min walkthrough</span>
+                <span>2:04 · Loom</span>
+              </div>
+              <div class="caption">
+                <i>2-min walkthrough — no Zoom call, re-watchable in 3 years.</i>
+              </div>
+            </div>
+          </article>
+
+          <div class="edge-rail d-b" aria-label="Protocol that the Study follows">
+            <svg class="edge-svg" viewBox="0 0 24 40" preserveAspectRatio="none" aria-hidden="true"><path class="draw" style="--len:46" d="M12 0 L12 40"/></svg>
+            <span class="edge follows">follows ↓</span>
+            <span class="dir">Study → Protocol · the payoff</span>
+          </div>
+
+          <!-- Protocol — THE PAYOFF: the segmentation threshold -->
+          <article class="node protocol payoff reveal d7">
+            <div class="spread">
+              <span class="ntype protocol">Protocol</span>
+              <span class="tag">the method that matters</span>
+            </div>
+            <div class="node-title">HeLa culture → stress → live imaging → segmentation (threshold) → per-granule quantification</div>
+            <div class="node-body">The full pipeline behind the curve. The load-bearing step is the segmentation — how a granule is defined sets every intensity that follows.</div>
+
+            <!-- the segmentation-threshold detail -->
+            <div class="threshold-detail">
+              <div class="th-h">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 18 8 6l4 9 3-5 5 8"/></svg>
+                Segmentation (threshold)
+                <span class="tag">what the grad student came for</span>
+              </div>
+              <table class="th-tbl">
+                <tr><td class="k">Method</td><td class="v">standard stress-granule</td></tr>
+                <tr><td class="k">Intensity threshold</td><td class="v">fixed, per channel</td></tr>
+                <tr><td class="k">Min granule area</td><td class="v">applied before tracking</td></tr>
+                <tr><td class="k">Tracking</td><td class="v">per-granule, over time</td></tr>
+              </table>
+            </div>
+
+            <div class="ptr-row">
+              <span class="pointer"><span class="kind git">git</span><span class="path">vogel-lab/sg-imaging @ a3f9c21 · /segmentation/</span></span>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- ---- why provenance matters ------------------------------------- -->
+        <div class="why reveal d7">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+          <div class="txt">
+            <b>Why this lineage matters.</b> A bug in segmentation, found 3 months later? Everything downstream —
+            this result, anything built on it — can be <b>invalidated and recomputed</b>, because the method is
+            an addressable node, not a buried detail.
+          </div>
+        </div>
+
+      </main>
+
+      <!-- =========================== SIDEBAR =========================== -->
+      <aside class="aside reveal d4">
+
+        <!-- request access to the gated raw stacks (R5) -->
+        <div class="panel cta-card">
+          <h4>Re-running it?</h4>
+          <p>The 80 GB raw stacks stay on the Vogel Lab's 25 TB array — nothing un-shared leaks. Send a one-click request; Sean approves per-resource.</p>
+          <button class="btn pulse" type="button"
+            onclick="document.getElementById('accDefault').style.display='none';document.getElementById('accSent').style.display='block';this.style.display='none';">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            Request access to the raw stacks
+          </button>
+          <div id="accDefault">
+            <div class="perm-mini" style="margin-top:13px;">
+              <div class="row">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                <div>
+                  <div class="ttl">Shared page, gated stacks</div>
+                  <div class="sub">The curated CSV is open; the raw bytes are not.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="accSent" class="access-state">
+            <div class="toast" style="margin-top:13px;">
+              <span class="dot"></span>
+              <div style="font-size:12.5px;">
+                <strong>Access request sent to Sean.</strong>
+                <div class="muted" style="margin-top:3px;">He approves the raw stacks per-resource.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- THE REQUEST-BACK — the reverse current, the thing this tier has -->
+        <div class="panel req-card">
+          <div class="req-head">
+            <span class="avatar grad" style="width:24px;height:24px;font-size:10px;">M</span>
+            <span style="font-size:12px;color:var(--muted);">Kate's lab → Sean</span>
+            <span class="ntype request">Request</span>
+          </div>
+          <h4>Send a Request back</h4>
+          <p>The reverse current the public tier lacks — ask for a follow-up experiment or analysis, attached to Sean's result.</p>
+
+          <!-- the request_for / request_target edge to a new Study -->
+          <div class="req-edge">
+            <div class="rail">
+              <span class="dot"></span>
+              <span class="ln"></span>
+              <span class="dot target"></span>
+            </div>
+            <div class="ends">
+              <div class="end">
+                <span class="lab">Request · from Kate's lab</span>
+                <span class="val">Follow-up experiment</span>
+              </div>
+              <span class="reltag">request_for · request_target ↓</span>
+              <div class="end">
+                <span class="lab">new Study (proposed)</span>
+                <span class="val">Repeat at a lower stress dose</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="req-body">
+            Repeat the assembly-order experiment at a <b>lower arsenite dose</b> — does G3BP1 still lead PABP1
+            when granules form more slowly? <span class="ph">— M, Kate's lab</span>
+          </div>
+
+          <button class="btn primary" type="button" id="reqSendBtn"
+            onclick="document.getElementById('reqSendBtn').style.display='none';document.getElementById('reqSent').style.display='block';">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            Send Request to Sean
+          </button>
+
+          <div id="reqSent" class="req-sent access-state">
+            <div class="toast" style="border-left-color:var(--request-ink);">
+              <span class="dot" style="background:var(--request-ink);"></span>
+              <div style="font-size:12.5px;">
+                <strong>Request sent — Sean will be notified.</strong>
+                <div class="muted" style="margin-top:3px;">He can claim it; the dashboard reflects it.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- two-currents legend: results out, requests back -->
+        <div class="panel currents">
+          <h4>Two currents</h4>
+          <div class="cur out">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14M12 6l6 6-6 6"/></svg>
+            <span><b>Results out</b> — Sean → the dashboard</span>
+          </div>
+          <div class="cur back">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H6M12 6l-6 6 6 6"/></svg>
+            <span><b>Requests back</b> — Kate's lab → Sean</span>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+
+    <!-- ---- Build line: read-only, rendered from JSON-LD over KOI ---------- -->
+    <div class="buildband reveal d8">
+      <div class="buildline">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m0 8v3a2 2 0 0 0 2 2h3m8 0h3a2 2 0 0 0 2-2v-3m0-8V5a2 2 0 0 0-2-2h-3"/></svg>
+        Read-only · pointers resolve across system boundaries · rendered from MIRA JSON-LD over <b>KOI</b>
+      </div>
+      <span class="lock">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        vault → GitHub → 25 TB array
+      </span>
+    </div>
+
+  </div><!-- /.web -->
+</div><!-- /.screen -->
+
+<footer class="dgfoot reveal d8">
+  <span class="dots"></span>MIRA × Discourse Graphs · push results to a shared web interface · draft v0.1<span class="dots"></span>
+</footer>
+
+</body>
+</html>

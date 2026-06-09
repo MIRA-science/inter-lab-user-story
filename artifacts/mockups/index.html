@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MIRA × Discourse Graphs — Push results to a shared web interface · mockups</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<style>
+  .page { max-width: 1080px; margin: 0 auto; padding: 56px 24px 80px; }
+
+  .hero { margin-bottom: 40px; }
+  .wordmark { display:flex; align-items:center; gap:12px; margin-bottom: 26px; }
+  .glyph { width:34px; height:34px; }
+  .wordmark .name { font-family: var(--font-display); font-weight:600; font-size:18px; letter-spacing:-.01em; }
+  .wordmark .name b { color: var(--brand); font-weight:600; }
+  .wordmark .by { font-family: var(--font-mono); font-size:11px; color: var(--faint); letter-spacing:.08em; }
+  .tier { font-family: var(--font-mono); font-size:11px; color: var(--brand); background: var(--brand-tint); border:1px solid #aeb4eb; border-radius: var(--r-pill); padding:3px 10px; letter-spacing:.04em; }
+  .hero h1 { max-width: 20ch; margin-bottom: 18px; }
+  .hero .lead { font-size: 17px; color: var(--ink-2); max-width: 64ch; line-height:1.6; }
+  .hero .lead b { color: var(--ink); font-weight:600; }
+
+  .legend { display:flex; flex-wrap:wrap; gap:8px; margin: 28px 0 8px; }
+  .flow-line { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top:10px; line-height:1.9; }
+  .flow-line span { color: var(--ink-2); }
+
+  .sec-head { display:flex; align-items:baseline; gap:12px; margin: 46px 0 8px; }
+  .sec-head h2 { font-size: 21px; }
+  .sec-head .count { font-family: var(--font-mono); font-size:12px; color: var(--faint); }
+  .sec-head .rule { flex:1; height:1px; background: var(--line); }
+  .sec-note { font-size: 13.5px; color: var(--muted); margin: 0 0 18px; max-width: 70ch; }
+  .star { font-family: var(--font-mono); font-size:11px; color: var(--evidence-ink); background: var(--evidence-wash); border:1px solid var(--evidence-edge); border-radius: var(--r-pill); padding:3px 10px; letter-spacing:.04em; }
+  .extreme { font-family: var(--font-mono); font-size:11px; color: var(--muted); background: var(--surface-2); border:1px solid var(--line-2); border-radius: var(--r-pill); padding:3px 10px; letter-spacing:.04em; }
+
+  .grid { display:grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  @media (max-width: 760px){ .grid { grid-template-columns: 1fr; } }
+  .card {
+    display:flex; flex-direction:column; gap:12px; text-decoration:none; color:inherit;
+    background: var(--surface); border:1px solid var(--line); border-radius: var(--r-lg);
+    padding: 20px; box-shadow: var(--shadow-1);
+    transition: transform .25s var(--ease), box-shadow .25s var(--ease), border-color .25s var(--ease);
+    position:relative; overflow:hidden;
+  }
+  .card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background: var(--accent, var(--faint)); }
+  .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-2); border-color: var(--line-2); text-decoration:none; }
+  .card .num { font-family: var(--font-mono); font-size: 12px; color: var(--faint); font-weight:600; letter-spacing:.1em; }
+  .card h3 { font-size: 18px; }
+  .card p { font-size: 13.5px; color: var(--muted); margin:0; }
+  .card .meta { display:flex; gap:8px; flex-wrap:wrap; margin-top: 2px; }
+  .card .go { margin-top:auto; font-family: var(--font-mono); font-size:12px; color: var(--brand); font-weight:600; display:flex; align-items:center; gap:6px; }
+  .card .go .arr { transition: transform .2s var(--ease); }
+  .card:hover .go .arr { transform: translateX(4px); }
+  .card.feature { grid-column: 1 / -1; background: linear-gradient(180deg, var(--brand-tint), var(--surface) 60%); }
+
+  /* dashboard (Sean → Kate) accents */
+  .card.d6 { --accent: var(--study-ink); }
+  .card.d7 { --accent: var(--brand); }
+  .card.d8 { --accent: var(--evidence-ink); }
+  .card.d9 { --accent: var(--request-ink); }
+  /* QBI → world accents */
+  .card.c1 { --accent: var(--evidence-ink); }
+  .card.c2 { --accent: var(--evidence-ink); }
+  .card.c3 { --accent: var(--brand); }
+  .card.c4 { --accent: var(--claim-ink); }
+  .card.c5 { --accent: var(--study-ink); }
+  .card.doc { --accent: var(--protocol-ink); }
+
+  .src { display:flex; flex-wrap:wrap; gap:10px; }
+  .src a { font-family: var(--font-mono); font-size:12px; color: var(--ink-2); background: var(--surface); border:1px solid var(--line); border-radius: var(--r-pill); padding:7px 13px; }
+  .src a:hover { border-color: var(--ink-2); text-decoration:none; }
+
+  .foot { margin-top:56px; padding-top:20px; border-top:1px solid var(--line); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+  .foot small { color: var(--faint); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="wordmark reveal d1">
+      <svg class="glyph" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <line x1="11" y1="11" x2="29" y2="11" stroke="#e7cd8f" stroke-width="2"/>
+        <line x1="11" y1="11" x2="11" y2="29" stroke="#a6c6ef" stroke-width="2"/>
+        <line x1="29" y1="11" x2="29" y2="29" stroke="#f0b1a3" stroke-width="2"/>
+        <line x1="11" y1="29" x2="29" y2="29" stroke="#c9b3ea" stroke-width="2"/>
+        <circle cx="11" cy="11" r="5" fill="#c2861a"/>
+        <circle cx="29" cy="11" r="5" fill="#2c9a61"/>
+        <circle cx="11" cy="29" r="5" fill="#3877cf"/>
+        <circle cx="29" cy="29" r="5" fill="#d9573f"/>
+      </svg>
+      <div>
+        <div class="name"><b>MIRA</b> × Discourse Graphs</div>
+        <div class="by">PUSH RESULTS TO A SHARED WEB INTERFACE · DRAFT v0.1</div>
+      </div>
+      <span class="grow"></span>
+      <span class="tier">shared dashboard → public</span>
+    </div>
+
+    <h1 class="reveal d2">A result anyone can read in a browser — from a lab dashboard to the open web.</h1>
+    <p class="lead reveal d3">
+      <b>Sean</b>, in the Vogel Lab, pushes a stress-granule result to a <b>read-only shared dashboard</b> his
+      collaborator <b>Kate</b>'s lab reads with no Discourse Graph app — glance-and-trust for the PI,
+      traverse-to-the-method for her students, and a <b>Request</b> back for more. Take the same machinery
+      fully public and it's <b>Brian</b>, at the Quantum Biology Institute, publishing to the whole world.
+      Two worked examples, one spine: <b>push a result to a shared web interface</b> — trustworthy and
+      addressable at a URL, readable without any DG tooling. The 🥉 public end is the
+      <a href="../../lab-to-lab/">inter-lab story's</a> open-world sibling.
+    </p>
+
+    <div class="legend reveal d4">
+      <span class="ntype question">Question</span>
+      <span class="ntype claim">Claim</span>
+      <span class="ntype evidence">Evidence</span>
+      <span class="ntype study">Study</span>
+      <span class="ntype protocol">Protocol</span>
+      <span class="ntype request">Request</span>
+    </div>
+    <div class="flow-line reveal d4">
+      <span>Evidence</span> —grounds← <span>Study</span> —follows→ <span>Protocol</span>
+      &nbsp;·&nbsp; <span>Evidence</span> —supports→ <span>Claim</span> —addresses→ <span>Question</span>
+      &nbsp;&nbsp;·&nbsp;&nbsp; two currents: <span>results out</span> · <span>Request back</span> (Kate → Sean)
+    </div>
+  </header>
+
+  <!-- ===================== SECTION 1 — CENTRAL: the dashboard ===================== -->
+  <div class="sec-head reveal d5">
+    <h2>The Sean → Kate dashboard</h2><span class="star">★ central use case</span><span class="count">4 SCREENS · 06–09</span><span class="rule"></span>
+  </div>
+  <p class="sec-note reveal d5">
+    A producer pushes a <b>selected subgraph</b> to a <b>read-only shared web interface</b> — public, or
+    password-protected for a consortium — that a known collaborator's lab navigates in a browser, with a
+    <b>Request</b>-back current. Grounded in the Vogel × Kate stress-granule sessions and the
+    <a href="../../low-context-user-story.png">user-story canvas</a>.
+  </p>
+  <div class="grid">
+    <a class="card d6 reveal d5" href="06-share-to-dashboard.html">
+      <span class="num">06</span>
+      <h3>Share a selected subgraph</h3>
+      <div class="meta"><span class="ntype evidence">Evidence</span><span class="tag">producer · Obsidian</span></div>
+      <p>Sean picks the Evidence bundle, offers connected nodes, sets each node public / consortium / private (raw stacks gated, working notes withheld), and pushes a <em>subset of his vault</em> to the dashboard via KOI.</p>
+      <span class="go">Open screen <span class="arr">→</span></span>
+    </a>
+    <a class="card d7 reveal d6" href="07-shared-dashboard.html">
+      <span class="num">07</span>
+      <h3>The shared dashboard</h3>
+      <div class="meta"><span class="ntype study">Dashboard</span><span class="tag">the headline screen</span></div>
+      <p>A read-only web view at a URL — <b>Graph · Kanban · Table</b>, audience presets, node cards with provenance and a public/consortium badge — where Kate glances at the result and <em>trusts</em> it.</p>
+      <span class="go">Open screen <span class="arr">→</span></span>
+    </a>
+    <a class="card d8 reveal d6" href="08-traverse-and-request.html">
+      <span class="num">08</span>
+      <h3>Traverse &amp; request back</h3>
+      <div class="meta"><span class="ntype protocol">Protocol</span><span class="ntype request">Request</span></div>
+      <p>A grad student follows the lineage to the <b>segmentation threshold</b>, opens the git / CSV pointers and the video walkthrough, hits the gated 80 GB raw stacks, and <b>sends a Request</b> for a follow-up.</p>
+      <span class="go">Open screen <span class="arr">→</span></span>
+    </a>
+    <a class="card d9 reveal d7" href="09-consortium-view.html">
+      <span class="num">09</span>
+      <h3>The consortium view &amp; recruiting</h3>
+      <div class="meta"><span class="ntype request">Request</span><span class="tag">many labs · public/gated</span></div>
+      <p>Kate runs one project umbrella across many labs — <b>public vs. password-protected</b>, preset views for funders and recruiting, and orphaned one-off results made discoverable instead of lost on a drive.</p>
+      <span class="go">Open screen <span class="arr">→</span></span>
+    </a>
+  </div>
+
+  <!-- ===================== SECTION 2 — the public extreme: QBI ===================== -->
+  <div class="sec-head reveal d7">
+    <h2>QBI → the whole world</h2><span class="extreme">the public extreme</span><span class="count">5 SCREENS · 01–05</span><span class="rule"></span>
+  </div>
+  <p class="sec-note reveal d7">
+    Take the same machinery fully public: no relationship, no shared tooling. Brian publishes a MagLOV2
+    result so <em>anyone</em> can read it cold at a URL, follow the pointers, request what's gated, and
+    <b>cite the exact version</b>. One direction: producer → the world.
+  </p>
+  <div class="grid">
+    <a class="card c1 reveal d7" href="01-publish.html">
+      <span class="num">01</span>
+      <h3>Publish to the public</h3>
+      <div class="meta"><span class="ntype evidence">Evidence</span><span class="tag">producer · Obsidian</span></div>
+      <p>Brian selects the Evidence bundle and picks destinations (web DB · Jupyter Book · desci/nanopub) — setting each node public or request-access-gated, and keeping a working note private.</p>
+      <span class="go">Open screen <span class="arr">→</span></span>
+    </a>
+    <a class="card c2 reveal d8" href="02-evidence-node.html">
+      <span class="num">02</span>
+      <h3>The Evidence node, read cold</h3>
+      <div class="meta"><span class="ntype evidence">Evidence</span><span class="tag">summary ↔ traversal</span></div>
+      <p>Summary figure up front for the glancer; flip to full lineage — Study, Protocol, pointers — for the reproducer. Published, addressable, citable. One node, two depths.</p>
+      <span class="go">Open screen <span class="arr">→</span></span>
+    </a>
+    <a class="card c3 reveal d8" href="03-public-web-view.html">
+      <span class="num">03</span>
+      <h3>Public web view · no DG app</h3>
+      <div class="meta"><span class="ntype evidence">Web</span><span class="tag">the reference screen</span></div>
+      <p>The result as a public web page at a URL — traversable lineage, pointer chips, a provenance byline to trust a stranger's figure, a frozen citation, and a path to request the gated raw data.</p>
+      <span class="go">Open screen <span class="arr">→</span></span>
+    </a>
+    <a class="card c4 reveal d8" href="04-micropublication.html">
+      <span class="num">04</span>
+      <h3>Micropublication · specs instead of papers</h3>
+      <div class="meta"><span class="ntype claim">Claim</span><span class="tag">compile the bundles</span></div>
+      <p>Several independently-addressable Evidence bundles compile into one Jupyter Book micropublication; a model emerges above them; the narrative is AI-drafted, human-edited; the bundles stay live.</p>
+      <span class="go">Open screen <span class="arr">→</span></span>
+    </a>
+    <a class="card c5 reveal d8" href="05-public-database.html">
+      <span class="num">05</span>
+      <h3>Public database &amp; cite</h3>
+      <div class="meta"><span class="ntype study">Dashboard</span><span class="tag">cited by N</span></div>
+      <p>The published graph as a public dashboard — every node a URL with provenance and a reuse count — plus citing a specific result with a frozen version pin, and seeing who's using your work.</p>
+      <span class="go">Open screen <span class="arr">→</span></span>
+    </a>
+    <a class="card doc reveal d8" href="../ux-user-story.md">
+      <span class="num">↳ READ</span>
+      <h3>The written stories &amp; the brief</h3>
+      <div class="meta"><span class="tag">ux-user-story-dashboard.md</span><span class="tag">AGENTS.md</span></div>
+      <p>The full narratives behind the screens — the central <a href="../ux-user-story-dashboard.md">Sean → Kate dashboard</a> story and the <a href="../ux-user-story.md">QBI public</a> story — and the normative spec other labs build from.</p>
+      <span class="go">Open documents <span class="arr">→</span></span>
+    </a>
+  </div>
+
+  <!-- SOURCE MATERIAL -->
+  <div class="sec-head reveal d8">
+    <h2>Source material</h2><span class="count">THE BRIEF</span><span class="rule"></span>
+  </div>
+  <div class="src reveal d8">
+    <a href="../../AGENTS.md">AGENTS.md — the spec</a>
+    <a href="../../README.md">README — the story</a>
+    <a href="../ux-user-story-dashboard.md">ux-user-story-dashboard.md ★</a>
+    <a href="../_grounding-dashboard.md">_grounding-dashboard.md ★</a>
+    <a href="../ux-user-story.md">ux-user-story.md (QBI)</a>
+    <a href="../_grounding.md">_grounding.md (QBI)</a>
+    <a href="../_design-brief.md">_design-brief.md</a>
+    <a href="../../low-context-user-story.png">user-story canvas</a>
+    <a href="https://github.com/MIRA-science/schema">MIRA-science/schema</a>
+    <a href="../../lab-to-lab/">inter-lab story (sibling)</a>
+  </div>
+
+  <footer class="foot">
+    <small>MIRA × Discourse Graphs · push results to a shared web interface · draft v0.1</small>
+    <small>★ central: the Sean → Kate dashboard · also: QBI → the public</small>
+  </footer>
+</div>
+</body>
+</html>

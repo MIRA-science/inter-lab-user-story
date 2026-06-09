@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stress-granule assembly order — consortium &amp; recruiting · dashboard.mira.science/vogel-kate</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<style>
+  /* ============================================================================
+     Mockup 09 — "The consortium view + recruiting" (Kate as consortium lead)
+     A clear SIBLING of 07: same masthead / toolbar / kanban idioms, same worked
+     example, the lead's lens. One project umbrella, many collaborators, several
+     audiences. The headline mechanic is a public↔consortium LOCK that flips the
+     whole surface (URL, badge, lab-access line) AND what's visible. Palette, type
+     and atoms come from tokens.css + components.css; this block is layout-only.
+     ============================================================================ */
+
+  body { padding: 34px 18px 64px; }
+  .web { background: radial-gradient(120% 60% at 50% -10%, var(--brand-tint) 0%, transparent 55%), var(--paper); }
+
+  /* ---- Dashboard masthead (matches 07, reframed for the lead) -------------- */
+  .masthead { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    padding:16px 24px; border-bottom:1px solid var(--line);
+    background: rgba(255,255,255,.66); backdrop-filter: saturate(1.1) blur(3px); }
+  .wordmark { display:flex; align-items:center; gap:11px; }
+  .wordmark .glyph { width:30px; height:30px; flex:none; display:block; }
+  .wordmark .name { font-family: var(--font-display); font-weight:600; font-size:17px; letter-spacing:-.01em; color: var(--ink); }
+  .wordmark .name b { color: var(--brand); font-weight:600; }
+  .wordmark .proj { font-family: var(--font-mono); font-size:11px; color: var(--faint); margin-top:1px; }
+  .lead { display:flex; align-items:center; gap:9px; font-size:12.5px; color: var(--muted); }
+  .lead .avatar { width:26px; height:26px; font-size:10.5px; }
+  .lead .role { font-family: var(--font-mono); font-size:9.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    color: var(--claim-ink); background: var(--claim-wash); border:1px solid var(--claim-edge); padding:2px 7px; border-radius: var(--r-pill); }
+
+  /* ---- Audience bar: lock toggle · presets · search · read-only ------------ */
+  .toolbar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:14px 24px; border-bottom:1px solid var(--line); background: var(--surface); }
+  .presets { display:flex; gap:7px; flex-wrap:wrap; }
+  .ro-pill { display:inline-flex; align-items:center; gap:7px; font-size:11.5px; font-weight:600; color: var(--muted);
+    background: var(--surface-2); border:1px solid var(--line); border-radius: var(--r-pill); padding:5px 11px; }
+  .ro-pill svg { width:13px; height:13px; stroke: currentColor; fill:none; stroke-width:2; }
+
+  /* ---- SIGNATURE MOTION — the public ↔ consortium audience lock ------------ */
+  /* built on the shared .viewswitch segmented control; only the colour states
+     and the shackle-lift motion are screen-specific. */
+  .audience-lock button .ic { transition: transform .4s var(--ease-out); }
+  /* default static state = consortium (the screen is complete with JS disabled) */
+  .audience-lock button.con.active { color: var(--request-ink); }
+  .audience-lock button.pub.active { color: var(--claim-ink); }
+  /* the shackle lifts when public is engaged */
+  body.is-public .audience-lock button.pub .ic { transform: translateY(-1.5px); }
+
+  /* the live share badge / url / lab-access line that the lock rewrites */
+  .audience-state { display:inline-flex; align-items:center; gap:9px; flex-wrap:wrap; }
+  .lab-access { display:inline; font-family: var(--font-mono); font-size:11px; color: var(--faint); }
+  .lab-access b { color: var(--ink-2); font-weight:600; }
+  /* what the toggle swaps (paired spans; one shown per mode, CSS-driven) */
+  /* default: consortium spans show, public spans hidden. Use `inline` so the
+     whitespace inside text spans (e.g. "~20 labs with access") is preserved;
+     badge spans re-assert inline-flex via .share-level below. */
+  .ifcon { display:inline; } .ifpub { display:none; }
+  body.is-public .ifcon { display:none; } body.is-public .ifpub { display:inline; }
+  .share-level.ifcon, .share-level.ifpub { display:none; }
+  .share-level.ifcon { display:inline-flex; }
+  body.is-public .share-level.ifcon { display:none; }
+  body.is-public .share-level.ifpub { display:inline-flex; }
+
+  /* ---- Layout: board + lead rail ------------------------------------------ */
+  .body-grid { display:grid; grid-template-columns: minmax(0,1fr) 326px; gap:22px; padding:22px 24px 12px; align-items:start; }
+  @media (max-width: 920px){ .body-grid { grid-template-columns:1fr; } .rail { order:-1; position:static !important; } }
+
+  .board { min-width:0; }
+  .board-head { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .board-head .lbl { font-family: var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color: var(--faint); }
+  .board-head .rule { flex:1; height:1px; background: var(--line); }
+  .board-head .preset-name { color: var(--brand); }
+
+  /* preset blurb — a one-line "why this preset / who it's for" */
+  .preset-blurb { font-size:12.5px; color: var(--muted); margin:-4px 0 14px; line-height:1.5; }
+  .preset-blurb .recruit { color: var(--request-ink); font-weight:600; }
+
+  /* kanban (matches 07) */
+  .kanban { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:14px; }
+  @media (max-width: 640px){ .kanban { grid-template-columns:1fr; } }
+  .kcol { background: var(--surface-2); border:1px solid var(--line); border-radius: var(--r-lg); padding:11px; display:flex; flex-direction:column; gap:10px; }
+  .kcol > .col-h { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:2px 2px 0; }
+  .kcol .col-h .ttl { font-size:12.5px; font-weight:700; color: var(--ink-2); display:flex; align-items:center; gap:7px; }
+  .kcol .col-h .ttl .dot { width:8px; height:8px; border-radius:2px; }
+  .kcol .col-h .ct { font-family: var(--font-mono); font-size:11px; color: var(--faint); }
+
+  .kcard { background: var(--surface); border:1px solid var(--line); border-left:3px solid var(--faint); border-radius: var(--r-md);
+    padding:11px 12px; box-shadow: var(--shadow-1); transition: transform .18s var(--ease), box-shadow .18s var(--ease), border-color .18s var(--ease), opacity .35s var(--ease); }
+  .kcard:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
+  .kcard.question { border-left-color: var(--question-ink); }
+  .kcard.study    { border-left-color: var(--study-ink); }
+  .kcard.evidence { border-left-color: var(--evidence-ink); }
+  .kcard.request  { border-left-color: var(--request-ink); }
+  .kcard.candidate{ border-left-color: var(--faint); border-style:dashed; }
+  .kcard .kt { font-family: var(--font-display); font-size:13.5px; font-weight:600; line-height:1.32; margin:7px 0 0; color: var(--ink); }
+  .kcard .kmeta { display:flex; align-items:center; gap:8px; margin-top:9px; font-size:11px; color: var(--faint); }
+  .kcard .kmeta .avatar { width:18px; height:18px; font-size:8.5px; }
+  .kcard .kmeta .grow { flex:1; }
+  .kcard .pin-mini { display:inline-flex; align-items:center; gap:4px; font-family: var(--font-mono); font-size:10px; color: var(--muted); }
+  .kcard .pin-mini svg { width:11px; height:11px; stroke: currentColor; fill:none; stroke-width:2; }
+  .kcard .vis { width:7px; height:7px; border-radius:50%; }
+  .kcard .vis.consortium { background: var(--request-ink); }
+  .kcard .vis.world { background: var(--claim-ink); }
+  .kcard.inprog .kt::after { content:' · in progress'; color: var(--faint); font-weight:400; font-family: var(--font-body); font-size:11px; }
+  /* progress meter for the funder board */
+  .kbar { height:4px; border-radius:3px; background: var(--line); margin-top:9px; overflow:hidden; }
+  .kbar i { display:block; height:100%; background: var(--study-ink); border-radius:3px; }
+
+  /* R5 made visible: a consortium-only card greys + locks when the surface goes public */
+  body.is-public .kcard.con-only { opacity:.42; filter:saturate(.4); pointer-events:none; }
+  .kcard .con-tag { display:none; }
+  body.is-public .kcard.con-only .con-tag { display:inline-flex; align-items:center; gap:4px; margin-left:6px;
+    font-family: var(--font-mono); font-size:9px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+    color: var(--request-ink); }
+  body.is-public .kcard.con-only .con-tag svg { width:10px; height:10px; stroke:currentColor; fill:none; stroke-width:2.2; }
+
+  /* preset boards: only the active one shows (Funder default-static) ---------- */
+  .preset-board { display:none; }
+  .preset-board.active { display:block; }
+
+  /* recruiting board (Public preset) — request/question cards with a CTA ------ */
+  .recruit-grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:14px; }
+  @media (max-width: 620px){ .recruit-grid { grid-template-columns:1fr; } }
+  .rcard { background: var(--surface); border:1px solid var(--line); border-left:4px solid var(--faint); border-radius: var(--r-md);
+    padding:14px 15px; box-shadow: var(--shadow-1); display:flex; flex-direction:column; gap:0; }
+  .rcard.request  { border-left-color: var(--request-ink); }
+  .rcard.question { border-left-color: var(--question-ink); }
+  .rcard .rt { font-family: var(--font-display); font-size:14px; font-weight:600; line-height:1.28; margin:8px 0 5px; }
+  .rcard .rb { font-size:12px; color: var(--muted); flex:1; line-height:1.5; }
+  .rcard .rfoot { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:12px; padding-top:11px; border-top:1px dashed var(--line); }
+  .rcard .who { display:flex; align-items:center; gap:7px; font-size:11px; color: var(--faint); }
+  .rcard .who .avatar { width:20px; height:20px; font-size:9px; }
+  /* read-only "express interest" — recruiting CTA (not authoring) */
+  .recruit-btn { display:inline-flex; align-items:center; gap:6px; font-family: var(--font-body); font-size:11.5px; font-weight:600;
+    padding:5px 11px; border-radius: var(--r-pill); border:1px solid var(--request-edge); background: var(--request-wash); color: var(--request-ink);
+    cursor:pointer; transition: all .16s var(--ease); }
+  .recruit-btn:hover { background: var(--brand-tint); }
+  .recruit-btn svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2; }
+
+  /* ---- Right rail (the lead's lens) ---------------------------------------- */
+  .rail { position:sticky; top:18px; display:grid; gap:15px; }
+  .rail .panel { padding:16px; }
+  .rail h4 { font-family: var(--font-display); font-size:15px; margin:0 0 3px; }
+  .rail .sub { font-size:11.5px; color: var(--muted); margin:0 0 13px; line-height:1.45; }
+
+  /* collaborators strip + per-lab visibility mini-matrix (R5, R8) ------------- */
+  .collab { list-style:none; margin:0; padding:0; display:grid; gap:9px; }
+  .collab li { display:flex; align-items:center; gap:10px; }
+  .collab .lab-id { display:flex; align-items:center; gap:9px; min-width:0; flex:1; }
+  .collab .lab-id .avatar { width:24px; height:24px; font-size:9.5px; flex:none; }
+  .collab .lab-id .nm { min-width:0; }
+  .collab .lab-id .nm b { font-size:12.5px; color: var(--ink); font-weight:600; display:block; line-height:1.2; }
+  .collab .lab-id .nm small { font-size:10px; color: var(--faint); }
+  .collab .mtx { display:flex; gap:5px; flex:none; }
+  /* a tiny per-project visibility cue: filled = shared to this surface */
+  .collab .cell { width:13px; height:13px; border-radius:3px; border:1px solid var(--line); background: var(--surface);
+    display:flex; align-items:center; justify-content:center; }
+  .collab .cell.on  { background: var(--request-wash); border-color: var(--request-edge); }
+  .collab .cell.on.world { background: var(--claim-wash); border-color: var(--claim-edge); }
+  .collab .cell.on::after { content:''; width:5px; height:5px; border-radius:1px; background: var(--request-ink); }
+  .collab .cell.on.world::after { background: var(--claim-ink); }
+  .collab .cell.off::after { content:'–'; font-family: var(--font-mono); font-size:9px; color: var(--faint); }
+  .mtx-key { display:flex; align-items:center; gap:12px; margin-top:11px; padding-top:11px; border-top:1px dashed var(--line);
+    font-size:10px; color: var(--faint); font-family: var(--font-mono); flex-wrap:wrap; }
+  .mtx-key span { display:inline-flex; align-items:center; gap:5px; }
+  .mtx-key i { width:11px; height:11px; border-radius:3px; border:1px solid var(--line); }
+  .mtx-head { display:flex; justify-content:flex-end; gap:5px; margin-bottom:7px; }
+  .mtx-head .h { width:13px; font-family: var(--font-mono); font-size:8px; color: var(--faint); text-align:center;
+    writing-mode: vertical-rl; transform: rotate(180deg); letter-spacing:.04em; height:34px; }
+
+  /* "orphaned → discoverable" feed (borrows 05's feed idiom) ----------------- */
+  .feed { list-style:none; margin:0; padding:0; }
+  .feed li { display:flex; gap:11px; align-items:flex-start; padding:11px 0; border-bottom:1px dashed var(--line); }
+  .feed li:last-child { border-bottom:0; padding-bottom:2px; }
+  .feed li .ic-dot { width:28px; height:28px; border-radius: var(--r-sm); flex:none; display:flex; align-items:center; justify-content:center;
+    background: var(--surface-2); border:1px solid var(--line); margin-top:1px; }
+  .feed li .ic-dot svg { width:14px; height:14px; stroke: var(--muted); fill:none; stroke-width:2; }
+  .feed li .ic-dot.ev { background: var(--evidence-wash); border-color: var(--evidence-edge); }
+  .feed li .ic-dot.ev svg { stroke: var(--evidence-ink); }
+  .feed li .ftext { font-size:12.5px; color: var(--ink-2); line-height:1.4; min-width:0; }
+  .feed li .ftext b { color: var(--ink); font-weight:600; }
+  .feed li .ftext .n { font-family: var(--font-mono); font-size:10px; color: var(--faint); display:block; margin-top:3px; }
+  .feed li .ftext .by { color: var(--evidence-ink); }
+  .orph-foot { display:flex; align-items:center; gap:7px; margin-top:12px; font-size:11px; color: var(--muted); font-family: var(--font-mono); }
+  .orph-foot svg { width:13px; height:13px; stroke: var(--muted); fill:none; stroke-width:2; }
+
+  /* plain-language summary affordance (accessibility) ------------------------ */
+  .plain { background: linear-gradient(180deg, var(--claim-wash) 0%, var(--surface) 78%); border:1px solid var(--claim-edge); }
+  .plain .phead { display:flex; align-items:center; gap:8px; }
+  .plain .phead .tagp { font-family: var(--font-mono); font-size:9.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+    color: var(--claim-ink); background: var(--surface); border:1px solid var(--claim-edge); padding:2px 7px; border-radius: var(--r-pill); }
+  .plain .ptext { font-size:13px; color: var(--ink-2); line-height:1.55; margin-top:10px; }
+  .plain .ptext.tech { display:none; font-family: var(--font-mono); font-size:11.5px; color: var(--muted); }
+  .plain.show-tech .ptext.plainv { display:none; }
+  .plain.show-tech .ptext.tech { display:block; }
+  .plain .ptoggle { display:inline-flex; align-items:center; gap:6px; margin-top:11px; font-family: var(--font-body); font-size:11.5px; font-weight:600;
+    color: var(--claim-ink); background: transparent; border:0; cursor:pointer; padding:0; }
+  .plain .ptoggle svg { width:13px; height:13px; stroke: currentColor; fill:none; stroke-width:2; }
+  .plain .a11y-note { display:flex; align-items:center; gap:7px; margin-top:12px; padding-top:11px; border-top:1px dashed var(--claim-edge);
+    font-size:10.5px; color: var(--muted); }
+  .plain .a11y-note .sw { width:11px; height:11px; border-radius:3px; display:inline-block; }
+
+  /* ---- Stat band + build line (matches 07) --------------------------------- */
+  .statband { display:flex; align-items:center; gap:18px; flex-wrap:wrap; padding:14px 24px; border-top:1px solid var(--line); margin-top:6px; }
+  .stat { display:flex; align-items:baseline; gap:7px; }
+  .stat b { font-family: var(--font-display); font-size:18px; color: var(--ink); }
+  .stat span { font-size:12px; color: var(--muted); }
+  .statband .grow { flex:1; }
+  .a11y { display:inline-flex; align-items:center; gap:7px; font-size:11px; color: var(--faint); }
+  .a11y .sw { width:11px; height:11px; border-radius:3px; display:inline-block; }
+  .buildline { display:flex; align-items:center; gap:9px; font-size:11.5px; color: var(--faint); font-family: var(--font-mono); }
+  .buildline svg { width:14px; height:14px; stroke: var(--faint); fill:none; stroke-width:1.8; }
+  .buildline b { color: var(--brand); font-weight:600; }
+
+  .dgfoot { max-width:1080px; margin:26px auto 0; text-align:center; font-family: var(--font-mono); font-size:11.5px; color: var(--faint); letter-spacing:.04em; }
+  .dgfoot .dots { display:inline-block; border-top:2px dotted var(--line); width:46px; vertical-align:middle; margin:0 12px; }
+
+  @media (prefers-reduced-motion: reduce){
+    .audience-lock button .ic, .kcard { transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================ FRAME CAPTION ============================= -->
+<div class="frame-caption reveal d1">
+  <span class="eyebrow">Mockup 09 · consortium view · push results to a shared web interface</span>
+  <h2>Kate runs one board as a consortium — and, with one toggle, as a public recruiting page</h2>
+  <p>One project umbrella, <strong>many collaborators</strong> under per-lab visibility; the <strong>same board</strong> flips between a password-protected <strong>consortium</strong> and a <strong>public lab website</strong>, with <strong>audience presets</strong> (a funder sees experiments in progress; the public sees open questions &amp; requests — making requests public is recruiting). Nothing un-shared leaks (R5, R6, R8).</p>
+</div>
+
+<!-- ============================ THE SCREEN =============================== -->
+<div class="screen reveal d2">
+
+  <div class="winbar">
+    <div class="lights"><i></i><i></i><i></i></div>
+    <!-- the address bar itself is rewritten by the lock (consortium ↔ public) -->
+    <span class="addr">
+      <span class="ifcon">🔒 dashboard.mira.science/vogel-kate</span>
+      <span class="ifpub">🌐 vogel-kate.mira.science</span>
+    </span>
+    <span class="grow"></span>
+    <span class="kbd">⌘ K</span>
+  </div>
+
+  <div class="web">
+
+    <!-- ---- Dashboard masthead ------------------------------------------- -->
+    <header class="masthead">
+      <div class="wordmark">
+        <svg class="glyph" viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="9" cy="9" r="3.2" style="fill:var(--question-ink)"/>
+          <circle cx="23" cy="8" r="3.2" style="fill:var(--study-ink)"/>
+          <circle cx="22" cy="23" r="3.2" style="fill:var(--evidence-ink)"/>
+          <circle cx="8" cy="22" r="3.2" style="fill:var(--request-ink)"/>
+          <g style="stroke:var(--line)" stroke-width="1.6">
+            <line x1="9" y1="9" x2="23" y2="8"/><line x1="23" y1="8" x2="22" y2="23"/>
+            <line x1="22" y1="23" x2="8" y2="22"/><line x1="8" y1="22" x2="9" y2="9"/>
+          </g>
+        </svg>
+        <div>
+          <div class="name"><b>MIRA</b> · consortium board</div>
+          <div class="proj">Stress-granule assembly order · Vogel × Kate consortium</div>
+        </div>
+      </div>
+      <div class="lead">
+        <span class="avatar kate" title="Kate — PI, consortium lead">K</span>
+        <span>led by <b style="color:var(--ink)">Kate</b></span>
+        <span class="role">consortium lead</span>
+      </div>
+    </header>
+
+    <!-- ---- Audience bar: the public↔consortium lock + presets ----------- -->
+    <div class="toolbar reveal d3">
+
+      <!-- SIGNATURE MOTION — the lock that flips the whole surface (R5/R6).
+           Reuses the shared .viewswitch segmented control. -->
+      <div class="viewswitch audience-lock" role="group" aria-label="Audience: consortium or public">
+        <button type="button" class="con active" aria-pressed="true"
+          onclick="setAudience('con',this)">
+          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          Consortium
+        </button>
+        <button type="button" class="pub" aria-pressed="false"
+          onclick="setAudience('pub',this)">
+          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
+          Public
+        </button>
+      </div>
+
+      <span class="audience-state">
+        <span class="share-level consortium ifcon">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          password-protected
+        </span>
+        <span class="share-level world ifpub">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
+          public · lab website
+        </span>
+        <span class="lab-access ifcon"><b>~20 labs</b> with access</span>
+        <span class="lab-access ifpub">visible to <b>anyone</b> · only public nodes</span>
+      </span>
+
+      <span class="grow" style="flex:1;"></span>
+
+      <span class="dash-search" style="min-width:168px;">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        search 318 nodes…
+      </span>
+
+      <span class="ro-pill" title="The dashboard is a read-only viewing &amp; discovery surface; authoring happens in each lab's vault">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="2.6"/></svg>
+        read-only
+      </span>
+    </div>
+
+    <!-- ---- Preset row (audience views; matches 07's .preset chips) ------ -->
+    <div class="toolbar reveal d3" style="padding-top:11px;padding-bottom:11px;">
+      <span class="eyebrow" style="margin-right:2px;">Preset view</span>
+      <div class="presets" aria-label="audience presets">
+        <button class="preset active" type="button" data-preset="funder" onclick="setPreset('funder',this)">
+          Experiments in progress · funder
+        </button>
+        <button class="preset" type="button" data-preset="public" onclick="setPreset('public',this)">
+          Open questions &amp; requests · recruiting
+        </button>
+        <a class="preset" href="07-shared-dashboard.html">Results →</a>
+      </div>
+    </div>
+
+    <!-- ---- Body: board + lead rail -------------------------------------- -->
+    <div class="body-grid">
+
+      <!-- =========================== BOARD =========================== -->
+      <section class="board">
+
+        <!-- ============ PRESET A — FUNDER: experiments in progress ====== -->
+        <div class="preset-board active" data-board="funder">
+          <div class="board-head reveal d4">
+            <span class="lbl">Kanban · preset <span class="preset-name">“Experiments in progress”</span> · across the consortium</span>
+            <span class="rule"></span>
+          </div>
+          <p class="preset-blurb reveal d4">For a <strong>funder</strong> checking momentum: ongoing <span style="color:var(--study-ink);font-weight:600;">Studies</span> from every lab, with whose bench they sit on (R8). The flagship result graduates to the <a href="07-shared-dashboard.html">Results</a> view.</p>
+
+          <div class="kanban">
+
+            <!-- PLANNED -->
+            <div class="kcol reveal d4">
+              <div class="col-h"><span class="ttl"><span class="dot" style="background:var(--study-ink)"></span>Planned</span><span class="ct">2</span></div>
+              <article class="kcard study con-only">
+                <span class="ntype study">Study</span>
+                <div class="kt">Disassembly time-course — does the order reverse?<span class="con-tag"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span></div>
+                <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel Lab</span><span class="grow"></span><span class="vis consortium" title="consortium-only"></span></div>
+                <div class="kbar"><i style="width:12%"></i></div>
+              </article>
+              <article class="kcard study con-only">
+                <span class="ntype study">Study</span>
+                <div class="kt">Cross-cell-line replication (U2OS)<span class="con-tag"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span></div>
+                <div class="kmeta"><span class="avatar lab">R</span><span>Reyes Lab</span><span class="grow"></span><span class="vis consortium"></span></div>
+                <div class="kbar"><i style="width:8%"></i></div>
+              </article>
+            </div>
+
+            <!-- RUNNING -->
+            <div class="kcol reveal d5">
+              <div class="col-h"><span class="ttl"><span class="dot" style="background:var(--study-ink)"></span>Running</span><span class="ct">3</span></div>
+              <article class="kcard study inprog">
+                <span class="ntype study">Study</span>
+                <div class="kt">Arsenite dose–response</div>
+                <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel Lab</span><span class="grow"></span><span class="vis world" title="public"></span></div>
+                <div class="kbar"><i style="width:58%"></i></div>
+              </article>
+              <article class="kcard study inprog con-only">
+                <span class="ntype study">Study</span>
+                <div class="kt">Heat-shock vs. oxidative stress panel<span class="con-tag"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span></div>
+                <div class="kmeta"><span class="avatar lab" style="background:linear-gradient(135deg,#c2861a,#d9573f)">O</span><span>Okafor Lab</span><span class="grow"></span><span class="vis consortium"></span></div>
+                <div class="kbar"><i style="width:44%"></i></div>
+              </article>
+              <article class="kcard candidate">
+                <span class="ntype candidate">Candidate</span>
+                <div class="kt">FRAP to probe granule fluidity (idea — not yet formalized)</div>
+                <div class="kmeta"><span class="avatar grad">M</span><span>Kate's student</span><span class="grow"></span><span class="vis world"></span></div>
+              </article>
+            </div>
+
+            <!-- ANALYSIS -->
+            <div class="kcol reveal d6">
+              <div class="col-h"><span class="ttl"><span class="dot" style="background:var(--study-ink)"></span>In analysis</span><span class="ct">2</span></div>
+              <article class="kcard study inprog">
+                <span class="ntype study">Study</span>
+                <div class="kt">Live two-channel imaging of G3BP1/PABP1 during assembly</div>
+                <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel Lab</span><span class="grow"></span><span class="pin-mini"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>4</span><span class="vis world"></span></div>
+                <div class="kbar"><i style="width:86%"></i></div>
+              </article>
+              <article class="kcard study inprog con-only">
+                <span class="ntype study">Study</span>
+                <div class="kt">Per-granule tracking pipeline benchmark<span class="con-tag"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span></div>
+                <div class="kmeta"><span class="avatar lab" style="background:linear-gradient(135deg,#1b9a92,#3877cf)">T</span><span>Tanaka Lab</span><span class="grow"></span><span class="vis consortium"></span></div>
+                <div class="kbar"><i style="width:72%"></i></div>
+              </article>
+            </div>
+
+          </div><!-- /.kanban -->
+        </div><!-- /funder board -->
+
+        <!-- ============ PRESET B — PUBLIC: open questions & requests ==== -->
+        <div class="preset-board" data-board="public">
+          <div class="board-head reveal d4">
+            <span class="lbl">Gallery · preset <span class="preset-name">“Open questions &amp; requests”</span> · made public</span>
+            <span class="rule"></span>
+          </div>
+          <p class="preset-blurb reveal d4">For <strong>recruiting &amp; collaboration</strong>: the consortium's open <span style="color:var(--question-ink);font-weight:600;">Questions</span> and <span style="color:var(--request-ink);font-weight:600;">Requests</span>, surfaced publicly. <span class="recruit">Making requests public is recruiting</span> — a prospective student or a new lab can see exactly what's open and reach out.</p>
+
+          <div class="recruit-grid">
+
+            <article class="rcard request">
+              <div class="row" style="gap:8px;"><span class="ntype request">Request</span><span class="request open" style="font-size:11px;padding:4px 9px;">open</span></div>
+              <div class="rt">Looking for a lab to run the disassembly time-course in a second cell line</div>
+              <div class="rb">Follow-up to Sean's recruitment-order result. <code>request_for</code> a `Study`; segmentation protocol &amp; curated CSV provided — bring your own imaging.</div>
+              <div class="rfoot">
+                <span class="who"><span class="avatar kate">K</span> Kate · consortium lead</span>
+                <button class="recruit-btn" type="button" onclick="this.textContent='✓ Interest noted';this.disabled=true;this.style.opacity=.7;">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                  Express interest
+                </button>
+              </div>
+            </article>
+
+            <article class="rcard question">
+              <span class="ntype question">Question</span>
+              <div class="rt">What sets the order in which proteins are recruited into stress granules?</div>
+              <div class="rb">The consortium's anchoring question. New students: this is the thread to pull — see the Vogel result and the open studies behind it.</div>
+              <div class="rfoot">
+                <span class="who"><span class="avatar kate">K</span> Kate's lab</span>
+                <span class="reuse" style="font-size:11px;"><span class="dotg"></span>3 studies addressing</span>
+              </div>
+            </article>
+
+            <article class="rcard request">
+              <div class="row" style="gap:8px;"><span class="ntype request">Request</span><span class="request open" style="font-size:11px;padding:4px 9px;">open · recruiting</span></div>
+              <div class="rt">Seeking a graduate student for quantitative live-cell microscopy</div>
+              <div class="rb">Join the Vogel × Kate consortium. You'd build on the recruitment-order work — imaging, segmentation, and per-granule analysis. <code>request_target</code> the project umbrella.</div>
+              <div class="rfoot">
+                <span class="who"><span class="avatar sean">S</span> Sean · Vogel Lab</span>
+                <button class="recruit-btn" type="button" onclick="this.textContent='✓ Interest noted';this.disabled=true;this.style.opacity=.7;">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                  Express interest
+                </button>
+              </div>
+            </article>
+
+            <article class="rcard question">
+              <span class="ntype question">Question</span>
+              <div class="rt">Does disassembly reverse the recruitment order?</div>
+              <div class="rb">Open across the consortium. An obvious follow-up study — claim the linked open Request to take it on.</div>
+              <div class="rfoot">
+                <span class="who"><span class="avatar sean">S</span> Sean · Vogel Lab</span>
+                <span class="reuse" style="font-size:11px;"><span class="dotg" style="background:var(--request-ink)"></span>1 open request</span>
+              </div>
+            </article>
+
+          </div><!-- /.recruit-grid -->
+        </div><!-- /public board -->
+
+      </section>
+
+      <!-- =========================== RAIL ============================ -->
+      <aside class="rail">
+
+        <!-- COLLABORATORS strip + per-lab visibility mini-matrix (R5, R8) -->
+        <div class="panel reveal d4">
+          <h4>Collaborators</h4>
+          <p class="sub">One project umbrella, several labs — each with its own per-project visibility. Authorship stays visible on every node (R8).</p>
+
+          <div class="mtx-head">
+            <span class="h">consortium</span>
+            <span class="h">public</span>
+          </div>
+          <ul class="collab">
+            <li>
+              <span class="lab-id"><span class="avatar sean">S</span><span class="nm"><b>Sean</b><small>Vogel Lab · producer</small></span></span>
+              <span class="mtx"><span class="cell on" title="shared to consortium"></span><span class="cell on world" title="shared publicly"></span></span>
+            </li>
+            <li>
+              <span class="lab-id"><span class="avatar kate">K</span><span class="nm"><b>Kate's lab</b><small>lead · stress granules</small></span></span>
+              <span class="mtx"><span class="cell on"></span><span class="cell on world"></span></span>
+            </li>
+            <li>
+              <span class="lab-id"><span class="avatar lab">R</span><span class="nm"><b>Reyes Lab</b><small>cell-line replication</small></span></span>
+              <span class="mtx"><span class="cell on"></span><span class="cell off" title="not public yet"></span></span>
+            </li>
+            <li>
+              <span class="lab-id"><span class="avatar lab" style="background:linear-gradient(135deg,#c2861a,#d9573f)">O</span><span class="nm"><b>Okafor Lab</b><small>stress-panel imaging</small></span></span>
+              <span class="mtx"><span class="cell on"></span><span class="cell off"></span></span>
+            </li>
+            <li>
+              <span class="lab-id"><span class="avatar lab" style="background:linear-gradient(135deg,#1b9a92,#3877cf)">T</span><span class="nm"><b>Tanaka Lab</b><small>tracking pipeline</small></span></span>
+              <span class="mtx"><span class="cell on"></span><span class="cell off"></span></span>
+            </li>
+          </ul>
+          <div class="mtx-key">
+            <span><i style="background:var(--request-wash);border-color:var(--request-edge)"></i> consortium</span>
+            <span><i style="background:var(--claim-wash);border-color:var(--claim-edge)"></i> public</span>
+            <span><i></i> not shared</span>
+          </div>
+        </div>
+
+        <!-- ORPHANED → DISCOVERABLE feed (the unpublished one-offs) -->
+        <div class="panel reveal d5">
+          <h4>Now discoverable</h4>
+          <p class="sub">One-off results that would otherwise be orphaned on a hard drive — searchable and permissioned on the board, each with its lab and author (R8).</p>
+          <ul class="feed">
+            <li>
+              <span class="ic-dot ev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 14 3-4 3 2 4-6"/></svg></span>
+              <div class="ftext">
+                <b class="by">G3BP1 is recruited to forming stress granules before PABP1</b> — unpublished, now searchable on the board <a href="07-shared-dashboard.html" style="font-size:11px;">open →</a>
+                <span class="n">Sean · Vogel Lab · consortium · illustrative · unpublished — workshop prototype</span>
+              </div>
+            </li>
+            <li>
+              <span class="ic-dot ev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 14 3-4 3 2 4-6"/></svg></span>
+              <div class="ftext">
+                <b class="by">PABP1 lags G3BP1 by ~40 s at granule onset</b> — a single unpublished session, now findable
+                <span class="n">Sean · Vogel Lab · consortium · was: a folder on the 25 TB array</span>
+              </div>
+            </li>
+            <li>
+              <span class="ic-dot ev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 14 3-4 3 2 4-6"/></svg></span>
+              <div class="ftext">
+                <b class="by">U2OS pilot: same order, weaker contrast</b> — a one-off never written up
+                <span class="n">Reyes Lab · consortium · request access to raw stacks</span>
+              </div>
+            </li>
+            <li>
+              <span class="ic-dot"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg></span>
+              <div class="ftext">
+                <b>Searched</b> “segmentation threshold” → surfaced 3 results across 2 labs
+                <span class="n">durable index · still here three years from now</span>
+              </div>
+            </li>
+          </ul>
+          <div class="orph-foot">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            pointers, not payloads — no raw data on the board
+          </div>
+        </div>
+
+        <!-- PLAIN-LANGUAGE summary affordance + colorblind note (a11y) -->
+        <div class="panel plain reveal d6" id="plainCard">
+          <div class="phead">
+            <h4 style="margin:0;">In plain language</h4>
+            <span class="tagp">for any reader</span>
+          </div>
+          <p class="ptext plainv">When cells are stressed, they bundle certain proteins into little droplets. This consortium found that one protein, <b>G3BP1</b>, shows up <b>before</b> another, <b>PABP1</b>, as a droplet forms — a consistent order. The board collects that finding, the experiments behind it, and what's still open.</p>
+          <p class="ptext tech">Evidence (n live-imaging sessions, HeLa, two-channel): G3BP1 fluorescence onset precedes PABP1 by ~40 s during stress-granule assembly; order inverts on disassembly. Grounds → Study; follows → segmentation Protocol. Illustrative · unpublished — workshop prototype.</p>
+          <button class="ptoggle" type="button" onclick="document.getElementById('plainCard').classList.toggle('show-tech'); this.querySelector('.lbl').textContent = document.getElementById('plainCard').classList.contains('show-tech') ? 'show plain summary' : 'show the technical version';">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+            <span class="lbl">show the technical version</span>
+          </button>
+          <div class="a11y-note">
+            <span class="sw" style="background:var(--study-ink)"></span><span class="sw" style="background:var(--evidence-ink)"></span>
+            Colorblind-safe palette · type sized for a 60+ reader
+          </div>
+        </div>
+
+      </aside>
+    </div>
+
+    <!-- ---- Stat band + a11y strip (matches 07) -------------------------- -->
+    <div class="statband reveal d7">
+      <div class="stat"><b>318</b><span>nodes shared</span></div>
+      <div class="stat"><b>~20</b><span>labs · 1 consortium</span></div>
+      <div class="stat"><b>5</b><span>collaborating labs on this project</span></div>
+      <div class="stat"><b>2</b><span>open requests · recruiting</span></div>
+      <span class="grow"></span>
+      <span class="a11y" title="Accessibility is a stated requirement: colorblind-safe palette; legible for a 60-year-old-plus reader.">
+        <span class="sw" style="background:var(--study-ink)"></span><span class="sw" style="background:var(--evidence-ink)"></span>
+        colorblind-safe · legible at 60+
+      </span>
+    </div>
+    <div class="statband" style="border-top:0; padding-top:0;">
+      <div class="buildline">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m0 8v3a2 2 0 0 0 2 2h3m8 0h3a2 2 0 0 0 2-2v-3m0-8V5a2 2 0 0 0-2-2h-3"/></svg>
+        Read-only · rendered from MIRA JSON-LD over <b>KOI</b> · a published subset from each lab's vault · <span class="ifcon">consortium — easier to open a closed system than close an open one</span><span class="ifpub">public — only nodes marked public are visible</span>
+      </div>
+    </div>
+
+  </div><!-- /.web -->
+</div><!-- /.screen -->
+
+<footer class="dgfoot reveal d8">
+  <span class="dots"></span>MIRA × Discourse Graphs · push results to a shared web interface · draft v0.1<span class="dots"></span>
+</footer>
+
+<!-- ----------------------------------------------------------------------------
+  Tiny vanilla-JS sugar (static-first; the page is complete & correct with JS
+  disabled — it renders as the CONSORTIUM board on the FUNDER preset):
+   • setAudience('con'|'pub')  → SIGNATURE MOTION: toggles body.is-public, which
+       (CSS-only) flips the URL bar, the share badge, the lab-access line, the
+       build line, and dims consortium-only cards (R5 made visible — nothing
+       un-shared leaks; it just stops rendering publicly).
+   • setPreset('funder'|'public') → swaps which preset board is shown.
+  Both are pure class toggles; no state the static markup doesn't already encode.
+---------------------------------------------------------------------------- -->
+<script>
+  function setAudience(mode, btn){
+    document.body.classList.toggle('is-public', mode === 'pub');
+    var grp = btn.parentNode.querySelectorAll('button');
+    grp.forEach(function(b){ b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
+    btn.classList.add('active'); btn.setAttribute('aria-pressed','true');
+  }
+  function setPreset(name, chip){
+    document.querySelectorAll('.preset').forEach(function(p){ p.classList.remove('active'); });
+    chip.classList.add('active');
+    document.querySelectorAll('.preset-board').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-board') === name);
+    });
+  }
+</script>
+
+</body>
+</html>
