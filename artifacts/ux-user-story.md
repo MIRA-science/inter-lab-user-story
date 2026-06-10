@@ -257,4 +257,153 @@ Surfaced, **not solved** (AGENTS.md §10; _grounding.md §5):
 
 ---
 
+## 9. Design system & usage constraints (for dashboard prototyping)
+
+> **For the collaborator building prototypes.** Everything below is the shared visual language used
+> across all nine mockups (`01`–`05` public/QBI, `06`–`09` Sean → Kate dashboard). **The canonical
+> source of truth is the CSS, not this section** — link and reuse it, don't re-key the values:
+> [`mockups/tokens.css`](./mockups/tokens.css) (palette · fonts · radii · shadows · motion) and
+> [`mockups/components.css`](./mockups/components.css) (every component class). The fullest reference
+> screen is [`mockups/03-public-web-view.html`](./mockups/03-public-web-view.html); the headline
+> dashboard screen is [`mockups/07-shared-dashboard.html`](./mockups/07-shared-dashboard.html). The
+> prose rationale lives in [`_design-brief.md`](./_design-brief.md). This section is a self-contained
+> mirror so the doc can stand alone — if it ever disagrees with the CSS, the CSS wins.
+
+### 9.1 Aesthetic direction
+
+**Warm-paper lab-notebook meets a credible open-science publication.** Minimal-scientific, confident,
+editorial. Generous negative space, a faint dotted grid on the page body, soft *layered* shadows (never
+flat drop-shadows), hairline rules. The feeling to hold: *"a result, with just enough of its lineage,
+standing on its own at a URL — trustworthy to a stranger."* Restraint and precision over decoration;
+one memorable motion moment per screen, not many.
+
+### 9.2 Type system — three families, each with a job
+
+| Family | Token | Used for |
+|---|---|---|
+| **Fraunces** (serif) | `--font-display` | Headings, node titles, mastheads. Weights 400–700; optical sizing on. |
+| **Hanken Grotesk** (sans) | `--font-body` | All UI and body text, buttons, labels. Weights 400–800. |
+| **JetBrains Mono** | `--font-mono` | **Anything machine-facing** — pointers, URLs, JSON-LD, KOI RIDs, DOIs, version hashes, eyebrows, edge labels. Weights 400–600. |
+
+Rule of thumb: **if a human wrote it, it's Fraunces or Hanken; if a machine emitted it, it's mono.**
+`h1` is `clamp(28px, 4vw, 44px)`; `h2` 24px; `h3` 18px; body 15px / line-height 1.5. Loaded via one
+Google Fonts `@import` at the top of `tokens.css` — don't add other fonts.
+
+### 9.3 Colour — brand & chrome (warm paper + ink)
+
+| Token | Hex | Role |
+|---|---|---|
+| `--ink` | `#1c2024` | Primary text (near-black, faintly warm) |
+| `--ink-2` | `#3a3f47` | Body text on cards |
+| `--muted` | `#6b7280` | Secondary text |
+| `--faint` | `#9aa0aa` | Tertiary / metadata |
+| `--paper` | `#faf8f4` | Page background (warm paper) |
+| `--surface` | `#ffffff` | Cards / panels |
+| `--surface-2` | `#f4f2ec` | Inset surfaces, code wells, pointer chips |
+| `--line` / `--line-2` | `#e7e3d8` / `#ece9e0` | Hairlines |
+| `--brand` | `#2f3a8c` | **MIRA accent** — primary actions, links, frozen-version pin |
+| `--brand-press` | `#232c6e` | Primary pressed |
+| `--brand-tint` | `#eceefb` | Brand wash (public-to-world pill, active preset) |
+
+### 9.4 Colour — the node-type palette (FIXED & SEMANTIC — never recolour)
+
+Each discourse-node type owns three tones: `-ink` (solid label / left border / badge text), `-wash`
+(soft card fill), `-edge` (card border). **Colour carries meaning here** — it tells the reader what
+*kind* of node they're looking at, so it is not a stylistic choice. Apply only via the component
+classes (`.ntype.evidence`, `.node.study`, `.edge.grounds`, …).
+
+| Type | `-ink` | `-wash` | `-edge` | Mnemonic |
+|---|---|---|---|---|
+| **Question** | `#c2861a` | `#fbf0d4` | `#e7cd8f` | gold |
+| **Claim** | `#2c9a61` | `#ddf2e5` | `#a6dcbd` | green |
+| **Evidence** | `#d9573f` | `#fbe0da` | `#f0b1a3` | coral |
+| **Study** | `#3877cf` | `#dbe9fb` | `#a6c6ef` | blue |
+| **Protocol** | `#8460c5` | `#ece2f8` | `#c9b3ea` | violet |
+| **Request** | `#4854bf` | `#e2e3f7` | `#aeb4eb` | indigo *(the request-back current)* |
+| **Source** | `#1b9a92` | `#d7f0ee` | `#98d9d3` | teal |
+
+Status/signal reuse the same hues: `--ok` = claim green, `--warn` = question gold, `--danger` =
+evidence coral, `--private` = `#8a8f98` (greyed "not shared").
+
+### 9.5 Two chrome modes
+
+- **In-app (Obsidian)** — add `.theme-obsidian` to a wrapper: dark editor pane (`--paper` → `#1e1e22`,
+  `--surface` → `#26262b`, `--ink` → `#e6e6ea`), faux ribbon / file list, DG nodes sitting inside.
+  Used by the *producer* screens (`01`, `06`).
+- **Public web / standalone** — light paper theme + `.winbar` with a real address bar / journal-style
+  masthead. Used by the *reader* screens (`03`, `04`, `05`, `07`, `08`, `09`).
+
+### 9.6 Component vocabulary (reuse these — don't reinvent)
+
+**Base kit** (`components.css`): `.node` + `.ntype` (a discourse node as a card + its type badge);
+`.node.private` (dashed, greyed, "not shared"); `.btn` (`.primary` / `.ghost` / `.sm`); `.pointer`
+with `.kind` chips; `.share-level`; `.edge` (typed relation labels); `.panel`, `.divider`, `.avatar`,
+`.toast`, `.steps`, `.tag`, `.frame-caption` (+ `.eyebrow`), `.screen`, `.winbar`, `.kbd`; the
+`.reveal .d1…d8` stagger + `.pulse`.
+
+**Pointer kinds** (`.pointer .kind.*`) — the R2 primitive. `git` `#24292f` · `s3` coral · `local`
+grey · `video` `#b3358f` · **`data`** green (curated CSV) · **`doi`** brand indigo (citable handle) ·
+**`koi`** request-indigo (KOI RID / desci record). **Show pointer chips — never a raw-data download.**
+
+**Dashboard atoms** (the pieces a dashboard prototype leans on most):
+
+| Class | What it is |
+|---|---|
+| `.viewswitch` | Segmented control: **Graph · Kanban · Table**. Active tab gets a white surface + shadow-1. |
+| `.preset` | Audience-preset chip (dashed → solid when `.active`): *Results* / *Experiments-in-progress (funder)* / *Questions & requests (recruiting)*. |
+| `.dash-search` | The "everything in one place / searchable" bar (pill, search glyph). |
+| `.request` / `.request.open` | The **request-back** chip (indigo); `.open` = unclaimed (dashed). |
+| `.node.candidate` / `.ntype.candidate` | A provisional/informal node that can ride along, shared as-is. |
+| `.cite` (+ `.frozen`) | "Cite this · version frozen" chip — the R9 pin (frozen text in brand indigo). |
+| `.reuse` | "Cited by *N*" reuse signal (green dot, bold count). |
+| `.share-level.*` | `world` (public, brand-tint) · `gated` (public page, restricted resource — gold) · `consortium` (password-protected, 20+ labs — request-indigo) · `public` (green) · `lab` (blue) · `private` (grey). |
+
+**Cast avatars** (gradient discs, fixed per person): `.brian` blue→teal · `.morgan` green→blue ·
+`.qbi` indigo→violet · `.world` grey (a stranger) · `.sean` blue→indigo · `.kate` green→teal ·
+`.grad` teal→green (Kate's student) · `.vogel`/`.lab` lab marks. Keep a person's colour constant
+across every screen.
+
+### 9.7 Usage constraints — the rules the visuals must honour
+
+These are *behavioural* constraints, not decoration; a prototype that breaks one is wrong even if it
+looks right (rule IDs map to §2–§3 above and the design brief):
+
+- **R2 · Pointers, not payloads.** Analysis = `git`+commit chip; data = curated-CSV chip; raw stacks =
+  a *request-access* `local` chip. Never embed or offer a raw-data download.
+- **R4 · Summary up front, then traverse.** Lead with the summary figure + one-line observation; make
+  `Claim ← Evidence ← Study → Protocol` traversal available but not forced (PI glances; reproducer drills).
+- **R5 · Permissions visible even when public, no leaks.** Gated resources read **"request access"**;
+  a withheld note shows as **"1 note withheld"** and **must never leak its contents or a dangling
+  reference**. The dashboard is **read-only** — show no edit affordances.
+- **R6 · Addressable at a URL.** Show the `.winbar` address bar / a citable handle; the published
+  record is a web page.
+- **R8 · Trust via provenance.** Every result carries a byline — *author · lab · license* (e.g.
+  *Brian & Morgan · Quantum Biology Institute · CC-BY*; *Sean · Vogel Lab · shared with Kate's lab*).
+- **R9 · Freeze the cited version.** The `.cite` chip pins the exact version the reader saw, so later
+  edits don't silently change what was cited.
+- **Two currents on the dashboard.** Results flow out **and** a `Request` flows back — render the
+  reverse current with the indigo `Request` colour + `.request` chip.
+- **Every plot is labelled** *"illustrative · unpublished — workshop prototype."* Never invent
+  contradicting science; use the worked example verbatim from `_design-brief.md` §4 (QBI MagLOV2) or
+  the dashboard worked example (G3BP1 / PABP1 assembly order).
+- **Every screen is captioned** — a `.frame-caption` with an `.eyebrow` (e.g. `MOCKUP 07 · SHARED
+  DASHBOARD`), an `<h2>`, and one sentence naming the rule it embodies.
+
+### 9.8 Accessibility & build constraints
+
+- **Colourblind-safe and legible for "a 60-year-old-plus professor."** Don't rely on hue alone —
+  node-type colour is always paired with a text label / badge, and the type's name is shown. Maintain
+  the ink-on-wash contrast in §9.4.
+- **Static-first.** Screens must look complete and correct **with JS disabled**; a tiny inline vanilla
+  interaction is fine, but **no external JS frameworks**.
+- **Motion is CSS-only and respectful.** Staggered `.reveal .d1…d8` on load + one signature moment
+  (an edge drawing, a toast sliding in, a version pin snapping, kanban columns sliding in).
+  `prefers-reduced-motion: reduce` is already handled — don't override it.
+- **Self-contained & openable** by double-click: relative CSS hrefs, no build step, no network beyond
+  Google Fonts. Centre content at ~1080px max; responsive down to ~720px is a plus.
+- **Radii / shadows / motion tokens** are fixed: radii `--r-sm 6 · --r-md 10 · --r-lg 16 · --r-xl 22 ·
+  --r-pill 999`; three layered shadows `--shadow-1/2/3`; easings `--ease` / `--ease-out`.
+
+---
+
 *MIRA × Discourse Graphs · publish to a public repository · 🥉 low-shared-context variant · draft v0.1*
