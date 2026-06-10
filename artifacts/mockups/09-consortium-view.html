@@ -312,6 +312,31 @@
         search 318 nodes…
       </span>
 
+      <!-- a11y controls: "Aa" button + popover (§6) — harmless with JS off -->
+      <div style="position:relative;" id="a11yWrap">
+        <button type="button" title="Text &amp; spacing" aria-haspopup="true" aria-expanded="false" id="a11yBtn"
+          onclick="(function(){var w=document.getElementById('a11yWrap'),p=w.querySelector('.a11y-pop'),b=document.getElementById('a11yBtn'),open=p.style.display==='block';p.style.display=open?'none':'block';b.setAttribute('aria-expanded',!open);})()"
+          style="font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:-.01em;
+            padding:5px 10px;border-radius:var(--r-pill);border:1px solid var(--line);
+            background:var(--surface-2);color:var(--ink-2);cursor:pointer;line-height:1;">Aa</button>
+        <div class="a11y-pop" style="display:none;top:calc(100% + 8px);right:0;" role="dialog" aria-label="Text &amp; spacing options">
+          <h5>Text &amp; spacing</h5>
+          <div class="a11y-opt">
+            <span class="lbl">Serif text<small>Fraunces for body</small></span>
+            <button type="button" class="switch" id="serifSwitch" aria-pressed="false" title="Toggle serif font"
+              onclick="(function(btn){var on=btn.getAttribute('aria-pressed')==='true';document.body.classList.toggle('pref-serif',!on);btn.setAttribute('aria-pressed',!on);})(this)"></button>
+          </div>
+          <div class="a11y-opt">
+            <span class="lbl">Spacing<small>Line height &amp; gaps</small></span>
+            <div class="a11y-seg" role="group" aria-label="Spacing">
+              <button type="button" onclick="setSpacing('compact',this)" aria-pressed="false">Compact</button>
+              <button type="button" onclick="setSpacing('default',this)" aria-pressed="true" class="active">Default</button>
+              <button type="button" onclick="setSpacing('spacious',this)" aria-pressed="false">Spacious</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <span class="ro-pill" title="The dashboard is a read-only viewing &amp; discovery surface; authoring happens in each lab's vault">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="2.6"/></svg>
         read-only
@@ -341,10 +366,16 @@
         <!-- ============ PRESET A — FUNDER: experiments in progress ====== -->
         <div class="preset-board active" data-board="funder">
           <div class="board-head reveal d4">
-            <span class="lbl">Kanban · preset <span class="preset-name">“Experiments in progress”</span> · across the consortium</span>
+            <span class="lbl">Kanban · grouped by Question · progress per study<span class="preset-name" style="margin-left:6px;">"Experiments in progress"</span></span>
             <span class="rule"></span>
           </div>
-          <p class="preset-blurb reveal d4">For a <strong>funder</strong> checking momentum: ongoing <span style="color:var(--study-ink);font-weight:600;">Studies</span> from every lab, with whose bench they sit on (R8). The flagship result graduates to the <a href="07-shared-dashboard.html">Results</a> view.</p>
+          <!-- question-chip strip: the 2 driving Questions -->
+          <div class="reveal d4" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+            <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);">Questions:</span>
+            <span class="ntype question" style="font-size:10px;">What sets recruitment order?</span>
+            <span class="ntype question" style="font-size:10px;">Does disassembly reverse the order?</span>
+          </div>
+          <p class="preset-blurb reveal d4">For a <strong>funder</strong> checking momentum: ongoing <span style="color:var(--study-ink);font-weight:600;">Studies</span> from every lab, with whose bench they sit on (R8). Studies roll up under the Question they address; click a study to open its Evidence card. The flagship result graduates to the <a href="07-shared-dashboard.html">Results</a> view.</p>
 
           <div class="kanban">
 
@@ -367,15 +398,52 @@
 
             <!-- RUNNING -->
             <div class="kcol reveal d5">
-              <div class="col-h"><span class="ttl"><span class="dot" style="background:var(--study-ink)"></span>Running</span><span class="ct">3</span></div>
+              <div class="col-h">
+                <span class="ttl"><span class="dot" style="background:var(--study-ink)"></span>Running</span>
+                <span class="ct">3</span>
+              </div>
+              <!-- PI-lens note: reorder hint -->
+              <p style="font-family:var(--font-mono);font-size:9.5px;color:var(--faint);margin:0 2px 2px;line-height:1.4;">As lead, drag to reorder priority; stalled studies surface a nudge.</p>
               <article class="kcard study inprog">
-                <span class="ntype study">Study</span>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="ntype study">Study</span>
+                  <!-- drag-to-reorder grip -->
+                  <span class="kcard__grip" aria-hidden="true" title="Drag to reorder priority">
+                    <svg viewBox="0 0 12 16" width="12" height="16" aria-hidden="true">
+                      <circle cx="3" cy="3" r="1.3" fill="currentColor"/>
+                      <circle cx="9" cy="3" r="1.3" fill="currentColor"/>
+                      <circle cx="3" cy="8" r="1.3" fill="currentColor"/>
+                      <circle cx="9" cy="8" r="1.3" fill="currentColor"/>
+                      <circle cx="3" cy="13" r="1.3" fill="currentColor"/>
+                      <circle cx="9" cy="13" r="1.3" fill="currentColor"/>
+                    </svg>
+                  </span>
+                </div>
                 <div class="kt">Arsenite dose–response</div>
-                <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel Lab</span><span class="grow"></span><span class="vis world" title="public"></span></div>
+                <div class="kmeta">
+                  <span class="avatar sean">S</span><span>Sean · Vogel Lab</span><span class="grow"></span>
+                  <span class="stale-flag"><span class="dot"></span> no result · 18d</span>
+                  <span class="vis world" title="public"></span>
+                </div>
                 <div class="kbar"><i style="width:58%"></i></div>
+                <div style="margin-top:9px;">
+                  <button class="nudge-btn" type="button" onclick="this.textContent='✓ Ping sent';this.disabled=true;this.style.opacity=.7;" title="Ping student for an update">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+                    Nudge
+                  </button>
+                </div>
               </article>
               <article class="kcard study inprog con-only">
-                <span class="ntype study">Study</span>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="ntype study">Study</span>
+                  <span class="kcard__grip" aria-hidden="true" title="Drag to reorder priority">
+                    <svg viewBox="0 0 12 16" width="12" height="16" aria-hidden="true">
+                      <circle cx="3" cy="3" r="1.3" fill="currentColor"/><circle cx="9" cy="3" r="1.3" fill="currentColor"/>
+                      <circle cx="3" cy="8" r="1.3" fill="currentColor"/><circle cx="9" cy="8" r="1.3" fill="currentColor"/>
+                      <circle cx="3" cy="13" r="1.3" fill="currentColor"/><circle cx="9" cy="13" r="1.3" fill="currentColor"/>
+                    </svg>
+                  </span>
+                </div>
                 <div class="kt">Heat-shock vs. oxidative stress panel<span class="con-tag"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span></div>
                 <div class="kmeta"><span class="avatar lab" style="background:linear-gradient(135deg,#c2861a,#d9573f)">O</span><span>Okafor Lab</span><span class="grow"></span><span class="vis consortium"></span></div>
                 <div class="kbar"><i style="width:44%"></i></div>
@@ -392,9 +460,9 @@
               <div class="col-h"><span class="ttl"><span class="dot" style="background:var(--study-ink)"></span>In analysis</span><span class="ct">2</span></div>
               <article class="kcard study inprog">
                 <span class="ntype study">Study</span>
-                <div class="kt">Live two-channel imaging of G3BP1/PABP1 during assembly</div>
+                <a href="07-shared-dashboard.html" class="kt" style="display:block;color:inherit;text-decoration:none;" title="Open Evidence card for this study">Live two-channel imaging of G3BP1/PABP1 during assembly</a>
                 <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel Lab</span><span class="grow"></span><span class="pin-mini"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>4</span><span class="vis world"></span></div>
-                <div class="kbar"><i style="width:86%"></i></div>
+                <a href="07-shared-dashboard.html" style="display:block;text-decoration:none;" title="Open Evidence card for this study"><div class="kbar"><i style="width:86%"></i></div></a>
               </article>
               <article class="kcard study inprog con-only">
                 <span class="ntype study">Study</span>
@@ -410,7 +478,7 @@
         <!-- ============ PRESET B — PUBLIC: open questions & requests ==== -->
         <div class="preset-board" data-board="public">
           <div class="board-head reveal d4">
-            <span class="lbl">Gallery · preset <span class="preset-name">“Open questions &amp; requests”</span> · made public</span>
+            <span class="lbl">Gallery · preset <span class="preset-name">"Open questions &amp; requests"</span> · made public</span>
             <span class="rule"></span>
           </div>
           <p class="preset-blurb reveal d4">For <strong>recruiting &amp; collaboration</strong>: the consortium's open <span style="color:var(--question-ink);font-weight:600;">Questions</span> and <span style="color:var(--request-ink);font-weight:600;">Requests</span>, surfaced publicly. <span class="recruit">Making requests public is recruiting</span> — a prospective student or a new lab can see exactly what's open and reach out.</p>
@@ -538,7 +606,7 @@
             <li>
               <span class="ic-dot"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg></span>
               <div class="ftext">
-                <b>Searched</b> “segmentation threshold” → surfaced 3 results across 2 labs
+                <b>Searched</b> "segmentation threshold" → surfaced 3 results across 2 labs
                 <span class="n">durable index · still here three years from now</span>
               </div>
             </li>
@@ -593,7 +661,7 @@
 </div><!-- /.screen -->
 
 <footer class="dgfoot reveal d8">
-  <span class="dots"></span>MIRA × Discourse Graphs · push results to a shared web interface · draft v0.1<span class="dots"></span>
+  <span class="dots"></span>MIRA × Discourse Graphs · push results to a shared web interface · draft v0.2<span class="dots"></span>
 </footer>
 
 <!-- ----------------------------------------------------------------------------
@@ -607,6 +675,15 @@
   Both are pure class toggles; no state the static markup doesn't already encode.
 ---------------------------------------------------------------------------- -->
 <script>
+  function setSpacing(mode, btn){
+    document.body.classList.remove('pref-spacious','pref-compact');
+    if(mode === 'spacious') document.body.classList.add('pref-spacious');
+    if(mode === 'compact')  document.body.classList.add('pref-compact');
+    var seg = btn.parentNode.querySelectorAll('button');
+    seg.forEach(function(b){ b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
+    btn.classList.add('active'); btn.setAttribute('aria-pressed','true');
+    try { localStorage.setItem('mira-spacing', mode); } catch(e){}
+  }
   function setAudience(mode, btn){
     document.body.classList.toggle('is-public', mode === 'pub');
     var grp = btn.parentNode.querySelectorAll('button');

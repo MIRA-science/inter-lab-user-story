@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evidence card — anatomy &amp; states · mira.science/n/sg-recruit-order-a3f9c21</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<style>
+  /* ============================================================================
+     Mockup 10 — "Evidence card — anatomy & states" (the embedded-method unit)
+     Isolates the .ecard component at four progressive states side-by-side:
+     collapsed (PI glance) · method open (reproducer) · candidate · with-discussion.
+     Palette, type, and components come from tokens.css + components.css; this
+     block only does screen-specific layout, stagger timing, and the anatomy strip.
+     ============================================================================ */
+
+  body { padding: 34px 18px 72px; }
+  .web { background: radial-gradient(120% 60% at 50% -10%, var(--brand-tint) 0%, transparent 55%), var(--paper); }
+
+  /* ---- Masthead (same pattern as 07/08) ------------------------------------- */
+  .masthead {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    padding: 16px 24px; border-bottom: 1px solid var(--line);
+    background: rgba(255,255,255,.66); backdrop-filter: saturate(1.1) blur(3px);
+  }
+  .wordmark { display: flex; align-items: center; gap: 11px; }
+  .wordmark .glyph { width: 30px; height: 30px; flex: none; display: block; }
+  .wordmark .name { font-family: var(--font-display); font-weight: 600; font-size: 17px; letter-spacing: -.01em; color: var(--ink); }
+  .wordmark .name b { color: var(--brand); font-weight: 600; }
+  .wordmark .proj { font-family: var(--font-mono); font-size: 11px; color: var(--faint); margin-top: 1px; }
+  .viewer { display: flex; align-items: center; gap: 9px; font-size: 12.5px; color: var(--muted); }
+
+  /* ---- Body wrapper: padded canvas for the gallery -------------------------- */
+  .canvas { padding: 26px 24px 30px; }
+
+  /* ---- Anatomy callout strip ------------------------------------------------ */
+  .anatomy {
+    margin-bottom: 26px; padding: 16px 20px; border-radius: var(--r-lg);
+    background: var(--surface-2); border: 1px solid var(--line-2);
+    display: grid; grid-template-columns: auto 1fr; gap: 0 16px;
+  }
+  .anatomy__h {
+    grid-column: 1 / -1; font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--faint); font-weight: 700; margin-bottom: 11px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .anatomy__h svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; }
+  .anatomy__list { grid-column: 1 / -1; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0; }
+  .anatomy__item {
+    display: grid; grid-template-columns: 140px 1fr; gap: 10px;
+    padding: 7px 0; border-bottom: 1px dashed var(--line);
+    align-items: baseline; font-size: 12.5px;
+  }
+  .anatomy__item:last-child { border-bottom: 0; }
+  .anatomy__region {
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; letter-spacing: .04em;
+    padding: 2px 7px; border-radius: var(--r-sm); white-space: nowrap; display: inline-block;
+  }
+  .anatomy__region.ev { background: var(--evidence-wash); color: var(--evidence-ink); border: 1px solid var(--evidence-edge); }
+  .anatomy__region.pr { background: var(--protocol-wash); color: var(--protocol-ink); border: 1px solid var(--protocol-edge); }
+  .anatomy__region.br { background: var(--brand-tint); color: var(--brand); border: 1px solid #aeb4eb; }
+  .anatomy__region.muted { background: var(--surface); color: var(--muted); border: 1px solid var(--line-2); }
+  .anatomy__desc { color: var(--ink-2); line-height: 1.45; }
+  .anatomy__desc b { color: var(--ink); font-weight: 600; }
+  .anatomy__desc .mono { font-family: var(--font-mono); font-size: .9em; }
+
+  /* ---- 4-state gallery (CSS grid, 2-col desktop / 1-col narrow) ------------ */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 24px;
+    align-items: start;
+  }
+  @media (max-width: 840px) { .gallery { grid-template-columns: 1fr; } }
+
+  /* wrapper for one state (label + card) */
+  .state-wrap { display: flex; flex-direction: column; gap: 0; }
+  .state-label {
+    display: flex; align-items: center; gap: 9px; margin-bottom: 9px;
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2);
+  }
+  .state-label .idx {
+    width: 20px; height: 20px; border-radius: 50%; background: var(--brand); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; flex: none;
+  }
+  .state-label .idx.cand { background: var(--faint); }
+  .state-label .idx.disc { background: var(--request-ink); }
+  .state-note {
+    margin-top: 8px; font-size: 11px; color: var(--faint); line-height: 1.45;
+    display: flex; align-items: flex-start; gap: 6px; padding: 7px 10px;
+    background: var(--surface-2); border-radius: var(--r-sm); border: 1px solid var(--line);
+  }
+  .state-note svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; flex: none; margin-top: 1px; }
+
+  /* ---- Mini plot: pdraw animation ------------------------------------------ */
+  .pdraw {
+    stroke-dasharray: 320;
+    stroke-dashoffset: 320;
+    animation: drawline 1.3s var(--ease-out) .45s forwards;
+  }
+  @media (prefers-reduced-motion: reduce) { .pdraw { animation: none; stroke-dashoffset: 0; } }
+
+  /* ---- Context table inside method body (same as 07's .ctx-table) ---------- */
+  .ctx-table { width: 100%; border-collapse: collapse; margin-top: 9px; font-size: 11.5px; }
+  .ctx-table th {
+    text-align: left; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--faint); font-weight: 700;
+    padding: 4px 6px 4px 0; border-bottom: 1px solid var(--line); width: 42%;
+  }
+  .ctx-table td { padding: 5px 6px 5px 0; color: var(--ink-2); border-bottom: 1px dashed var(--line); vertical-align: top; }
+  .ctx-table tr:last-child td, .ctx-table tr:last-child th { border-bottom: 0; }
+  /* the load-bearing segmentation threshold row gets a soft highlight */
+  .ctx-table tr.threshold-row th,
+  .ctx-table tr.threshold-row td {
+    background: var(--protocol-wash); color: var(--protocol-ink);
+    font-weight: 600;
+  }
+  .ctx-table tr.threshold-row { animation: pulse-row 2.2s var(--ease-out) 1.8s 1 forwards; }
+  @keyframes pulse-row {
+    0%   { background-color: transparent; }
+    30%  { background-color: var(--protocol-wash); }
+    100% { background-color: var(--protocol-wash); }
+  }
+  @media (prefers-reduced-motion: reduce) { .ctx-table tr.threshold-row { animation: none; } }
+
+  /* threshold note below table */
+  .threshold-note {
+    margin-top: 9px; font-size: 11.5px; color: var(--muted); font-style: italic; line-height: 1.45;
+    display: flex; align-items: flex-start; gap: 6px; padding: 8px 10px;
+    background: var(--protocol-wash); border-radius: var(--r-sm); border: 1px solid var(--protocol-edge);
+  }
+  .threshold-note svg { width: 13px; height: 13px; stroke: var(--protocol-ink); fill: none; stroke-width: 2; flex: none; margin-top: 1px; }
+  .threshold-note b { color: var(--protocol-ink); font-style: normal; }
+
+  /* ---- ecard__plot pcap (legend + illus label) ------------------------------ */
+  .ecard__plot .pcap { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 11px; border-top: 1px solid var(--line); background: var(--paper); }
+  .mlegend { display: flex; gap: 12px; align-items: center; }
+  .mlegend span { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-2); font-weight: 600; }
+  .mlegend i { width: 13px; height: 3px; border-radius: 2px; display: inline-block; }
+  .illus { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--warn); background: var(--question-wash); border: 1px solid var(--question-edge); padding: 2px 7px; border-radius: var(--r-pill); font-weight: 700; }
+
+  /* ---- Byline row inside ecard (common to states 1, 2, 4) ------------------ */
+  .ecard-byline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 11px; font-size: 11.5px; color: var(--muted); }
+  .ecard-byline .avatar { width: 21px; height: 21px; font-size: 9px; }
+  .ecard-byline .dotsep { color: var(--line); }
+
+  /* pointer chips row */
+  .ptr-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .ptr-row .pointer { font-size: 11px; padding: 4px 8px; }
+  .ptr-row .pointer .kind { font-size: 8.5px; }
+  .ptr-row .pointer.gated { border-style: dashed; border-color: var(--question-edge); background: var(--question-wash); }
+
+  /* ---- Candidate "no result" placeholder ------------------------------------ */
+  .no-result-ph {
+    margin-top: 8px; padding: 20px 14px; border-radius: var(--r-sm);
+    background: var(--surface-2); border: 1px dashed var(--line-2);
+    text-align: center; font-size: 12.5px; color: var(--faint);
+  }
+  .no-result-ph svg { display: block; margin: 0 auto 8px; width: 24px; height: 24px; stroke: var(--faint); fill: none; stroke-width: 1.6; opacity: .6; }
+
+  /* troubleshooting note in candidate card */
+  .trouble-note {
+    margin-top: 11px; padding: 9px 12px; border-radius: var(--r-sm);
+    background: var(--question-wash); border: 1px solid var(--question-edge);
+    font-size: 11.5px; color: var(--warn); line-height: 1.5;
+    display: flex; align-items: flex-start; gap: 7px;
+  }
+  .trouble-note svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; flex: none; margin-top: 1px; }
+
+  /* convert-btn hover: to-evidence style is already in components.css (.convert-btn.to-evidence:hover) */
+  .convert-btn.to-evidence {
+    border-color: var(--evidence-edge); color: var(--evidence-ink); background: var(--evidence-wash);
+  }
+  /* a small pulse on the convert button in state 3 */
+  .convert-pulse { animation: pulse 2.4s ease-in-out 1s infinite; }
+  @media (prefers-reduced-motion: reduce) { .convert-pulse { animation: none; } }
+
+  /* ---- State 4: thread sits below the ecard proper -------------------------- */
+  /* thread is already in components.css — only layout adjustment here */
+  .thread { margin-top: 0; }
+
+  /* ---- Promoted chip inline in a comment (already in components.css) -------- */
+  /* .promoted-chip defined there; nothing to add */
+
+  /* ---- studyfoot link ------------------------------------------------------- */
+  .ecard__studyfoot a, .ecard__studyfoot button {
+    font-size: 12px; color: var(--brand); text-decoration: none; display: inline-flex; align-items: center; gap: 5px;
+  }
+  .ecard__studyfoot a:hover, .ecard__studyfoot button:hover { text-decoration: underline; }
+  .ecard__studyfoot a svg, .ecard__studyfoot button svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  /* ---- footer band ---------------------------------------------------------- */
+  .statband {
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+    padding: 14px 24px; border-top: 1px solid var(--line); margin-top: 6px;
+  }
+  .buildline { display: flex; align-items: center; gap: 9px; font-size: 11.5px; color: var(--faint); font-family: var(--font-mono); }
+  .buildline svg { width: 14px; height: 14px; stroke: var(--faint); fill: none; stroke-width: 1.8; }
+  .buildline b { color: var(--brand); font-weight: 600; }
+
+  .dgfoot { max-width: 1080px; margin: 26px auto 0; text-align: center; font-family: var(--font-mono); font-size: 11.5px; color: var(--faint); letter-spacing: .04em; }
+  .dgfoot .dots { display: inline-block; border-top: 2px dotted var(--line); width: 46px; vertical-align: middle; margin: 0 12px; }
+</style>
+</head>
+<body>
+
+<!-- ============================ FRAME CAPTION ============================= -->
+<div class="frame-caption reveal d1">
+  <span class="eyebrow">Mockup 10 · evidence card · the embedded-method unit</span>
+  <h2>One card: the result first, the method folded in</h2>
+  <p>Kate's note from Jun 10: <em>"I'd never think about evidence and method separately"</em> — so they're not separate. The Evidence card is the unit: result and plot on top, method collapsed inline, full study details one click deeper. Below, the same card at four states.</p>
+</div>
+
+<!-- ============================ THE SCREEN =============================== -->
+<div class="screen reveal d2">
+
+  <div class="winbar">
+    <div class="lights"><i></i><i></i><i></i></div>
+    <span class="addr">🔒 mira.science/n/sg-recruit-order-a3f9c21</span>
+    <span class="grow"></span>
+    <span class="kbd">⌘ L</span>
+  </div>
+
+  <div class="web">
+
+    <!-- ---- Masthead -------------------------------------------------------- -->
+    <header class="masthead">
+      <div class="wordmark">
+        <svg class="glyph" viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="9"  cy="9"  r="3.2" style="fill:var(--evidence-ink)"/>
+          <circle cx="23" cy="8"  r="3.2" style="fill:var(--study-ink)"/>
+          <circle cx="22" cy="23" r="3.2" style="fill:var(--protocol-ink)"/>
+          <circle cx="8"  cy="22" r="3.2" style="fill:var(--request-ink)"/>
+          <g style="stroke:var(--line)" stroke-width="1.6">
+            <line x1="9"  y1="9"  x2="23" y2="8" />
+            <line x1="23" y1="8"  x2="22" y2="23"/>
+            <line x1="22" y1="23" x2="8"  y2="22"/>
+            <line x1="8"  y1="22" x2="9"  y2="9" />
+          </g>
+        </svg>
+        <div>
+          <div class="name"><b>MIRA</b> · evidence card · spec</div>
+          <div class="proj">Stress-granule assembly order · Vogel × Kate</div>
+        </div>
+      </div>
+      <div class="viewer">
+        <span class="share-level consortium">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          Consortium · 6 labs
+        </span>
+        <span class="avatar kate" title="Kate (PI)">K</span>
+        <span>viewing as <b style="color:var(--ink)">Kate</b></span>
+      </div>
+    </header>
+
+    <!-- ---- Canvas ---------------------------------------------------------- -->
+    <div class="canvas">
+
+      <!-- ---- Anatomy callout ------------------------------------------------ -->
+      <aside class="anatomy reveal d3" aria-label="Card anatomy guide">
+        <div class="anatomy__h">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 9h6M9 12h6M9 15h4M5 5h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg>
+          Card anatomy — region map (top → bottom order is load-bearing)
+        </div>
+        <ol class="anatomy__list">
+          <li class="anatomy__item">
+            <span class="anatomy__region br">.ecard__top</span>
+            <span class="anatomy__desc"><b>Provenance byline:</b> <span class="mono">.ntype.evidence</span> badge · avatar + lab + timestamp · share-level chip. R8: the "glance at the result and trust it" strip.</span>
+          </li>
+          <li class="anatomy__item">
+            <span class="anatomy__region ev">.ecard__plot</span>
+            <span class="anatomy__desc"><b>Result plot first.</b> Two-channel intensity-vs-time figure, inline labels (colorblind-safe). Caption row: legend + <span class="mono">.illus</span> pill. The data, before any prose.</span>
+          </li>
+          <li class="anatomy__item">
+            <span class="anatomy__region ev">.ecard__summary</span>
+            <span class="anatomy__desc"><b>One bold sentence</b> — the finding in plain language. The protein-order clause is italic + colored (<span class="mono">--evidence-ink</span>) but also bold, never color-only.</span>
+          </li>
+          <li class="anatomy__item">
+            <span class="anatomy__region muted">.ecard__caveats</span>
+            <span class="anatomy__desc"><b>2–4 muted bullets</b> — scope limits (cell line, stress agent, n). Not in the way; not hidden.</span>
+          </li>
+          <li class="anatomy__item">
+            <span class="anatomy__region pr">.ecard__method</span>
+            <span class="anatomy__desc"><b>Embedded method (collapsed by default)</b> — native <span class="mono">&lt;details&gt;</span> with context table + segmentation threshold + pointer chips. <em>"It doesn't have to be open, but I can open it."</em></span>
+          </li>
+          <li class="anatomy__item">
+            <span class="anatomy__region muted">.ecard__studyfoot</span>
+            <span class="anatomy__desc"><b>Full study details on click-through</b> — routes to the standalone Study node. Deepest tier; on demand only.</span>
+          </li>
+        </ol>
+      </aside>
+
+      <!-- ---- 4-state gallery ------------------------------------------------ -->
+      <div class="gallery">
+
+        <!-- ================================================================ -->
+        <!-- STATE 1 — Collapsed (PI glance)                                  -->
+        <!-- ================================================================ -->
+        <div class="state-wrap reveal d4">
+          <div class="state-label">
+            <span class="idx" aria-hidden="true">1</span>
+            Collapsed (PI glance)
+          </div>
+
+          <article class="ecard" aria-label="Evidence card, state 1: collapsed">
+
+            <!-- top: provenance byline -->
+            <div class="ecard__top">
+              <span class="ntype evidence">Evidence</span>
+              <span class="share-level consortium" style="font-size:11px;padding:3px 9px;">consortium</span>
+            </div>
+
+            <!-- plot: G3BP1 leads, PABP1 lags -->
+            <div class="ecard__plot">
+              <svg viewBox="0 0 318 155" role="img" aria-label="Illustrative: G3BP1 fluorescence intensity (blue) rises before PABP1 (coral) over time during stress-granule assembly in HeLa cells.">
+                <rect width="318" height="155" style="fill:var(--surface)"/>
+                <!-- axes -->
+                <g style="stroke:var(--line)" stroke-width="1">
+                  <line x1="38" y1="14" x2="38" y2="122"/>
+                  <line x1="38" y1="122" x2="298" y2="122"/>
+                </g>
+                <!-- axis labels -->
+                <g font-size="8" style="font-family:var(--font-mono);fill:var(--faint)">
+                  <text x="33" y="24" text-anchor="end">max</text>
+                  <text x="33" y="122" text-anchor="end">0</text>
+                  <text x="38" y="135" text-anchor="middle">stress</text>
+                  <text x="298" y="135" text-anchor="end">time →</text>
+                </g>
+                <text x="12" y="68" text-anchor="middle" font-size="8" transform="rotate(-90 12 68)" style="font-family:var(--font-mono);fill:var(--muted)">intensity (a.u.)</text>
+                <!-- PABP1 (coral, evidence-ink) lags -->
+                <path class="pdraw" d="M38,116 C106,112 136,100 164,78 C192,56 215,34 298,28" style="fill:none;stroke:var(--evidence-ink)" stroke-width="2.3" stroke-linecap="round"/>
+                <!-- G3BP1 (blue, study-ink) leads -->
+                <path class="pdraw" d="M38,114 C88,106 112,78 142,50 C168,28 194,22 298,18" style="fill:none;stroke:var(--study-ink)" stroke-width="2.3" stroke-linecap="round"/>
+                <!-- G3BP1-leads gap marker -->
+                <line x1="142" y1="12" x2="142" y2="122" style="stroke:var(--question-edge)" stroke-width="1" stroke-dasharray="2 3"/>
+                <line x1="168" y1="12" x2="168" y2="122" style="stroke:var(--question-edge)" stroke-width="1" stroke-dasharray="2 3"/>
+                <text x="155" y="10" text-anchor="middle" font-size="8" font-weight="700" style="font-family:var(--font-body);fill:var(--question-ink)">G3BP1 leads</text>
+                <!-- inline curve labels -->
+                <text x="220" y="30" font-size="8" font-weight="700" style="font-family:var(--font-body);fill:var(--study-ink)">G3BP1</text>
+                <text x="230" y="52" font-size="8" font-weight="700" style="font-family:var(--font-body);fill:var(--evidence-ink)">PABP1</text>
+              </svg>
+              <div class="pcap">
+                <div class="mlegend">
+                  <span><i style="background:var(--study-ink)"></i> G3BP1</span>
+                  <span><i style="background:var(--evidence-ink)"></i> PABP1</span>
+                </div>
+                <span class="illus">illustrative · unpublished — workshop prototype</span>
+              </div>
+            </div>
+
+            <!-- summary -->
+            <p class="ecard__summary">
+              G3BP1 is recruited to forming stress granules <span class="accent">~40 s before PABP1</span> — a fixed order during assembly, reversing on disassembly.
+            </p>
+
+            <!-- caveats -->
+            <ul class="ecard__caveats">
+              <li>HeLa cells, acute arsenite stress · single cell line</li>
+              <li>Order reversal on disassembly observed but not quantified here</li>
+              <li>Segmentation threshold is a load-bearing parameter (see method)</li>
+            </ul>
+
+            <!-- byline -->
+            <div class="ecard-byline">
+              <span class="avatar sean">S</span>
+              <span><b style="color:var(--ink)">Sean</b> · Vogel Lab</span>
+              <span class="dotsep">·</span>
+              <span>shared with Kate's lab</span>
+              <span class="dotsep">·</span>
+              <span>updated 2 h ago</span>
+            </div>
+
+            <!-- method: COLLAPSED (the default PI glance state) -->
+            <details class="ecard__method">
+              <summary>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 3H5a2 2 0 0 0-2 2v4m2 10h14M15 3h4a2 2 0 0 1 2 2v4m-2 10H9m0 0v-4m0 4H5m0 0v-4"/></svg>
+                Method &amp; context
+                <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+              </summary>
+              <!-- body intentionally hidden until opened; not shown in state 1 -->
+              <div class="method-body" style="padding-bottom:2px;font-size:12px;color:var(--muted);font-style:italic;">
+                Open to see context table, segmentation threshold, and pointer chips.
+              </div>
+            </details>
+
+            <!-- studyfoot -->
+            <div class="ecard__studyfoot">
+              <a href="08-traverse-and-request.html">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14M12 6l6 6-6 6"/></svg>
+                Open full study details →
+              </a>
+            </div>
+
+          </article>
+
+          <div class="state-note">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+            Method is one click away — the <code>&lt;details&gt;</code> is native; works with JS disabled.
+          </div>
+        </div>
+
+        <!-- ================================================================ -->
+        <!-- STATE 2 — Method open (reproducer)                               -->
+        <!-- ================================================================ -->
+        <div class="state-wrap reveal d5">
+          <div class="state-label">
+            <span class="idx" aria-hidden="true">2</span>
+            Method open (reproducer)
+          </div>
+
+          <article class="ecard" aria-label="Evidence card, state 2: method open">
+
+            <div class="ecard__top">
+              <span class="ntype evidence">Evidence</span>
+              <span class="share-level consortium" style="font-size:11px;padding:3px 9px;">consortium</span>
+            </div>
+
+            <!-- plot (same as state 1 — redrawn separately) -->
+            <div class="ecard__plot">
+              <svg viewBox="0 0 318 155" role="img" aria-label="Illustrative: same two-channel intensity plot. G3BP1 leads PABP1 by ~40 s.">
+                <rect width="318" height="155" style="fill:var(--surface)"/>
+                <g style="stroke:var(--line)" stroke-width="1">
+                  <line x1="38" y1="14" x2="38" y2="122"/>
+                  <line x1="38" y1="122" x2="298" y2="122"/>
+                </g>
+                <g font-size="8" style="font-family:var(--font-mono);fill:var(--faint)">
+                  <text x="33" y="24" text-anchor="end">max</text>
+                  <text x="33" y="122" text-anchor="end">0</text>
+                  <text x="38" y="135" text-anchor="middle">stress</text>
+                  <text x="298" y="135" text-anchor="end">time →</text>
+                </g>
+                <text x="12" y="68" text-anchor="middle" font-size="8" transform="rotate(-90 12 68)" style="font-family:var(--font-mono);fill:var(--muted)">intensity (a.u.)</text>
+                <path class="pdraw" d="M38,116 C106,112 136,100 164,78 C192,56 215,34 298,28" style="fill:none;stroke:var(--evidence-ink)" stroke-width="2.3" stroke-linecap="round"/>
+                <path class="pdraw" d="M38,114 C88,106 112,78 142,50 C168,28 194,22 298,18" style="fill:none;stroke:var(--study-ink)" stroke-width="2.3" stroke-linecap="round"/>
+                <line x1="142" y1="12" x2="142" y2="122" style="stroke:var(--question-edge)" stroke-width="1" stroke-dasharray="2 3"/>
+                <line x1="168" y1="12" x2="168" y2="122" style="stroke:var(--question-edge)" stroke-width="1" stroke-dasharray="2 3"/>
+                <text x="155" y="10" text-anchor="middle" font-size="8" font-weight="700" style="font-family:var(--font-body);fill:var(--question-ink)">G3BP1 leads ≈ 40 s</text>
+                <text x="220" y="30" font-size="8" font-weight="700" style="font-family:var(--font-body);fill:var(--study-ink)">G3BP1</text>
+                <text x="230" y="52" font-size="8" font-weight="700" style="font-family:var(--font-body);fill:var(--evidence-ink)">PABP1</text>
+              </svg>
+              <div class="pcap">
+                <div class="mlegend">
+                  <span><i style="background:var(--study-ink)"></i> G3BP1</span>
+                  <span><i style="background:var(--evidence-ink)"></i> PABP1</span>
+                </div>
+                <span class="illus">illustrative · unpublished — workshop prototype</span>
+              </div>
+            </div>
+
+            <p class="ecard__summary">
+              G3BP1 is recruited to forming stress granules <span class="accent">~40 s before PABP1</span> — a fixed order during assembly, reversing on disassembly.
+            </p>
+
+            <ul class="ecard__caveats">
+              <li>HeLa cells, acute arsenite stress · single cell line</li>
+              <li>Order reversal on disassembly observed but not quantified here</li>
+              <li>Segmentation threshold is a load-bearing parameter (see method)</li>
+            </ul>
+
+            <div class="ecard-byline">
+              <span class="avatar sean">S</span>
+              <span><b style="color:var(--ink)">Sean</b> · Vogel Lab</span>
+              <span class="dotsep">·</span>
+              <span>node <code style="font-size:.9em;">sg-recruit-order-a3f9c21</code></span>
+            </div>
+
+            <!-- method: OPEN — the reproducer view -->
+            <details class="ecard__method" open>
+              <summary>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 3H5a2 2 0 0 0-2 2v4m2 10h14M15 3h4a2 2 0 0 1 2 2v4m-2 10H9m0 0v-4m0 4H5m0 0v-4"/></svg>
+                Method &amp; context
+                <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+              </summary>
+              <div class="method-body">
+
+                <!-- motivating question line -->
+                <p style="font-size:11.5px;color:var(--muted);margin:0 0 9px;line-height:1.5;">
+                  <span class="ntype question" style="font-size:9px;padding:2px 6px;vertical-align:middle;margin-right:4px;">Question</span>
+                  What sets the order in which proteins are recruited into stress granules?
+                </p>
+
+                <!-- "what's in the dish" context table -->
+                <table class="ctx-table" aria-label="Experimental context">
+                  <thead>
+                    <tr><th>Parameter</th><th>Value</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td style="font-size:11.5px;color:var(--muted);">Cell line</td><td style="font-family:var(--font-mono);font-size:11px;">HeLa</td></tr>
+                    <tr><td style="font-size:11.5px;color:var(--muted);">Stress agent</td><td style="font-family:var(--font-mono);font-size:11px;">arsenite (sodium arsenite)</td></tr>
+                    <tr><td style="font-size:11.5px;color:var(--muted);">Channels</td><td style="font-family:var(--font-mono);font-size:11px;">G3BP1 · PABP1</td></tr>
+                    <tr><td style="font-size:11.5px;color:var(--muted);">Modality</td><td style="font-family:var(--font-mono);font-size:11px;">live two-channel fluorescence</td></tr>
+                    <tr><td style="font-size:11.5px;color:var(--muted);">Readout</td><td style="font-family:var(--font-mono);font-size:11px;">per-granule intensity over time</td></tr>
+                    <tr class="threshold-row">
+                      <td style="font-size:11.5px;font-weight:600;">Segmentation threshold</td>
+                      <td style="font-family:var(--font-mono);font-size:11px;font-weight:600;">fixed, per-channel · <em>load-bearing</em></td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <!-- threshold note -->
+                <div class="threshold-note">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18 8 6l4 9 3-5 5 8"/></svg>
+                  <span><b>Segmentation threshold is the load-bearing detail.</b> A different fixed value changes every per-granule intensity that follows — and therefore this result.</span>
+                </div>
+
+                <!-- pointer chips -->
+                <div class="ptr-row" style="margin-top:11px;">
+                  <span class="pointer"><span class="kind git">git</span><span class="path">vogel-lab/sg-imaging @ a3f9c21 · /segmentation/</span></span>
+                  <span class="pointer"><span class="kind data">data</span><span class="path">granule_intensity_by_time.csv</span></span>
+                  <span class="pointer gated"><span class="kind local">raw</span><span class="path">NDTiff ≈ 80 GB · 25 TB array</span></span>
+                  <span class="pointer"><span class="kind video">video</span><span class="path">2-min walkthrough</span></span>
+                </div>
+
+              </div>
+            </details>
+
+            <div class="ecard__studyfoot">
+              <a href="08-traverse-and-request.html">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14M12 6l6 6-6 6"/></svg>
+                Open full study details →
+              </a>
+            </div>
+
+          </article>
+
+          <div class="state-note">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+            The <b style="color:var(--protocol-ink)">threshold row</b> pulses once to draw the reproducer's eye. Context table embedded in the card — no hop to a separate Protocol node.
+          </div>
+        </div>
+
+        <!-- ================================================================ -->
+        <!-- STATE 3 — Candidate (pre-evidence)                               -->
+        <!-- ================================================================ -->
+        <div class="state-wrap reveal d5">
+          <div class="state-label">
+            <span class="idx cand" aria-hidden="true">3</span>
+            Candidate (pre-evidence)
+          </div>
+
+          <!-- candidate node styling: dashed border, muted -->
+          <article class="ecard node candidate" style="border-left-color:var(--faint);border-style:dashed;" aria-label="Evidence card, state 3: candidate node, no result posted">
+
+            <div class="ecard__top">
+              <span class="ntype candidate">Candidate</span>
+              <span style="font-size:11px;color:var(--faint);font-family:var(--font-mono);">pre-formalized · Vogel Lab</span>
+            </div>
+
+            <!-- no plot yet: placeholder -->
+            <div class="no-result-ph" role="img" aria-label="No result posted yet">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+              No result posted yet
+            </div>
+
+            <!-- summary line: the candidate observation, uncertain -->
+            <p class="ecard__summary" style="font-size:14.5px;color:var(--muted);">
+              Quantification looked off — values all over the place at 2.5 mM arsenite.
+            </p>
+
+            <ul class="ecard__caveats">
+              <li>Intensity spread too wide to claim an order</li>
+              <li>Possible over-segmentation at higher arsenite dose</li>
+            </ul>
+
+            <div class="ecard-byline">
+              <span class="avatar sean">S</span>
+              <span><b style="color:var(--ink)">Sean</b> · Vogel Lab</span>
+              <span class="dotsep">·</span>
+              <span style="color:var(--faint);">dose-response in progress</span>
+            </div>
+
+            <!-- troubleshooting note -->
+            <div class="trouble-note">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 3.4a2 2 0 0 1 3.4 0l7.8 13.5A2 2 0 0 1 19.8 20H4.2a2 2 0 0 1-1.7-3.1z"/><path d="M12 9v4M12 17h.01"/></svg>
+              Troubleshooting: threshold may need to be re-tuned for 2.5 mM. Trying a fixed threshold sweep before committing.
+            </div>
+
+            <!-- no ecard__method: candidate has no finalized method yet -->
+
+            <!-- convert to evidence button -->
+            <div style="margin-top:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <button class="convert-btn to-evidence convert-pulse" type="button" id="convertToEvidence"
+                aria-label="Convert this candidate to a formal Evidence node"
+                onclick="(function(btn){
+                  btn.textContent = '✓ Converted to Evidence';
+                  btn.disabled = true;
+                  btn.style.opacity = '.7';
+                  btn.classList.remove('convert-pulse');
+                  var card = btn.closest('.ecard');
+                  card.style.borderStyle = 'solid';
+                  card.style.borderLeftColor = 'var(--evidence-ink)';
+                  card.querySelector('.ntype').className = 'ntype evidence';
+                  card.querySelector('.ntype').textContent = 'Evidence';
+                })(this)">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 12l2 2 4-4M12 3a9 9 0 1 0 0 18A9 9 0 0 0 12 3z"/></svg>
+                Convert to evidence
+              </button>
+            </div>
+
+          </article>
+
+          <div class="state-note">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+            Full troubleshooting history is preserved under the promoted node. The Convert button changes the card's type live (try it).
+          </div>
+        </div>
+
+        <!-- ================================================================ -->
+        <!-- STATE 4 — With discussion thread                                 -->
+        <!-- ================================================================ -->
+        <div class="state-wrap reveal d6">
+          <div class="state-label">
+            <span class="idx disc" aria-hidden="true">4</span>
+            With discussion
+          </div>
+
+          <!-- the ecard proper (collapsed method) -->
+          <article class="ecard" aria-label="Evidence card, state 4: with discussion thread">
+
+            <div class="ecard__top">
+              <span class="ntype evidence">Evidence</span>
+              <span class="share-level consortium" style="font-size:11px;padding:3px 9px;">consortium</span>
+            </div>
+
+            <!-- plot (abbreviated, same data) -->
+            <div class="ecard__plot">
+              <svg viewBox="0 0 318 120" role="img" aria-label="Illustrative: G3BP1 leads PABP1 by ~40 s.">
+                <rect width="318" height="120" style="fill:var(--surface)"/>
+                <g style="stroke:var(--line)" stroke-width="1">
+                  <line x1="38" y1="12" x2="38" y2="96"/>
+                  <line x1="38" y1="96" x2="298" y2="96"/>
+                </g>
+                <g font-size="7.5" style="font-family:var(--font-mono);fill:var(--faint)">
+                  <text x="33" y="20" text-anchor="end">max</text>
+                  <text x="33" y="96" text-anchor="end">0</text>
+                  <text x="38" y="109" text-anchor="middle">stress</text>
+                  <text x="298" y="109" text-anchor="end">time →</text>
+                </g>
+                <path class="pdraw" d="M38,91 C106,87 136,76 164,58 C192,40 215,22 298,18" style="fill:none;stroke:var(--evidence-ink)" stroke-width="2.2" stroke-linecap="round"/>
+                <path class="pdraw" d="M38,89 C88,82 112,58 142,36 C168,18 194,14 298,10" style="fill:none;stroke:var(--study-ink)" stroke-width="2.2" stroke-linecap="round"/>
+                <line x1="142" y1="8" x2="142" y2="96" style="stroke:var(--question-edge)" stroke-width="1" stroke-dasharray="2 3"/>
+                <line x1="168" y1="8" x2="168" y2="96" style="stroke:var(--question-edge)" stroke-width="1" stroke-dasharray="2 3"/>
+                <text x="155" y="7" text-anchor="middle" font-size="7.5" font-weight="700" style="font-family:var(--font-body);fill:var(--question-ink)">G3BP1 leads</text>
+                <text x="222" y="22" font-size="7.5" font-weight="700" style="font-family:var(--font-body);fill:var(--study-ink)">G3BP1</text>
+                <text x="232" y="42" font-size="7.5" font-weight="700" style="font-family:var(--font-body);fill:var(--evidence-ink)">PABP1</text>
+              </svg>
+              <div class="pcap">
+                <div class="mlegend">
+                  <span><i style="background:var(--study-ink)"></i> G3BP1</span>
+                  <span><i style="background:var(--evidence-ink)"></i> PABP1</span>
+                </div>
+                <span class="illus">illustrative · unpublished</span>
+              </div>
+            </div>
+
+            <p class="ecard__summary">
+              G3BP1 is recruited to forming stress granules <span class="accent">~40 s before PABP1</span> — a fixed order during assembly, reversing on disassembly.
+            </p>
+
+            <ul class="ecard__caveats">
+              <li>HeLa cells, acute arsenite stress · single cell line</li>
+              <li>Segmentation threshold is a load-bearing parameter</li>
+            </ul>
+
+            <div class="ecard-byline">
+              <span class="avatar sean">S</span>
+              <span><b style="color:var(--ink)">Sean</b> · Vogel Lab</span>
+              <span class="dotsep">·</span>
+              <span>updated 2 h ago</span>
+            </div>
+
+            <!-- method: collapsed -->
+            <details class="ecard__method">
+              <summary>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 3H5a2 2 0 0 0-2 2v4m2 10h14M15 3h4a2 2 0 0 1 2 2v4m-2 10H9m0 0v-4m0 4H5m0 0v-4"/></svg>
+                Method &amp; context
+                <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+              </summary>
+              <div class="method-body" style="padding-bottom:2px;font-size:12px;color:var(--muted);font-style:italic;">
+                Expand to see context table, threshold, and pointer chips.
+              </div>
+            </details>
+
+            <div class="ecard__studyfoot">
+              <a href="08-traverse-and-request.html">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14M12 6l6 6-6 6"/></svg>
+                Open full study details →
+              </a>
+            </div>
+
+          </article>
+
+          <!-- discussion thread: separate from the card body -->
+          <section class="thread" aria-label="Discussion thread" role="log" aria-live="polite">
+            <div class="thread-h">
+              💬 Discussion <span class="ct">(3)</span>
+            </div>
+
+            <!-- comment 1: Kate asks about threshold -->
+            <div class="comment">
+              <span class="avatar kate" title="Kate (PI)">K</span>
+              <div class="c-main">
+                <div class="c-meta">
+                  <b>Kate</b> · 2d
+                  <span class="grow"></span>
+                </div>
+                <div class="c-body">Why a fixed intensity threshold and not Otsu here?</div>
+              </div>
+            </div>
+
+            <!-- comment 2: Sean answers -->
+            <div class="comment">
+              <span class="avatar sean" title="Sean">S</span>
+              <div class="c-main">
+                <div class="c-meta"><b>Sean</b> · 1d</div>
+                <div class="c-body">Otsu over-segments the dim PABP1 channel — fixed keeps the two channels comparable across time-points.</div>
+              </div>
+            </div>
+
+            <!-- comment 3: Kate asks for a lower dose — has Convert to request -->
+            <div class="comment" id="c4-comment3">
+              <span class="avatar kate" title="Kate (PI)">K</span>
+              <div class="c-main">
+                <div class="c-meta">
+                  <b>Kate</b> · 4h
+                  <span class="grow"></span>
+                  <button class="convert-btn" type="button" id="c4-convBtn"
+                    aria-label="Convert this comment to a formal Request to Sean"
+                    onclick="(function(btn){
+                      btn.style.display = 'none';
+                      var chip = document.createElement('span');
+                      chip.className = 'promoted-chip';
+                      chip.innerHTML = '<svg viewBox=\'0 0 24 24\' style=\'width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.2;\' aria-hidden=\'true\'><path d=\'M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z\'/></svg> → request sent to Sean';
+                      btn.closest('.c-main').querySelector('.c-body').insertAdjacentElement('afterend', chip);
+                    })(this)">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    Convert to request
+                  </button>
+                </div>
+                <div class="c-body">Makes sense. Can we also try a lower arsenite dose — does G3BP1 still lead if granules form more slowly?</div>
+              </div>
+            </div>
+
+            <!-- composer: disabled on read-only surface -->
+            <div class="composer">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="2.6"/></svg>
+              Viewing only — sign in to comment
+            </div>
+          </section>
+
+          <div class="state-note">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+            Thread stays separate from the result and method body — nothing gets buried. Try "Convert to request" on Kate's last comment.
+          </div>
+        </div>
+
+      </div><!-- /.gallery -->
+    </div><!-- /.canvas -->
+
+    <!-- ---- Footer band ----------------------------------------------------- -->
+    <div class="statband reveal d8">
+      <div class="buildline">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m0 8v3a2 2 0 0 0 2 2h3m8 0h3a2 2 0 0 0 2-2v-3m0-8V5a2 2 0 0 0-2-2h-3"/></svg>
+        Evidence card · 4 states · rendered from MIRA JSON-LD over <b>KOI</b> · static-first, JS for State 3 &amp; 4 interactions
+      </div>
+      <span style="font-size:11.5px;color:var(--faint);font-family:var(--font-mono);">read-only viewing surface</span>
+    </div>
+
+  </div><!-- /.web -->
+</div><!-- /.screen -->
+
+<footer class="dgfoot reveal d8">
+  <span class="dots"></span>MIRA × Discourse Graphs · push results to a shared web interface · draft v0.2<span class="dots"></span>
+</footer>
+
+</body>
+</html>

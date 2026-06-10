@@ -279,3 +279,174 @@
 .dash-search { display:flex; align-items:center; gap:9px; font-family: var(--font-body); font-size:13px;
   color: var(--muted); padding:8px 13px; background: var(--surface); border:1px solid var(--line); border-radius: var(--r-pill); }
 .dash-search svg { width:15px; height:15px; stroke: currentColor; fill:none; stroke-width:2; }
+
+/* ============================================================================
+   v0.2 extensions — the Jun 10 2026 Kate session (UX walkthrough)
+   Eight changes the real PI's walkthrough added or changed. Atoms only;
+   screen-specific layout stays in each screen's <style>. See
+   ux-spec-update-2026-06-10-dashboard.md. Reduced-motion is handled at the end.
+   ============================================================================ */
+
+/* ---- 1 · Evidence card with embedded, progressively-disclosed method ------ */
+/* "I'd never think about evidence and method separately" — result first, the
+   method collapsed inline (native <details>), full study details one click on. */
+.ecard {
+  position:relative; background: var(--surface); border:1px solid var(--line);
+  border-left:4px solid var(--evidence-ink); border-radius: var(--r-md);
+  padding:16px; box-shadow: var(--shadow-1);
+  transition: box-shadow .25s var(--ease), border-color .25s var(--ease);
+}
+.ecard:hover { box-shadow: var(--shadow-2); }
+.ecard__top { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:9px; }
+.ecard__plot { margin-top:4px; border:1px solid var(--line); border-radius: var(--r-sm); overflow:hidden; background: var(--surface); }
+.ecard__plot svg { width:100%; height:auto; display:block; }
+.ecard__plot .pcap { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 11px; border-top:1px solid var(--line); background: var(--paper); }
+.ecard__summary { font-family: var(--font-display); font-size:16.5px; line-height:1.3; margin:12px 0 0; color: var(--ink); }
+.ecard__summary .accent { color: var(--evidence-ink); font-weight:600; font-style:italic; }
+.ecard__caveats { margin:10px 0 0; padding:0; list-style:none; display:grid; gap:6px; }
+.ecard__caveats li { position:relative; padding-left:15px; font-size:12.5px; color: var(--muted); line-height:1.45; }
+.ecard__caveats li::before { content:''; position:absolute; left:2px; top:7px; width:5px; height:5px; border-radius:50%; background: var(--evidence-edge); }
+/* the collapsible embedded method — Study + Protocol, folded into the Evidence */
+.ecard__method { margin-top:13px; border:1px solid var(--protocol-edge); border-radius: var(--r-md); background: var(--protocol-wash); overflow:hidden; }
+.ecard__method > summary {
+  list-style:none; cursor:pointer; display:flex; align-items:center; gap:9px; padding:10px 13px;
+  font-family: var(--font-mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color: var(--protocol-ink); font-weight:700;
+}
+.ecard__method > summary::-webkit-details-marker { display:none; }
+.ecard__method > summary:hover { background: #e6daf5; }
+.ecard__method > summary .chev { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2.4; margin-left:auto; transition: transform .2s var(--ease); }
+.ecard__method[open] > summary .chev { transform: rotate(90deg); }
+.ecard__method .method-body { padding:0 13px 13px; animation: rise .3s var(--ease-out); }
+.ecard__studyfoot { margin-top:12px; }
+
+/* ---- 2 · Comment thread (kept separate from the node body) + convert ------ */
+.thread { margin-top:13px; background: var(--surface-2); border:1px solid var(--line-2); border-radius: var(--r-md); padding:11px 14px 4px; }
+.thread > .thread-h { display:flex; align-items:center; gap:8px; font-family: var(--font-mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color: var(--faint); font-weight:700; margin-bottom:4px; }
+.thread > .thread-h .ct { color: var(--ink-2); }
+.comment { display:flex; gap:10px; padding:10px 0; }
+.comment + .comment { border-top:1px dashed var(--line); }
+.comment .avatar { width:24px; height:24px; font-size:10px; flex:none; margin-top:1px; }
+.comment .c-main { min-width:0; flex:1; }
+.comment .c-meta { display:flex; align-items:center; gap:7px; font-size:11px; color: var(--faint); }
+.comment .c-meta b { color: var(--ink); font-weight:600; }
+.comment .c-meta .grow { flex:1; }
+.comment .c-body { font-size:12.5px; color: var(--ink-2); line-height:1.5; margin-top:3px; }
+.comment .promoted-chip {
+  display:inline-flex; align-items:center; gap:5px; margin-top:7px;
+  font-family: var(--font-mono); font-size:9.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+  color: var(--request-ink); background: var(--request-wash); border:1px solid var(--request-edge); border-radius: var(--r-pill); padding:2px 8px;
+}
+.comment .promoted-chip svg { width:11px; height:11px; stroke:currentColor; fill:none; stroke-width:2.2; }
+/* the composer, disabled on a read-only surface */
+.composer { display:flex; align-items:center; gap:9px; margin-top:6px; padding:9px 11px; border-top:1px dashed var(--line); font-size:12px; color: var(--faint); }
+.composer svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; }
+
+/* convert affordance — comment→request / candidate→evidence (shared) */
+.convert-btn {
+  display:inline-flex; align-items:center; gap:6px; font-family: var(--font-body); font-size:11.5px; font-weight:600;
+  padding:4px 10px; border-radius: var(--r-sm); border:1px solid var(--line); background: var(--surface); color: var(--ink-2);
+  cursor:pointer; transition: all .16s var(--ease); white-space:nowrap;
+}
+.convert-btn:hover { border-color: var(--request-ink); color: var(--request-ink); background: var(--request-wash); }
+.convert-btn.to-evidence:hover { border-color: var(--evidence-ink); color: var(--evidence-ink); background: var(--evidence-wash); }
+.convert-btn svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2; }
+.convert-menu { position:relative; display:inline-flex; }
+
+/* ---- 4 · Kanban: drag-to-set-status, reorder, and the stale nudge --------- */
+.kcard__grip { display:inline-flex; align-items:center; cursor:grab; color: var(--faint); opacity:0; transition: opacity .15s var(--ease); }
+.kcard:hover .kcard__grip, .kcard:focus-within .kcard__grip { opacity:.55; }
+.kcard__grip:hover { opacity:.95; }
+.kcard__grip:active { cursor:grabbing; }
+.kcard__grip svg { width:12px; height:13px; fill:currentColor; }
+.kcard.dragging { box-shadow: var(--shadow-3); transform: rotate(1.5deg) translateY(-2px); opacity:.96; }
+.kcol--drop { outline:1.5px dashed var(--study-ink); outline-offset:-3px; background: var(--study-wash); }
+.kcol__ghost { border:1.5px dashed var(--study-edge); border-radius: var(--r-md); padding:14px 12px; text-align:center; font-size:11.5px; color: var(--faint); }
+.stale-flag {
+  display:inline-flex; align-items:center; gap:5px; font-family: var(--font-mono); font-size:9.5px; font-weight:700;
+  letter-spacing:.04em; text-transform:uppercase; color: var(--warn);
+  background: var(--question-wash); border:1px solid var(--question-edge); border-radius: var(--r-pill); padding:2px 7px;
+}
+.stale-flag .dot { width:6px; height:6px; border-radius:50%; background: var(--warn); }
+.nudge-btn {
+  display:inline-flex; align-items:center; gap:6px; font-family: var(--font-body); font-size:11px; font-weight:600;
+  padding:4px 10px; border-radius: var(--r-pill); border:1px solid var(--question-edge); background: var(--surface); color: var(--warn);
+  cursor:pointer; transition: all .16s var(--ease);
+}
+.nudge-btn:hover { background: var(--question-wash); }
+.nudge-btn svg { width:12px; height:12px; stroke:currentColor; fill:none; stroke-width:2; }
+/* a "you can reorder these" priority cue (PI lens) */
+.prio-rail { display:flex; flex-direction:column; align-items:center; gap:3px; color: var(--faint); }
+.prio-rail .pn { font-family: var(--font-mono); font-size:9.5px; font-weight:700; }
+
+/* ---- 5 · Related-work newsfeed (keyword / tag overlap) -------------------- */
+.relfeed__head { font-family: var(--font-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color: var(--faint); font-weight:600; margin-bottom:11px; display:flex; align-items:center; gap:8px; }
+.relfeed__head svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; }
+.relfeed__item { display:flex; gap:10px; padding:11px 0; border-bottom:1px dashed var(--line); }
+.relfeed__item:last-child { border-bottom:0; padding-bottom:2px; }
+.relfeed__item .avatar { width:24px; height:24px; font-size:10px; flex:none; margin-top:1px; }
+.relfeed__item .rf-main { min-width:0; flex:1; }
+.relfeed__item .rf-title { font-size:12.5px; color: var(--ink); font-weight:600; line-height:1.35; }
+.relfeed__item .rf-by { font-family: var(--font-mono); font-size:10px; color: var(--faint); margin-top:2px; }
+.relfeed__why {
+  display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:7px;
+  font-family: var(--font-mono); font-size:9.5px; font-weight:600; color: var(--source-ink);
+  background: var(--source-wash); border:1px solid var(--source-edge); border-radius: var(--r-pill); padding:2px 8px;
+}
+.relfeed__why b { color: var(--source-ink); font-weight:700; }
+
+/* ---- 6 · Accessibility controls — serif toggle + spacing ------------------ */
+.a11y-pop {
+  position:absolute; z-index:40; background: var(--surface); border:1px solid var(--line);
+  border-radius: var(--r-md); box-shadow: var(--shadow-3); padding:14px; width:236px;
+}
+.a11y-pop h5 { font-family: var(--font-mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color: var(--faint); font-weight:700; margin:0 0 11px; }
+.a11y-opt { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.a11y-opt + .a11y-opt { margin-top:12px; padding-top:12px; border-top:1px dashed var(--line); }
+.a11y-opt .lbl { font-size:12.5px; font-weight:600; color: var(--ink); }
+.a11y-opt .lbl small { display:block; font-weight:400; font-size:10.5px; color: var(--faint); margin-top:1px; }
+.a11y-seg { display:inline-flex; padding:2px; gap:2px; background: var(--surface-2); border:1px solid var(--line); border-radius: var(--r-pill); flex:none; }
+.a11y-seg button { font-family: var(--font-body); font-size:11px; font-weight:600; color: var(--muted); padding:4px 9px; border:0; background:transparent; border-radius: var(--r-pill); cursor:pointer; transition: all .15s var(--ease); }
+.a11y-seg button.active, .a11y-seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-1); }
+/* a small switch (also reused elsewhere) */
+.switch { position:relative; width:34px; height:20px; border-radius:999px; background: var(--line); border:1px solid var(--line-2); cursor:pointer; transition: background .18s var(--ease); flex:none; }
+.switch::after { content:''; position:absolute; top:1.5px; left:1.5px; width:15px; height:15px; border-radius:50%; background: var(--surface); box-shadow: var(--shadow-1); transition: transform .18s var(--ease); }
+.switch[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); }
+.switch[aria-pressed="true"]::after { transform: translateX(14px); }
+/* the body preference modes the controls set (headings & mono are preserved) */
+.pref-serif { --font-body: var(--font-display); }
+.pref-serif body, body.pref-serif { font-family: var(--font-body); font-optical-sizing:auto; }
+.pref-spacious { --gap: 20px; }
+body.pref-spacious { line-height: 1.7; }
+
+/* ---- 7 · Share mechanics — right-click menu, groups, verification --------- */
+.ctx-menu { background: var(--surface); border:1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--shadow-3); padding:6px; min-width:212px; }
+.ctx-menu .ctx-h { font-family: var(--font-mono); font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color: var(--faint); font-weight:700; padding:6px 9px 4px; }
+.ctx-item { display:flex; align-items:center; gap:9px; padding:7px 9px; border-radius: var(--r-sm); color: var(--ink-2); cursor:pointer; font-size:13px; }
+.ctx-item:hover { background: var(--surface-2); color: var(--ink); }
+.ctx-item > svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; flex:none; }
+.ctx-item .chev { margin-left:auto; opacity:.5; }
+.ctx-sep { height:1px; background: var(--line); margin:5px 2px; }
+.group-pill { display:inline-flex; align-items:center; gap:7px; padding:6px 11px; border-radius: var(--r-pill); font-size:12px; font-weight:600; border:1px solid var(--line); background: var(--surface); color: var(--ink-2); cursor:pointer; }
+.group-pill .hex { width:9px; height:9px; flex:none; }
+.group-pill.consortium { background: var(--request-wash); color: var(--request-ink); border-color: var(--request-edge); }
+.group-pill.world { background: var(--claim-wash); color: var(--claim-ink); border-color: var(--claim-edge); }
+.group-pill.lab { background: var(--study-wash); color: var(--study-ink); border-color: var(--study-edge); }
+/* verification sheet — "you're about to share; this is exactly what's shared" */
+.sv-row { display:flex; align-items:center; gap:11px; padding:9px 0; border-bottom:1px dashed var(--line); }
+.sv-row:last-child { border-bottom:0; }
+.sv-row .sv-state { flex:none; width:18px; text-align:center; font-weight:700; font-size:13px; }
+.sv-row .sv-state.ok { color: var(--ok); }
+.sv-row .sv-state.gate { color: var(--warn); }
+.sv-row .sv-state.no { color: var(--private); }
+.sv-row .sv-main { flex:1; min-width:0; }
+.sv-row .sv-name { font-size:12.5px; font-weight:600; color: var(--ink); }
+.sv-row .sv-name.withheld { color: var(--private); }
+.sv-row .sv-target { font-family: var(--font-mono); font-size:10.5px; color: var(--muted); margin-top:1px; }
+
+/* ---- reduced-motion: silence the v0.2 motion ----------------------------- */
+@media (prefers-reduced-motion: reduce){
+  .ecard__method > summary .chev,
+  .ecard__method .method-body,
+  .kcard.dragging,
+  .switch, .switch::after { transition:none; animation:none; }
+}

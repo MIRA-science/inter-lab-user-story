@@ -246,13 +246,48 @@
           <div class="proj">Stress-granule assembly order · Vogel × Kate</div>
         </div>
       </div>
-      <div class="viewer">
+      <div class="viewer" style="position:relative;">
         <span class="share-level consortium">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
           Consortium · 6 labs
         </span>
         <span class="avatar grad" title="viewing as a grad student in Kate's lab (reproducer)">M</span>
         <span>viewing as <b style="color:var(--ink)">Kate's student</b></span>
+        <!-- a11y controls trigger -->
+        <button type="button" id="a11yTrigger" title="Text &amp; spacing"
+          style="font-family:var(--font-display);font-size:12px;font-weight:700;padding:5px 10px;border-radius:var(--r-pill);border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;transition:all .15s var(--ease);"
+          aria-haspopup="dialog" aria-expanded="false"
+          onclick="(function(btn){
+            var pop = document.getElementById('a11yPop');
+            var open = pop.style.display === 'block';
+            pop.style.display = open ? 'none' : 'block';
+            btn.setAttribute('aria-expanded', !open);
+          })(this)">Aa</button>
+        <!-- a11y popover -->
+        <div id="a11yPop" class="a11y-pop" role="dialog" aria-label="Text &amp; spacing" style="display:none;top:calc(100% + 8px);right:0;left:auto;">
+          <h5>Text &amp; Spacing</h5>
+          <div class="a11y-opt">
+            <div class="lbl">Serif text<small>Switches body to Fraunces</small></div>
+            <button type="button" class="switch" id="serifSwitch" aria-pressed="false" title="Toggle serif text"
+              onclick="(function(sw){
+                var on = sw.getAttribute('aria-pressed') === 'true';
+                sw.setAttribute('aria-pressed', !on);
+                document.body.classList.toggle('pref-serif', !on);
+                try { localStorage.setItem('mira-pref-serif', !on); } catch(e){}
+              })(this)"></button>
+          </div>
+          <div class="a11y-opt">
+            <div class="lbl">Spacing<small>Line height &amp; card gap</small></div>
+            <div class="a11y-seg" role="radiogroup" aria-label="Spacing">
+              <button type="button" aria-pressed="false"
+                onclick="document.body.classList.remove('pref-spacious');this.parentElement.querySelectorAll('button').forEach(function(b){b.setAttribute('aria-pressed','false');b.classList.remove('active');});this.setAttribute('aria-pressed','true');this.classList.add('active');try{localStorage.setItem('mira-pref-spacing','compact');}catch(e){}">Compact</button>
+              <button type="button" aria-pressed="true" class="active"
+                onclick="document.body.classList.remove('pref-spacious');this.parentElement.querySelectorAll('button').forEach(function(b){b.setAttribute('aria-pressed','false');b.classList.remove('active');});this.setAttribute('aria-pressed','true');this.classList.add('active');try{localStorage.setItem('mira-pref-spacing','default');}catch(e){}">Default</button>
+              <button type="button" aria-pressed="false"
+                onclick="document.body.classList.add('pref-spacious');this.parentElement.querySelectorAll('button').forEach(function(b){b.setAttribute('aria-pressed','false');b.classList.remove('active');});this.setAttribute('aria-pressed','true');this.classList.add('active');try{localStorage.setItem('mira-pref-spacing','spacious');}catch(e){}">Spacious</button>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -493,6 +528,78 @@
           </div>
         </div>
 
+        <!-- ---- Discussion section heading --------------------------------- -->
+        <div class="sec-head reveal d8" style="margin-top:30px;">
+          <h3>Discuss the result — separate from the method, so nothing gets buried</h3>
+          <span class="rule"></span>
+        </div>
+
+        <!-- ---- Comment thread (Change 1 & 2) ------------------------------ -->
+        <section class="thread reveal d8" aria-label="Discussion thread" role="log" aria-live="polite">
+          <div class="thread-h">💬 Discussion <span class="ct">(3)</span> — kept separate from the result &amp; method</div>
+
+          <!-- Comment 1: Kate, 2d ago -->
+          <div class="comment">
+            <span class="avatar kate" title="Kate">K</span>
+            <div class="c-main">
+              <div class="c-meta">
+                <b>Kate</b> · 2d
+                <span class="grow"></span>
+                <button class="convert-btn" type="button" aria-label="Convert this comment to a Request" title="Convert to request"
+                  onclick="(function(btn){btn.style.display='none';})(this)">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  Convert to request
+                </button>
+              </div>
+              <div class="c-body">Why a fixed intensity threshold and not Otsu here?</div>
+            </div>
+          </div>
+
+          <!-- Comment 2: Sean, 1d ago -->
+          <div class="comment">
+            <span class="avatar sean" title="Sean">S</span>
+            <div class="c-main">
+              <div class="c-meta"><b>Sean</b> · 1d</div>
+              <div class="c-body">Otsu over-segments the dim PABP1 channel — fixed keeps the two channels comparable.</div>
+            </div>
+          </div>
+
+          <!-- Comment 3: Kate, 4h ago — has the Convert to request button -->
+          <div class="comment">
+            <span class="avatar kate" title="Kate">K</span>
+            <div class="c-main">
+              <div class="c-meta">
+                <b>Kate</b> · 4h
+                <span class="grow"></span>
+                <button class="convert-btn" type="button" id="convReq" aria-label="Convert this comment to a Request"
+                  onclick="(function(btn){
+                    btn.style.display='none';
+                    var body = btn.closest('.c-main').querySelector('.c-body');
+                    var chip = document.createElement('span');
+                    chip.className = 'promoted-chip';
+                    chip.innerHTML = '<svg viewBox=\'0 0 24 24\' aria-hidden=\'true\'><path d=\'M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z\'/></svg> → request sent to Sean';
+                    body.insertAdjacentElement('afterend', chip);
+                    var toast = document.createElement('div');
+                    toast.className = 'toast';
+                    toast.style.marginTop = '14px';
+                    toast.innerHTML = '<span class=\'dot\' style=\'background:var(--request-ink);\'></span><div style=\'font-size:12.5px;\'><strong>Request sent to Sean.</strong><div class=\'muted\' style=\'margin-top:3px;\'>He\'ll be notified. <button type=\'button\' onclick=\'this.closest(\\\".toast\\\").remove();document.getElementById(\\\"convReq\\\").style.display=\\\"\\\";chip.remove();\' style=\'font-size:11.5px;font-weight:600;color:var(--brand);background:none;border:none;cursor:pointer;padding:0;margin-left:8px;\'>Undo</button></div></div>';
+                    btn.closest('.thread').insertBefore(toast, btn.closest('.thread').querySelector('.composer'));
+                  })(this)">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  Convert to request
+                </button>
+              </div>
+              <div class="c-body">Makes sense. Can we also try a lower arsenite dose?</div>
+            </div>
+          </div>
+
+          <!-- Composer: disabled on read-only surface -->
+          <div class="composer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="2.6"/></svg>
+            Viewing only — sign in to comment
+          </div>
+        </section>
+
       </main>
 
       <!-- =========================== SIDEBAR =========================== -->
@@ -613,7 +720,7 @@
 </div><!-- /.screen -->
 
 <footer class="dgfoot reveal d8">
-  <span class="dots"></span>MIRA × Discourse Graphs · push results to a shared web interface · draft v0.1<span class="dots"></span>
+  <span class="dots"></span>MIRA × Discourse Graphs · push results to a shared web interface · draft v0.2<span class="dots"></span>
 </footer>
 
 </body>
