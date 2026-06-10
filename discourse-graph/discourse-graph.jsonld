@@ -1,0 +1,257 @@
+{
+  "@context": [
+    "https://purl.archive.org/purl/mira-science/mira.jsonld",
+    {
+      "sg": "https://mira-science.github.io/inter-lab-user-story/discourse-graph/#",
+      "Study": "mira:Study",
+      "Item": "sioc:Item",
+      "sourceType": "mira:sourceType"
+    }
+  ],
+  "@graph": [
+    {
+      "@id": "sg:sean",
+      "accountName": "Sean",
+      "@type": "UserAccount"
+    },
+    {
+      "@id": "sg:node_zF94G4VvOsvL2sQYcaf3N",
+      "@type": "NodeSchema",
+      "modified": "2026-06-10T00:00:00Z",
+      "created": "2026-06-10T00:00:00Z",
+      "subClassOf": [
+        "mira:Study"
+      ],
+      "label": "Experiment",
+      "creator": "sg:sean"
+    },
+    {
+      "@id": "sg:node__1xAFVzzF5E8z9R3MXFPN",
+      "@type": "NodeSchema",
+      "modified": "2026-06-10T00:00:00Z",
+      "created": "2026-06-10T00:00:00Z",
+      "subClassOf": [
+        "mira:Protocol"
+      ],
+      "label": "Protocol",
+      "creator": "sg:sean"
+    },
+    {
+      "@id": "sg:node_PlR6-3Ki_abE51-VljlmL",
+      "@type": "NodeSchema",
+      "modified": "2026-06-10T00:00:00Z",
+      "created": "2026-06-10T00:00:00Z",
+      "subClassOf": [
+        "mira:Evidence"
+      ],
+      "label": "Result",
+      "creator": "sg:sean"
+    },
+    {
+      "@id": "sg:areldef-follows",
+      "@type": "AbstractRelationDef",
+      "modified": "2026-06-10T00:00:00Z",
+      "created": "2026-06-10T00:00:00Z",
+      "subClassOf": [
+        "dgb:RelationInstance",
+        "mira:follows",
+        {
+          "@type": "owl:Restriction",
+          "onProperty": "rdf:predicate",
+          "hasValue": "sg:areldef-follows"
+        }
+      ],
+      "label": "follows",
+      "creator": "sg:sean"
+    },
+    {
+      "@id": "sg:reldef-follows",
+      "@type": "RelationDef",
+      "modified": "2026-06-10T00:00:00Z",
+      "created": "2026-06-10T00:00:00Z",
+      "domain": "sg:node_zF94G4VvOsvL2sQYcaf3N",
+      "range": "sg:node__1xAFVzzF5E8z9R3MXFPN",
+      "subClassOf": [
+        "sg:areldef-follows"
+      ],
+      "label": "follows",
+      "creator": "sg:sean"
+    },
+    {
+      "@id": "sg:areldef-is_grounded_in",
+      "@type": "AbstractRelationDef",
+      "modified": "2026-06-10T00:00:00Z",
+      "created": "2026-06-10T00:00:00Z",
+      "subClassOf": [
+        "dgb:RelationInstance",
+        "mira:is_grounded_in",
+        {
+          "@type": "owl:Restriction",
+          "onProperty": "rdf:predicate",
+          "hasValue": "sg:areldef-is_grounded_in"
+        }
+      ],
+      "label": "is_grounded_in",
+      "creator": "sg:sean"
+    },
+    {
+      "@id": "sg:reldef-is_grounded_in",
+      "@type": "RelationDef",
+      "modified": "2026-06-10T00:00:00Z",
+      "created": "2026-06-10T00:00:00Z",
+      "domain": "sg:node_PlR6-3Ki_abE51-VljlmL",
+      "range": "sg:node_zF94G4VvOsvL2sQYcaf3N",
+      "subClassOf": [
+        "sg:areldef-is_grounded_in"
+      ],
+      "label": "is_grounded_in",
+      "creator": "sg:sean"
+    },
+    {
+      "@id": "sg:019ea6d6-d619-7557-a5d3-c83bbe410b4b",
+      "@type": [
+        "sg:node_zF94G4VvOsvL2sQYcaf3N",
+        "mira:Study"
+      ],
+      "modified": "2025-10-14T00:00:00Z",
+      "created": "2025-08-23T00:00:00Z",
+      "title": "EXP - SIM Imaging Stress Granules at Different Times during Formation",
+      "description": {
+        "@type": "Item",
+        "format": "text/plain",
+        "content": "Live super-resolution (Lattice SIM) imaging experiment tracking two stress-granule proteins (PROTEIN 1-GFP and PROTEIN 2-mKate) in HeLa cells at successive times after stress, to measure the rate, amount and coordination with which the two proteins are incorporated into stress granules, and how this differs between stress types."
+      },
+      "content": "## Progress & Notes\n- `2025_08_23`: Kate's student visited Montreal and they sent their cells head of time. Khalid is maintaining the cell culture using their protocol. (See linked protocol node.) This cell line has `PROTEIN 1` tagged with GFP and we will transfect it with a plasmid expressing `PROTEIN 2`-mKate. Applied the stress to the cells and imaged them on the microscope to measure the rate/amount/coordination of the two proteins forming stress granules. \n- `2025_10_14`: I have developed the segmentation and subsequent image analysis pipeline. This has yielded initial results (attached). There were several design choices which had to be made including: \n\t- What channel to use for the segmentation, or whether to use the SUM or the MAX (pixel-wise) for the segmentation. \n\t- What intensity threshold to use to exclude local maxima which are due to background noise? (This is a parameter of the `ijm` macro and was set by choosing a value that is just above the background max intensity.)\n# Hypothesis\nWe have multiple hypotheses that are addressed by this experiment: \n1. Stress granule components begin to form droplets independently of each other, and these components later mix into the same droplet to give the SGs we typically observe. \n2. This process will be perturbed when we change the type of stress because different types of stress have different sensors which trigger the SG formation mechanism. The different nature of the formation (with respect to the two tagged proteins) will give us insight into how these two proteins are related to the downstream effects of the stress sensing mechanism which lead to the droplet formation. ",
+      "creator": "sg:sean",
+      "sourceType": "Ongoing research"
+    },
+    {
+      "@id": "sg:019ea6d7-3a61-78b4-8323-db918ad9caef",
+      "@type": [
+        "sg:node__1xAFVzzF5E8z9R3MXFPN",
+        "mira:Protocol"
+      ],
+      "modified": "2025-08-23T00:00:00Z",
+      "created": "2025-08-23T00:00:00Z",
+      "title": "PRO-Hela Cell Culture",
+      "description": {
+        "@type": "Item",
+        "format": "text/plain",
+        "content": "Protocol for maintaining the HeLa cell culture used in the experiment (stub - detailed growth conditions pending from collaborators)."
+      },
+      "content": "# Protocol \n- TODO: Get growth information from Khalid and Kate's students. ",
+      "creator": "sg:sean"
+    },
+    {
+      "@id": "sg:019ea6d7-a227-7e6a-a18f-547b025e9879",
+      "@type": [
+        "sg:node__1xAFVzzF5E8z9R3MXFPN",
+        "mira:Protocol"
+      ],
+      "modified": "2025-10-14T00:00:00Z",
+      "created": "2025-08-23T00:00:00Z",
+      "title": "PRO-High resolution stress granule formation imaging (Lattice SIM)",
+      "description": {
+        "@type": "Item",
+        "format": "text/plain",
+        "content": "Protocol for time-resolved high-resolution imaging of stress-granule formation on a ZEISS Elyra 7 in Lattice SIM mode: from stress application through z-stack acquisition on fresh fields of view up to 30 min, to SIM deconvolution, with the acquisition and processing parameters tabulated."
+      },
+      "content": "# Protocol\n1. Cultured cells were adhered to a coverslip and placed in a well containing 1µl of the media they were grown in. This cell line was tagged with endogenous `PROTEIN 1`-GFP and was transfected with a plasmid expressing `PROTEIN 2`-mKate. \n2. As quickly as possible: \n\t1. The media was removed from the well with a pipette. \n\t2. New media containing the stress (Sodium Arsenite or osmotic stress) was added using a pipette. Do not pipette directly onto the coverslip. Deposit the new media on the side of the well to avoid disturbing the cells or applying any mechanical stress. \n\t3. Start a stopwatch to calculate the amount of time from the since the stress was applied. \n3. Place the cells on the Elyra 7 stage and shut the enclosure in preparation for imaging. The time from the exchange of the media to the first image acquisition should be as short as possible to observe the stress response in its early stages. \n4. Scan over the cells using the bright-field to identify cells which are healthy and which are close enough together that you can get a good amount (purely to increase the data acquisition efficiency). You can position the center of the z-stack in the bright-field to avoid using the laser and initiating any photobleaching so that we can quantitatively compare the intensities in the analysis step. \n5. Define the \"center\" of the z-stack in the ZEN software controlling the microscope. \n6. Switch to the Lattice SIM acquisition track and acquire a z-stack using the parameters outlined below. Note the time since the stress was applied using your stopwatch and include this time in the filename for the raw image.\n7. Move to a NEW field of view so we have fresh cells which have never been exposed to the laser and repeat the imaging steps above (4-6). Repeat this until you have imaged for 30 minutes after the stress application. \n8. Repeat steps 1-7 with a new coverslip in a new well of cultured cells to generate replicates. \n9. Process the RAW image files using batch mode in ZEN to perform the SIM deconvolution and generate the super-resolution images. Use the parameters in the table below. Use the default parameters otherwise.\n\n## Imaging Parameters\n\n| Parameter            | Value  |\n| -------------------- | ------ |\n| Number of Z slices.  | 25     |\n| Z slice spacing      | 300 nm |\n| 488 nm laser power   | 0.8    |\n| 561 nm laser power   | 0.8    |\n| Exposure Time        | 30 ms  |\n| Number of SIM Phases | 13     |\n| Use Z-piazo          | Yes    |\n## Processing Parameters\n\n| Parameter           | Value    |\n| ------------------- | -------- |\n| SIM Squared         | No       |\n| Leap Mode           | 3D Leap  |\n| Processing Strength | Weak     |\n| Scale To Raw        | Yes      |\n| Gaussian Fit Method | Fast Fit |",
+      "creator": "sg:sean"
+    },
+    {
+      "@id": "sg:019ea6d8-1361-781d-8f37-2c7ca3503ec2",
+      "@type": [
+        "sg:node__1xAFVzzF5E8z9R3MXFPN",
+        "mira:Protocol"
+      ],
+      "modified": "2025-10-14T00:00:00Z",
+      "created": "2025-08-23T00:00:00Z",
+      "title": "PRO-Stress Granule Segmentation and Composition Mesasurement",
+      "description": {
+        "@type": "Item",
+        "format": "text/plain",
+        "content": "Protocol for segmenting stress granules from the processed SIM data (3D Suite ImageJ macro applied to the per-pixel SUM of the two channels) and measuring per-granule, per-channel composition statistics in Python (regionprops), then binning cells by time since stress."
+      },
+      "content": "# Segmentation and Measurement Protocol\n1. Crop individual cells into their own 3D stack `tif` images using Fiji from the processed sim data. \n2. For each `tif` of a cell, do the following: run the `segment_stress_granules.ijm` ImageJ macro to generate a label image which segments the stress granules in the fluorescent image. This is done using the 3D Suite plugin to identify local signal maxima and then fit a 3D gaussian to use a FWHM threshold for each object (stress granule). Because there are two signal channels, this was done on the per-pixel SUM of the channels to prevent bias toward segmenting objects which have more or less of a single component. \n3. Then in python (see python script in data). The fluorescent `tif` is loaded and the label image `tif` is loaded, and the `regionprops` function is used to compute the statistics for each color channel on each spot. \n\n# Analysis and Statistics Protocol\nEach cell was binned into time bins based on how long it has been since the stress was applied. ",
+      "creator": "sg:sean"
+    },
+    {
+      "@id": "sg:019ea6d6-d61a-7208-b9b7-cd2b78cfd9d1",
+      "@type": [
+        "sg:node_PlR6-3Ki_abE51-VljlmL",
+        "mira:Evidence"
+      ],
+      "modified": "2025-10-14T00:00:00Z",
+      "created": "2025-10-14T00:00:00Z",
+      "title": "RES - Stress Granules Change Composition Over Time",
+      "description": {
+        "@type": "Item",
+        "format": "text/plain",
+        "content": "Across both stress conditions the Pearson correlation between the two tagged proteins starts negative and becomes positive over time - the proteins initially exclude each other, then co-localize - with a significant difference between the two stress conditions in the first 10-15 minutes."
+      },
+      "content": "# Summary\n![](images/plot.png)\n\n# Key Points\n- In both conditions, the pearson correlation coefficient between the two channels starts negative and becomes positive over time. This implies that the two tagged proteins (`PROTEIN 1` and `PROTEIN 2`) are co-localizing more over time and they even start to coalesce independently of each other in the beginning. \n- While this shows that the proteins start off excluding each other and then mix over time, it is not clear what the nature of this exclusion is. They could be forming different droplets which merge over time, or they could both be forming in the same droplet, but occupying different sub-compartments in the droplet. Another experiment will need to be done to understand the nature/structure of these early SGs. \n- While the two stress conditions look similar after 10-15 minutes, there is a significant difference in them prior to that point. The interpretation of this would depend on the result of the previous point. Although, it does imply that there is a measurable difference in the co-localization of these proteins during different stress, perhaps implying that they are related to how the SGs form in response to a particular type of stress. ",
+      "creator": "sg:sean",
+      "sourceType": "Ongoing research",
+      "observationBase": "images/plot.png"
+    },
+    {
+      "@id": "images/plot.png",
+      "@type": "Item",
+      "format": "image/png",
+      "content": "Plot: Pearson correlation coefficient between the PROTEIN 1 and PROTEIN 2 channels as a function of time since stress, for both stress conditions."
+    },
+    {
+      "@id": "sg:rel-follows-019ea6d7-3a61-78b4-8323-db918ad9caef",
+      "@type": [
+        "sg:areldef-follows",
+        "mira:follows"
+      ],
+      "modified": "2025-10-14T00:00:00Z",
+      "created": "2025-10-14T00:00:00Z",
+      "source": "sg:019ea6d6-d619-7557-a5d3-c83bbe410b4b",
+      "destination": "sg:019ea6d7-3a61-78b4-8323-db918ad9caef",
+      "title": "[[EXP - SIM Imaging Stress Granules at Different Times during Formation]] -follows-> [[PRO-Hela Cell Culture]]",
+      "creator": "sg:sean"
+    },
+    {
+      "@id": "sg:rel-follows-019ea6d7-a227-7e6a-a18f-547b025e9879",
+      "@type": [
+        "sg:areldef-follows",
+        "mira:follows"
+      ],
+      "modified": "2025-10-14T00:00:00Z",
+      "created": "2025-10-14T00:00:00Z",
+      "source": "sg:019ea6d6-d619-7557-a5d3-c83bbe410b4b",
+      "destination": "sg:019ea6d7-a227-7e6a-a18f-547b025e9879",
+      "title": "[[EXP - SIM Imaging Stress Granules at Different Times during Formation]] -follows-> [[PRO-High resolution stress granule formation imaging (Lattice SIM)]]",
+      "creator": "sg:sean"
+    },
+    {
+      "@id": "sg:rel-follows-019ea6d8-1361-781d-8f37-2c7ca3503ec2",
+      "@type": [
+        "sg:areldef-follows",
+        "mira:follows"
+      ],
+      "modified": "2025-10-14T00:00:00Z",
+      "created": "2025-10-14T00:00:00Z",
+      "source": "sg:019ea6d6-d619-7557-a5d3-c83bbe410b4b",
+      "destination": "sg:019ea6d8-1361-781d-8f37-2c7ca3503ec2",
+      "title": "[[EXP - SIM Imaging Stress Granules at Different Times during Formation]] -follows-> [[PRO-Stress Granule Segmentation and Composition Mesasurement]]",
+      "creator": "sg:sean"
+    },
+    {
+      "@id": "sg:rel-is_grounded_in-019ea6d6-d61a-7208-b9b7-cd2b78cfd9d1",
+      "@type": [
+        "sg:areldef-is_grounded_in",
+        "mira:is_grounded_in"
+      ],
+      "modified": "2025-10-14T00:00:00Z",
+      "created": "2025-10-14T00:00:00Z",
+      "source": "sg:019ea6d6-d61a-7208-b9b7-cd2b78cfd9d1",
+      "destination": "sg:019ea6d6-d619-7557-a5d3-c83bbe410b4b",
+      "title": "[[RES - Stress Granules Change Composition Over Time]] -is_grounded_in-> [[EXP - SIM Imaging Stress Granules at Different Times during Formation]]",
+      "creator": "sg:sean"
+    }
+  ]
+}
