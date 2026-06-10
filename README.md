@@ -4,6 +4,38 @@
 
 ---
 
+## ▶ See the mockups — live
+
+The nine screens are **interactive HTML mockups**, hosted on GitHub Pages. Open them in a browser — GitHub shows `.html` files as raw source, so use the links below (not the files in [`artifacts/mockups/`](./artifacts/mockups/)).
+
+### 🔗 [**mira-science.github.io/inter-lab-user-story**](https://mira-science.github.io/inter-lab-user-story/) — the gallery index
+
+**Central — Sean → Kate's dashboard ★**
+
+| | Screen | |
+|--:|---|---|
+| **06** | [Share a selected subgraph ↗](https://mira-science.github.io/inter-lab-user-story/06-share-to-dashboard.html) | pick the `Evidence` bundle, set per-node visibility, push via KOI |
+| **07** | [The shared dashboard ↗](https://mira-science.github.io/inter-lab-user-story/07-shared-dashboard.html) | the headline read-only web view — Graph · Kanban · Table |
+| **08** | [Traverse & request back ↗](https://mira-science.github.io/inter-lab-user-story/08-traverse-and-request.html) | follow lineage to the method, hit gated data, send a `Request` |
+| **09** | [Consortium view & recruiting ↗](https://mira-science.github.io/inter-lab-user-story/09-consortium-view.html) | one umbrella across many labs — public vs. password-protected |
+
+<details>
+<summary><b>Public extreme — QBI → the whole world (01–05)</b></summary>
+
+| | Screen | |
+|--:|---|---|
+| **01** | [Publish to the public ↗](https://mira-science.github.io/inter-lab-user-story/01-publish.html) | select the bundle, pick destinations, set visibility |
+| **02** | [The Evidence node, read cold ↗](https://mira-science.github.io/inter-lab-user-story/02-evidence-node.html) | summary up front, full lineage on demand |
+| **03** | [Public web view · no DG app ↗](https://mira-science.github.io/inter-lab-user-story/03-public-web-view.html) | the result as a public web page — provenance + frozen citation |
+| **04** | [Micropublication ↗](https://mira-science.github.io/inter-lab-user-story/04-micropublication.html) | several `Evidence` bundles compile into a Jupyter Book |
+| **05** | [Public database & cite ↗](https://mira-science.github.io/inter-lab-user-story/05-public-database.html) | the published graph as a public dashboard; cite a frozen version |
+
+</details>
+
+*Served from [`artifacts/mockups/`](./artifacts/mockups/) via GitHub Pages ([`pages.yml`](./.github/workflows/pages.yml)); edits to those files redeploy automatically. PNG previews of every screen are inlined in [`artifacts/README.md`](./artifacts/README.md) for reading on GitHub itself.*
+
+---
+
 ## The central use case — Sean → Kate's dashboard
 
 Sean, a PhD student in the **Vogel Lab**, has a result living as markdown discourse-graph nodes in his Obsidian vault: in stressed HeLa cells, two stress-granule proteins are recruited in a fixed order — **G3BP1 climbs before PABP1** as granules assemble. He wants **Kate's lab** — a collaborating PI and her students — to **see it, trust it, and dig into it on their own time.**
@@ -23,7 +55,7 @@ Take the same machinery and open it all the way up. Brian, at the **Quantum Biol
 | File | What it is |
 |---|---|
 | [`AGENTS.md`](./AGENTS.md) | **Start here.** The shared brief + spec: scope, actors, data model, twelve normative rules, the two lifecycles (share-to-dashboard + publish), acceptance criteria, and open questions. Written so coding agents in different labs can build interoperable pieces from one source of truth. |
-| [`artifacts/`](./artifacts/) | **The fleshed-out UX.** The **central** [`ux-user-story-dashboard.md`](./artifacts/ux-user-story-dashboard.md) (Sean → Kate) and its context pack [`_grounding-dashboard.md`](./artifacts/_grounding-dashboard.md); the retained [`ux-user-story.md`](./artifacts/ux-user-story.md) (QBI) and [`_grounding.md`](./artifacts/_grounding.md); and **nine** interactive HTML [`mockups/`](./artifacts/mockups/) — **06–09** the dashboard (central), **01–05** the public extreme. See [`artifacts/README.md`](./artifacts/README.md). |
+| [`artifacts/`](./artifacts/) | **The fleshed-out UX.** The **central** [`ux-user-story-dashboard.md`](./artifacts/ux-user-story-dashboard.md) (Sean → Kate) and its context pack [`_grounding-dashboard.md`](./artifacts/_grounding-dashboard.md); the retained [`ux-user-story.md`](./artifacts/ux-user-story.md) (QBI) and [`_grounding.md`](./artifacts/_grounding.md); and **nine** interactive HTML [`mockups/`](./artifacts/mockups/) ([**view live ↗**](https://mira-science.github.io/inter-lab-user-story/)) — **06–09** the dashboard (central), **01–05** the public extreme. See [`artifacts/README.md`](./artifacts/README.md). |
 | [`./low-context-user-story.png`](./low-context-user-story.png) | The user-story canvas — **Sean's notebook → Kate's lab → a shared web interface** ("KOI DG nodes to dashboard/kanban"), carrying a `Request for study` node — across location / format / feel / features / schema / tasks. |
 
 ## The shape of the data
