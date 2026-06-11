@@ -213,6 +213,13 @@ Thread is a `role="log"`/`aria-live="polite"` region for new comments; the kebab
 
 ## 4. Kanban status-drag, PI prioritization & the stale nudge
 
+> **⚠ SUPERSEDED IN PART (Jun 11).** The **PI nudge / `.stale-flag` / `.nudge-btn`** specced in this section was
+> **rejected by the trainee** in the Jun 11 session and is **reversed** — see
+> [`ux-spec-update-2026-06-11-trainee-feedback.md`](./ux-spec-update-2026-06-11-trainee-feedback.md) §1 and the
+> research layer [`ux-research-synthesis-2026-06-11-trainee.md`](./ux-research-synthesis-2026-06-11-trainee.md).
+> The **status-drag** and **PI reorder** mechanics below still stand; only the **nudge** dies — replaced by a
+> student-set deadline + meeting-anchored "for next sync" agenda + an opt-in "follow" (mockups 09, new 11).
+
 ### Overview
 Three intra-team behaviors the consortium board didn't cover. Drag is currently **graph-spatial only**
 (*"drag nodes to arrange"* in mockup 07); Kate wants **drag = status change** on the Kanban, plus the ability to
@@ -516,3 +523,4 @@ While here, **re-cut 08 as the `.ecard`** per §11 so every result surface share
 ---
 
 *MIRA × Discourse Graphs · push results to a shared web interface · Sean → Kate **dashboard** · UX handoff delta · draft **v0.2** + design-review corrections Jun 11 (§12) (supersedes v0.1 where they differ; narrative spec stays [`ux-user-story-dashboard.md`](./ux-user-story-dashboard.md)) · from the Jun 10 2026 Kate session*
+ 

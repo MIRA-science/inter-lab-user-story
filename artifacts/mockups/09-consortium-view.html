@@ -403,7 +403,7 @@
                 <span class="ct">3</span>
               </div>
               <!-- PI-lens note: reorder hint -->
-              <p style="font-family:var(--font-mono);font-size:9.5px;color:var(--faint);margin:0 2px 2px;line-height:1.4;">As lead, drag to reorder priority; stalled studies surface a nudge.</p>
+              <p style="font-family:var(--font-mono);font-size:9.5px;color:var(--faint);margin:0 2px 2px;line-height:1.4;">As lead, drag to reorder priority. The owner sets each study's next-step date — you can <b>follow</b> a card or add it to the next sync. No pings.</p>
               <article class="kcard study inprog">
                 <div style="display:flex;align-items:center;gap:6px;">
                   <span class="ntype study">Study</span>
@@ -422,14 +422,23 @@
                 <div class="kt">Arsenite dose–response</div>
                 <div class="kmeta">
                   <span class="avatar sean">S</span><span>Sean · Vogel Lab</span><span class="grow"></span>
-                  <span class="stale-flag"><span class="dot"></span> no result · 18d</span>
+                  <span class="due-chip overdue" title="Owner-set deadline — Sean set this himself, not the PI"><span class="dot"></span> next step by Jun 6 · 5d over</span>
                   <span class="vis world" title="public"></span>
                 </div>
                 <div class="kbar"><i style="width:58%"></i></div>
-                <div style="margin-top:9px;">
-                  <button class="nudge-btn" type="button" onclick="this.textContent='✓ Ping sent';this.disabled=true;this.style.opacity=.7;" title="Ping student for an update">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
-                    Nudge
+                <!-- v0.3: the nudge is gone. The owner's self-set date lapsed (calm, muted), the card is slated
+                     for the next sync, and the PI may FOLLOW (Sean granted it) — never poke. -->
+                <div class="kfoot">
+                  <span class="agenda-tag" title="Slated for the next Kate sync — what we'll discuss, not a notification">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+                    For next sync · Jun 16
+                  </span>
+                  <span class="grow"></span>
+                  <button class="follow-btn" type="button"
+                    onclick="var l=this.querySelector('.lbl');var on=this.classList.toggle('is-following');l.textContent=on?'Following':'Follow';this.title=on?'You get the same lapse signal Sean does':'Follow — Sean granted this';"
+                    title="Follow — get the same signal Sean does when his self-set deadline lapses (he granted this)">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                    <span class="lbl">Follow</span>
                   </button>
                 </div>
               </article>

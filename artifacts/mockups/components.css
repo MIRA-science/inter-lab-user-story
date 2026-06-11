@@ -361,19 +361,16 @@
 .kcard.dragging { box-shadow: var(--shadow-3); transform: rotate(1.5deg) translateY(-2px); opacity:.96; }
 .kcol--drop { outline:1.5px dashed var(--study-ink); outline-offset:-3px; background: var(--study-wash); }
 .kcol__ghost { border:1.5px dashed var(--study-edge); border-radius: var(--r-md); padding:14px 12px; text-align:center; font-size:11.5px; color: var(--faint); }
+/* v0.3 (Jun 11): the PI "nudge" was rejected by the trainee — `.nudge-btn` is RETIRED.
+   `.stale-flag` is re-homed as a CALM, muted idle marker (no alarm colour, no poke),
+   used only inside the diff view's folded "not changed in a while" group.
+   See ux-spec-update-2026-06-11-trainee-feedback.md §1, §6. */
 .stale-flag {
-  display:inline-flex; align-items:center; gap:5px; font-family: var(--font-mono); font-size:9.5px; font-weight:700;
-  letter-spacing:.04em; text-transform:uppercase; color: var(--warn);
-  background: var(--question-wash); border:1px solid var(--question-edge); border-radius: var(--r-pill); padding:2px 7px;
+  display:inline-flex; align-items:center; gap:5px; font-family: var(--font-mono); font-size:9.5px; font-weight:600;
+  letter-spacing:.04em; color: var(--muted);
+  background: var(--surface-2); border:1px solid var(--line); border-radius: var(--r-pill); padding:2px 7px;
 }
-.stale-flag .dot { width:6px; height:6px; border-radius:50%; background: var(--warn); }
-.nudge-btn {
-  display:inline-flex; align-items:center; gap:6px; font-family: var(--font-body); font-size:11px; font-weight:600;
-  padding:4px 10px; border-radius: var(--r-pill); border:1px solid var(--question-edge); background: var(--surface); color: var(--warn);
-  cursor:pointer; transition: all .16s var(--ease);
-}
-.nudge-btn:hover { background: var(--question-wash); }
-.nudge-btn svg { width:12px; height:12px; stroke:currentColor; fill:none; stroke-width:2; }
+.stale-flag .dot { width:6px; height:6px; border-radius:50%; background: var(--faint); }
 /* a "you can reorder these" priority cue (PI lens) */
 .prio-rail { display:flex; flex-direction:column; align-items:center; gap:3px; color: var(--faint); }
 .prio-rail .pn { font-family: var(--font-mono); font-size:9.5px; font-weight:700; }
@@ -450,3 +447,91 @@ body.pref-spacious { line-height: 1.7; }
   .kcard.dragging,
   .switch, .switch::after { transition:none; animation:none; }
 }
+
+/* ============================================================================
+   v0.3 · trainee feedback (Jun 11) — the nudge reversal.
+   The student OWNS the deadline; the PI follows or suggests — never pokes.
+   Atoms: .agenda-tag · .due-chip · .follow-btn/.follow-pill · the diff view.
+   ============================================================================ */
+
+/* card footer holding the agenda tag + follow action */
+.kfoot { display:flex; align-items:center; gap:8px; margin-top:9px; flex-wrap:wrap; }
+
+/* "For next sync · <date>" — the calm meeting signal that replaces the nudge */
+.agenda-tag {
+  display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:600;
+  color: var(--request-ink); background: var(--request-wash); border:1px solid var(--request-edge);
+  border-radius: var(--r-pill); padding:3px 10px;
+}
+.agenda-tag svg { width:12px; height:12px; stroke:currentColor; fill:none; stroke-width:2; }
+.agenda-tag.suggested { background: var(--surface); border-style:dashed; color: var(--muted); } /* a PI *suggestion*, not a poke */
+
+/* owner-set "next step by <date>" — calm; muted "over" on lapse (never alarm-red) */
+.due-chip {
+  display:inline-flex; align-items:center; gap:5px; font-family: var(--font-mono); font-size:9.5px; font-weight:600;
+  letter-spacing:.02em; color: var(--question-ink);
+  background: var(--question-wash); border:1px solid var(--question-edge); border-radius: var(--r-pill); padding:2px 8px;
+}
+.due-chip .dot { width:6px; height:6px; border-radius:50%; background: var(--question-ink); }
+.due-chip.overdue { color: var(--muted); background: var(--surface-2); border-color: var(--line); }
+.due-chip.overdue .dot { background: var(--faint); }
+
+/* opt-in follow — the PI follows only if the owner grants it */
+.follow-btn {
+  display:inline-flex; align-items:center; gap:6px; font-family: var(--font-body); font-size:11px; font-weight:600;
+  padding:4px 11px; border-radius: var(--r-pill); border:1px solid var(--line); background: var(--surface); color: var(--muted);
+  cursor:pointer; transition: all .16s var(--ease);
+}
+.follow-btn:hover { border-color: var(--ink-2); color: var(--ink); }
+.follow-btn.is-following { color: var(--brand); border-color: var(--brand); background: var(--brand-tint); }
+.follow-btn svg { width:12px; height:12px; stroke:currentColor; fill:none; stroke-width:2; }
+.follow-pill {
+  display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:600; color: var(--brand);
+  background: var(--brand-tint); border-radius: var(--r-pill); padding:3px 9px 3px 4px;
+}
+.follow-pill .avatar { width:18px; height:18px; font-size:9px; }
+
+/* ---- "Since last sync" diff view (screen 11) — the meeting-prep home ------ */
+.diff-since { display:flex; align-items:center; gap:11px; flex-wrap:wrap; margin-bottom:16px; }
+.diff-since .date-pick {
+  display:inline-flex; align-items:center; gap:7px; font-family: var(--font-mono); font-size:12px; color: var(--ink);
+  background: var(--surface); border:1px solid var(--line); border-radius: var(--r-pill); padding:6px 13px; cursor:pointer;
+}
+.diff-since .date-pick svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2; }
+.diff-group { border:1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); margin-bottom:13px; overflow:hidden; }
+.diff-group > summary, .diff-group .dg-head {
+  display:flex; align-items:center; gap:9px; padding:13px 16px; cursor:pointer; list-style:none;
+  font-family: var(--font-mono); font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color: var(--muted);
+}
+.diff-group > summary::-webkit-details-marker { display:none; }
+.diff-group .dg-count { font-size:11px; color: var(--faint); font-weight:600; }
+.diff-group.agenda { border-color: var(--request-edge); }
+.diff-group.agenda .dg-head { color: var(--request-ink); background: var(--request-wash); }
+.diff-group .chev { margin-left:auto; transition: transform .2s var(--ease); }
+.diff-group[open] .chev { transform: rotate(90deg); }
+.diff-row { display:flex; align-items:center; gap:12px; padding:12px 16px; border-top:1px solid var(--line); }
+.diff-row .dr-main { min-width:0; }
+.diff-row .dr-title { font-size:13.5px; font-weight:600; color: var(--ink); }
+.diff-row .dr-meta { font-family: var(--font-mono); font-size:10px; color: var(--faint); margin-top:2px; }
+.diff-row .grow { flex:1; }
+/* change-verb chips */
+.chg { display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:700; border-radius: var(--r-pill); padding:2px 9px; white-space:nowrap; }
+.chg svg { width:11px; height:11px; stroke:currentColor; fill:none; stroke-width:2.2; }
+.chg.advanced { color: var(--study-ink); background: var(--study-wash); }
+.chg.evidence { color: var(--evidence-ink); background: var(--evidence-wash); }
+.chg.comments { color: var(--request-ink); background: var(--request-wash); }
+.chg.idle { color: var(--muted); background: var(--surface-2); font-weight:600; font-family: var(--font-mono); letter-spacing:.02em; } /* "no update · Nd" — calm, never alarm */
+
+/* dyslexia-friendly body mode (extends the §6 a11y bar; iOS-HIG-derived spacing) */
+.pref-dyslexia { letter-spacing:.018em; word-spacing:.06em; line-height:1.75; }
+.pref-dyslexia p, .pref-dyslexia .dr-title, .pref-dyslexia .kt { font-weight:500; }
+
+/* `.state-note` — promoted from 10-local to shared (11 reuses it). Small inline
+   explainer with a hairline-stroked icon (must be `fill:none`, or it balloons). */
+.state-note {
+  margin-top: 8px; font-size: 11px; color: var(--faint); line-height: 1.45;
+  display: flex; align-items: flex-start; gap: 6px; padding: 7px 10px;
+  background: var(--surface-2); border-radius: var(--r-sm); border: 1px solid var(--line);
+}
+.state-note svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; flex: none; margin-top: 1px; }
+.state-note b { color: var(--ink-2); font-weight: 600; }
