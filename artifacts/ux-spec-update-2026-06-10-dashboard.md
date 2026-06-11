@@ -1,6 +1,6 @@
 # UX spec update — the Sean → Kate dashboard, after Kate's live walkthrough
 
-### Developer-handoff delta · **draft v0.1 → v0.2** · source: *Cell imaging project update — UX feedback* (Jun 10, 2026)
+### Developer-handoff delta · **draft v0.1 → v0.2** (+ design-review corrections, Jun 11 — see §12) · source: *Cell imaging project update — UX feedback* (Jun 10, 2026)
 
 > **What this is.** A focused, buildable **update** to [`ux-user-story-dashboard.md`](./ux-user-story-dashboard.md)
 > (the narrative spec, v0.1) and the 06–09 mockups, derived from the first session where the **real PI
@@ -37,6 +37,14 @@
 > progression bar a lot"*). One **caveat surfaced**: the **Table view is currently a facade** (*"there's no
 > table yet"*) — it must become real and **equivalent to the Graph view** before this set is acceptance-complete.
 
+> **Design-review pass (Jun 11).** A render + WCAG audit of the **built** 06–10 mockups (distinct from the Jun 10
+> *content* feedback above) surfaced **two build-blocking defects** and a **contrast gap** the v0.2 component specs
+> don't yet account for. Headline: **(1)** 07's Evidence card is **clipped off the right edge** of the dashboard
+> frame — the result Kate is meant to glance at and trust; **(2)** 08's comment thread **leaks raw handler code**
+> as visible text; **(3)** `--faint` tertiary text and the amber/teal on-wash chips **fail WCAG AA**, contradicting
+> the "legible at 60+ · colorblind-safe" stamp every screen prints. Folded into §1 (tokens), §6 (a11y), §9
+> (acceptance); tracked in full with line anchors and fixes in **§12**.
+
 ---
 
 ## 1. Design language — reused tokens & new atoms
@@ -58,6 +66,21 @@ No new palette, no new fonts. Everything below composes the existing kit.
 | `--ease` / `--ease-out` | `cubic-bezier(.2,.7,.2,1)` / `(.16,1,.3,1)` | Drag, disclosure, convert motion |
 | `--shadow-1…3` | layered | Card rest / hover / drag-lift elevation |
 | `--font-body` / `--font-display` / `--font-mono` | Hanken Grotesk / Fraunces / JetBrains Mono | Body; serif a11y mode swaps body→Fraunces (§6) |
+
+### Contrast corrections (a11y — from the Jun 11 review)
+The reused palette is colorblind-safe, but **three tokens fail WCAG 2.1 AA** at the sizes they're used. Fix at the
+**token layer** (one change propagates to every screen); measured ratios in §6. Corrected hexes verified ≥4.5:1 on
+their worst-case background:
+
+| Token | Current | Used for | Was | **Corrected → ratio** |
+|---|---|---|---|---|
+| `--faint` | `#9aa0aa` | eyebrows · metadata · mono labels · plot axes · the "legible at 60+" footer | 2.3–2.6:1 ✗ | **`#6b6f77`** → 4.5–5.0:1 |
+| `--question-ink` / `--warn` | `#c2861a` | "illustrative" pill · stale-flag "no result · 12d" · warn text | 2.8–3.0:1 ✗ | **`#8f6210`** → 4.7–5.1:1 |
+| `--source-ink` | `#1b9a92` | `.relfeed__why` match-reason chip (⟡) | 2.9:1 ✗ | **`#137068`** → ~5.0:1 |
+
+> Node-type **badges** (EVIDENCE/STUDY/PROTOCOL on their washes) sit at 3.1–3.9:1 — they clear AA-large but fail
+> AA-normal at ~10px. Lower priority (shape + position reinforce them), but darken on the next palette pass. The
+> §6 serif/spacing toggle fixes *size*, not *contrast* — these token changes are the contrast half.
 
 ### Existing components reused
 `.node(.evidence/.study/.protocol/.candidate/.private)` · `.ntype` · `.pointer(.git/.data/.local/.video)` ·
@@ -180,6 +203,8 @@ action into an **inline thread with promotion**.
 - **Empty thread**: show the composer only (or, on a public read-only board, hide the region entirely — don't show "0 comments").
 - **Long thread**: collapse to last 3 with *"Show 7 earlier"*; the converted-comment stays pinned.
 - **Comment references a withheld node**: never render the private target (R5) — show *"links to a private note"* with no title.
+- **Canonical handler (build note, §12-2)**: use the **one-level** convert handler in [`10-evidence-card.html`](./mockups/10-evidence-card.html) (adds the `→ request` chip). The spec-required **toast + 6 s Undo** must live in a `<script>` function (`convertToRequest(btn)`), **never an inline `onclick`** — the nested-quote inline version in [`08-traverse-and-request.html`](./mockups/08-traverse-and-request.html) breaks HTML attribute parsing and leaks JS as visible text.
+- **Canonical thread copy**: Kate's last comment reads *"Makes sense. Can we also try a lower arsenite dose — does G3BP1 still lead if granules form more slowly?"* (the `10` wording supersedes the *"3 µM"* placeholder above and `08`'s truncated variant).
 
 ### Accessibility
 Thread is a `role="log"`/`aria-live="polite"` region for new comments; the kebab is a `<button aria-haspopup="menu">`; convert actions are menu items with explicit labels ("Convert this comment to a Request").
@@ -300,6 +325,22 @@ Extend the existing `.a11y` chip (mockup 07) into a small popover `.a11y-pop` in
 ### Accessibility
 Controls are real form controls (`<button aria-pressed>`, segmented `radiogroup`); preference persists; honors `prefers-reduced-motion` for the popover. Meets the stated EU-legibility intent.
 
+### Color contrast *(Jun 11 review — the gap the serif/spacing toggle doesn't close)*
+The serif + spacing toggle addresses **size/legibility**; it does **nothing for contrast.** Measured against WCAG
+2.1 AA, body text is fine (`--ink` 15.5:1, `--ink-2` 10:1, `--muted` 4.56:1), but:
+
+| Token / use | On | Ratio | AA |
+|---|---|---|---|
+| `--faint` — eyebrows, metadata, mono labels, plot axes, the **"legible at 60+" footer itself** | paper / white / surface-2 | **2.35–2.63:1** | ✗ fails (incl. AA-large) |
+| `--question-ink` — "illustrative" pill **and** stale-flag "no result · 12d" | `--question-wash` | **2.76:1** | ✗ fails |
+| `--warn` text | paper | **2.95:1** | ✗ fails |
+| `--source-ink` — `.relfeed__why` match chip (⟡) | `--source-wash` | **2.89:1** | ✗ fails |
+| node badges (EVIDENCE/STUDY/PROTOCOL) | their washes | 3.1–3.9:1 | △ AA-large only |
+
+**Required:** apply the §1 token corrections so every text-bearing token clears **4.5:1** (AA-normal). This is a
+token-layer change, not a per-screen fix; once shipped, the "legible at 60+ · colorblind-safe" stamp is true as
+written. Color is already never the sole channel (the result accent is bold + italic + colored) — keep that.
+
 ---
 
 ## 7. Share mechanics — right-click, groups, verification preview
@@ -400,6 +441,11 @@ Add to the dashboard "done when":
 13. **Robust share verification.** Every share passes through a **preview that lists exactly what's shared**,
     including **withheld** nodes shown as withheld. *(§7)*
 14. **Real Table view.** The **Table** view is functional and **equivalent to Graph** (no facade). *(§0 caveat)*
+15. **Renders without clipping.** At every viewport ≥1080px the **Evidence card and right-rail feed render whole**
+    inside the dashboard frame — no content lost to `.screen { overflow:hidden }`. *(§12-1)*
+16. **No leaked handler code; one canonical convert.** The comment thread renders as **comments only** (no
+    JavaScript as visible text), and `08` reuses `10`'s `convert-btn` handler verbatim. *(§12-2)*
+17. **AA contrast.** Every text-bearing token meets **WCAG 2.1 AA** (≥4.5:1) after the §1 corrections. *(§1, §6)*
 
 ## 10. Open questions  *(delta to §8)*
 
@@ -423,4 +469,50 @@ Add to the dashboard "done when":
 
 ---
 
-*MIRA × Discourse Graphs · push results to a shared web interface · Sean → Kate **dashboard** · UX handoff delta · draft **v0.2** (supersedes v0.1 where they differ; narrative spec stays [`ux-user-story-dashboard.md`](./ux-user-story-dashboard.md)) · from the Jun 10 2026 Kate session*
+## 12. Design-review corrections  *(Jun 11)*
+
+A render + WCAG audit of the **built** 06–10 mockups (not the spec prose). Two build-blockers first, then
+consistency and contrast. Each item: where it is · what's wrong · the fix. Folded into §1 / §6 / §9 above; this
+is the tracking list.
+
+### 12-1 · 🔴 07 — Evidence card clipped off the right edge  *(build-blocker)*
+The headline screen cuts off the result Kate is meant to glance at and trust. `.screen` is `max-width:1080px;
+overflow:hidden` ([`components.css`](./mockups/components.css)); inside it the right-rail `.ecard` / `.relfeed`
+render **415–417px wide in a 318px inspector track** — the plot `<svg viewBox="0 0 318 168">` forces a ~383px
+intrinsic width and grid children default to `min-width:auto`, so `.screen.scrollWidth` is **1153** and the right
+**~73px is clipped**: the `Consortium` chip reads "co…", the plot's right half and "illustrative · unpu…" are gone.
+Reproduces at **every viewport ≥1080px**.
+**Fix (minimal):** add `min-width:0` to `.inspector`, `.ecard`, `.relfeed` (the SVG is already `width:100%`, so it
+then shrinks to the track). **Alt:** widen the track to `minmax(0,390px)` **and** raise `.screen` max-width to
+~1160px. Prefer the minimal fix.
+
+### 12-2 · 🔴 08 — comment thread leaks raw handler code  *(build-blocker)*
+Kate's 3rd comment renders `'; btn.closest('.thread').insertBefore(toast, …) })(this)">` as **visible text**, with
+a stray triangle glyph and an overlapping "Undo." The inline `onclick` (`08-traverse-and-request.html`, the
+`#convReq` button) builds a toast whose **inner HTML contains a nested `onclick`** using `\"`-style escapes; the
+HTML parser closes the outer attribute at the first un-escaped `"` and dumps the remainder as text, breaking the
+DOM.
+**Fix:** replace with the working **one-level** handler from `10-evidence-card.html` (chip-only). The spec-required
+**toast + 6 s Undo** (§3) must move into a `<script>` function — **never an inline `onclick`** with nested quotes.
+While here, **re-cut 08 as the `.ecard`** per §11 so every result surface shares one card.
+
+### 12-3 · 🟡 Consistency — divergent copy & components
+- **Convert handler:** `10` is correct, `08` is broken — same component, two implementations. Make `10` canonical (12-2).
+- **Kate's 3rd comment** exists in three variants — spec §3 *"try 3 µM?"*, `10` the full sentence, `08` truncated.
+  **Canonical = `10`'s** (now recorded in §3); fix the §3 anatomy line and `08`.
+- **06 share-verify** is folded into one long scrolling panel; §7 specs it as a **distinct, mandatory sheet** with
+  the **withheld-row proof** (*"you don't present something you don't intend to present"*). Promote it to its own step.
+
+### 12-4 · 🟡 Contrast — fails the stamp it prints
+`--faint` text (2.3–2.6:1) and the amber/teal on-wash chips (2.8–2.9:1) **fail WCAG AA**, while every footer claims
+"legible at 60+ · colorblind-safe." Corrected tokens in **§1**; measured ratios in **§6**. Token-layer fix.
+
+### 12-5 · 🟢 Carry-overs (already tracked)
+- **Table view is still a facade** (07) — acceptance **#14** already requires Graph-equivalence; flag in handoff so
+  it isn't mistaken for done.
+- **06 dual-panel frame** — the right-click `.ctx-menu` and the full share sheet are shown open **together**, which
+  reads ambiguously in a static frame. Show one live layer (recede or dismiss the menu once the sheet opens).
+
+---
+
+*MIRA × Discourse Graphs · push results to a shared web interface · Sean → Kate **dashboard** · UX handoff delta · draft **v0.2** + design-review corrections Jun 11 (§12) (supersedes v0.1 where they differ; narrative spec stays [`ux-user-story-dashboard.md`](./ux-user-story-dashboard.md)) · from the Jun 10 2026 Kate session*
