@@ -17,7 +17,7 @@
   --ink:          #1c2024;   /* near-black, faintly warm — primary text     */
   --ink-2:        #3a3f47;
   --muted:        #6b7280;   /* secondary text                              */
-  --faint:        #9aa0aa;   /* tertiary / metadata                         */
+  --faint:        #6b6f77;   /* tertiary / metadata — Jun 11: AA contrast    */
   --paper:        #faf8f4;   /* warm paper page background                  */
   --surface:      #ffffff;   /* cards / panels                              */
   --surface-2:    #f4f2ec;   /* inset surfaces, code wells                  */
@@ -34,17 +34,17 @@
   /* each type: --x-ink (solid label/badge/border-strong)                     */
   /*            --x-wash (soft card fill)                                      */
   /*            --x-edge (card border)                                         */
-  --question-ink:  #c2861a;  --question-wash: #fbf0d4;  --question-edge: #e7cd8f;
+  --question-ink:  #8f6210;  --question-wash: #fbf0d4;  --question-edge: #e7cd8f;
   --claim-ink:     #2c9a61;  --claim-wash:    #ddf2e5;  --claim-edge:    #a6dcbd;
   --evidence-ink:  #d9573f;  --evidence-wash: #fbe0da;  --evidence-edge: #f0b1a3;
   --study-ink:     #3877cf;  --study-wash:    #dbe9fb;  --study-edge:    #a6c6ef;
   --protocol-ink:  #8460c5;  --protocol-wash: #ece2f8;  --protocol-edge: #c9b3ea;
   --request-ink:   #4854bf;  --request-wash:  #e2e3f7;  --request-edge:  #aeb4eb;
-  --source-ink:    #1b9a92;  --source-wash:   #d7f0ee;  --source-edge:   #98d9d3;
+  --source-ink:    #137068;  --source-wash:   #d7f0ee;  --source-edge:   #98d9d3;
 
   /* ---- Status / signal --------------------------------------------------- */
   --ok:      #2c9a61;
-  --warn:    #c2861a;
+  --warn:    #8f6210;
   --danger:  #d9573f;
   --private: #8a8f98;   /* greyed "not shared" nodes                          */
 

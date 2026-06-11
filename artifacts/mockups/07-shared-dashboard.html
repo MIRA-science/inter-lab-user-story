@@ -78,7 +78,7 @@
   .kcard.inprog .kt::after { content:' · in progress'; color: var(--faint); font-weight:400; font-family: var(--font-body); font-size:11px; }
 
   /* ---- Inspector (the clicked node, full content) -------------------------- */
-  .inspector { position:sticky; top:18px; display:grid; gap:13px; }
+  .inspector { position:sticky; top:18px; display:grid; grid-template-columns: minmax(0,1fr); gap:13px; min-width:0; }
   /* .insp-card removed — now .ecard is the atom used inside .panel */
   .insp-top { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:9px; }
   .insp h3 { font-family: var(--font-display); font-size:16.5px; line-height:1.28; margin:4px 0 0; }
@@ -109,7 +109,8 @@
   .trust { margin-top:13px; padding:11px 13px; border-radius: var(--r-md); background: var(--claim-wash); border:1px solid var(--claim-edge); }
   .trust .q { font-size:12px; color: var(--claim-ink); font-style:italic; line-height:1.45; }
   .trust .q b { font-style:normal; }
-  .trust .act { display:flex; gap:8px; margin-top:10px; }
+  .trust .act { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  .trust .act .btn { min-width:0; white-space:normal; }
   .req-note { margin-top:10px; font-size:11px; color: var(--request-ink); display:flex; align-items:center; gap:7px; }
   .req-note svg { width:13px; height:13px; stroke: currentColor; fill:none; stroke-width:2; }
 
@@ -124,7 +125,7 @@
   .a11y-pop.open { display:block; }
 
   /* related-work feed panel */
-  .relfeed { padding:16px; }
+  .relfeed { padding:16px; min-width:0; }
 
   /* kcard__grip is already in components.css v0.2 — just ensure kcard layout */
   .kcard { display:flex; gap:9px; align-items:flex-start; }

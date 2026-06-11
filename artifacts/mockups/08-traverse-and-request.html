@@ -544,12 +544,6 @@
             <div class="c-main">
               <div class="c-meta">
                 <b>Kate</b> · 2d
-                <span class="grow"></span>
-                <button class="convert-btn" type="button" aria-label="Convert this comment to a Request" title="Convert to request"
-                  onclick="(function(btn){btn.style.display='none';})(this)">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                  Convert to request
-                </button>
               </div>
               <div class="c-body">Why a fixed intensity threshold and not Otsu here?</div>
             </div>
@@ -564,32 +558,21 @@
             </div>
           </div>
 
-          <!-- Comment 3: Kate, 4h ago — has the Convert to request button -->
+          <!-- Comment 3: Kate, 4h ago — Convert to request (handler in <script>, no inline quote-nesting) -->
           <div class="comment">
             <span class="avatar kate" title="Kate">K</span>
             <div class="c-main">
               <div class="c-meta">
                 <b>Kate</b> · 4h
                 <span class="grow"></span>
-                <button class="convert-btn" type="button" id="convReq" aria-label="Convert this comment to a Request"
-                  onclick="(function(btn){
-                    btn.style.display='none';
-                    var body = btn.closest('.c-main').querySelector('.c-body');
-                    var chip = document.createElement('span');
-                    chip.className = 'promoted-chip';
-                    chip.innerHTML = '<svg viewBox=\'0 0 24 24\' aria-hidden=\'true\'><path d=\'M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z\'/></svg> → request sent to Sean';
-                    body.insertAdjacentElement('afterend', chip);
-                    var toast = document.createElement('div');
-                    toast.className = 'toast';
-                    toast.style.marginTop = '14px';
-                    toast.innerHTML = '<span class=\'dot\' style=\'background:var(--request-ink);\'></span><div style=\'font-size:12.5px;\'><strong>Request sent to Sean.</strong><div class=\'muted\' style=\'margin-top:3px;\'>He\'ll be notified. <button type=\'button\' onclick=\'this.closest(\\\".toast\\\").remove();document.getElementById(\\\"convReq\\\").style.display=\\\"\\\";chip.remove();\' style=\'font-size:11.5px;font-weight:600;color:var(--brand);background:none;border:none;cursor:pointer;padding:0;margin-left:8px;\'>Undo</button></div></div>';
-                    btn.closest('.thread').insertBefore(toast, btn.closest('.thread').querySelector('.composer'));
-                  })(this)">
+                <button class="convert-btn" type="button" id="convReq"
+                  aria-label="Convert this comment to a formal Request to Sean"
+                  onclick="convertToRequest(this)">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                   Convert to request
                 </button>
               </div>
-              <div class="c-body">Makes sense. Can we also try a lower arsenite dose?</div>
+              <div class="c-body">Makes sense. Can we also try a lower arsenite dose — does G3BP1 still lead if granules form more slowly?</div>
             </div>
           </div>
 
@@ -723,5 +706,40 @@
   <span class="dots"></span>MIRA × Discourse Graphs · push results to a shared web interface · draft v0.2<span class="dots"></span>
 </footer>
 
+<script>
+/* Convert a comment to a formal Request — adds an inline chip, then a toast with a
+   6 s Undo (spec §3). Lives in a <script> so there is no HTML-attribute quote-nesting
+   (the inline version of this broke the DOM and leaked code as text — review §12-2). */
+function convertToRequest(btn){
+  btn.style.display = 'none';
+  var main = btn.closest('.c-main');
+  var chip = document.createElement('span');
+  chip.className = 'promoted-chip';
+  chip.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.2;"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg> → request sent to Sean';
+  main.querySelector('.c-body').insertAdjacentElement('afterend', chip);
+
+  var thread = btn.closest('.thread');
+  var composer = thread.querySelector('.composer');
+  var toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.style.marginTop = '14px';
+  var dot = document.createElement('span');
+  dot.className = 'dot';
+  dot.style.background = 'var(--request-ink)';
+  var msg = document.createElement('div');
+  msg.style.fontSize = '12.5px';
+  msg.innerHTML = '<strong>Request sent to Sean.</strong> <span class="muted">He&#39;ll be notified.</span> ';
+  var undo = document.createElement('button');
+  undo.type = 'button';
+  undo.textContent = 'Undo';
+  undo.style.cssText = 'font-size:11.5px;font-weight:600;color:var(--brand);background:none;border:none;cursor:pointer;padding:0;margin-left:6px;';
+  undo.onclick = function(){ toast.remove(); chip.remove(); btn.style.display = ''; };
+  msg.appendChild(undo);
+  toast.appendChild(dot); toast.appendChild(msg);
+  thread.insertBefore(toast, composer);
+  /* the Request "fires" after 6 s — retire the Undo affordance, keep the chip */
+  setTimeout(function(){ if (undo.parentNode) undo.remove(); }, 6000);
+}
+</script>
 </body>
 </html>

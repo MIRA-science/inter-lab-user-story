@@ -291,7 +291,7 @@
 /* "I'd never think about evidence and method separately" — result first, the
    method collapsed inline (native <details>), full study details one click on. */
 .ecard {
-  position:relative; background: var(--surface); border:1px solid var(--line);
+  position:relative; min-width:0; background: var(--surface); border:1px solid var(--line);
   border-left:4px solid var(--evidence-ink); border-radius: var(--r-md);
   padding:16px; box-shadow: var(--shadow-1);
   transition: box-shadow .25s var(--ease), border-color .25s var(--ease);
