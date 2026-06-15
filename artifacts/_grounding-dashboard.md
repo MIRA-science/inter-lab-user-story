@@ -162,6 +162,11 @@ Request-back current** the canvas shows (a `Request for study` node in Kate's co
   meeting artifact.
 - **Glance-and-trust for the PI; how-did-you-do-it for the grad student (Jun 8):** *"as the PI, often
   that will be sufficient… I trust you. And then the grad student would want to know how you did it."*
+  **Read this as passive trust, not an endorsement action** (author's clarification, Jun 15): the PI reads
+  the summary and, unless the result looks unexpected, needs nothing more — so the only affordance this region
+  needs is the *option to open the grounding study/protocol* (collapse/open in place), **not** an "endorse"/approve
+  button. The v0.1–v0.4 "Endorse" affordance was a misreading and is removed — see
+  [`ux-spec-update-2026-06-15-glance-trust-and-verbatim.md`](ux-spec-update-2026-06-15-glance-trust-and-verbatim.md).
 - **Traverse to the method that matters (Jun 8):** *"what segmentation threshold did Sean use… the
   thresholding can change all the measurements… go to the image analysis node."*
 - **A video walkthrough beats a Zoom call (Kate, Jun 8):** orient a first-time reader asynchronously;
