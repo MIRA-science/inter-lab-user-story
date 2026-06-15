@@ -204,6 +204,28 @@
   .buildline svg { width:14px; height:14px; stroke: var(--faint); fill:none; stroke-width:1.8; }
   .buildline b { color: var(--brand); font-weight:600; }
 
+  /* ---- Verbatim node content — the human-authored ground truth, on demand --- */
+  /* Cards are summaries; this opens the actual author text each summary derives from. */
+  .verbatim { margin-top:13px; border:1px dashed var(--line-2); border-radius: var(--r-md); background: var(--surface-2); overflow:hidden; }
+  .verbatim > summary { list-style:none; cursor:pointer; display:flex; align-items:center; gap:8px; padding:9px 13px;
+    font-family: var(--font-mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color: var(--muted); font-weight:700; }
+  .verbatim > summary::-webkit-details-marker { display:none; }
+  .verbatim > summary:hover { background: var(--surface); color: var(--ink-2); }
+  .verbatim > summary .vchev { width:12px; height:12px; stroke:currentColor; fill:none; stroke-width:2.4; margin-left:auto; transition: transform .2s var(--ease); }
+  .verbatim[open] > summary .vchev { transform: rotate(90deg); }
+  .verbatim .vbody { padding:2px 15px 14px; font-size:12.5px; color: var(--ink-2); line-height:1.55; animation: rise .3s var(--ease-out); }
+  .verbatim .vbody h6 { font-family: var(--font-display); font-size:12.5px; color: var(--ink); margin:13px 0 5px; }
+  .verbatim .vbody p { margin:7px 0; }
+  .verbatim .vbody ul, .verbatim .vbody ol { margin:7px 0; padding-left:20px; }
+  .verbatim .vbody li { margin:5px 0; }
+  .verbatim .vbody ol ol { margin:5px 0; }
+  .verbatim .vbody code { font-family: var(--font-mono); font-size:.86em; background: var(--surface); border:1px solid var(--line); border-radius:4px; padding:1px 4px; }
+  .verbatim .vbody table { width:100%; border-collapse:collapse; margin:10px 0; font-size:11.5px; }
+  .verbatim .vbody table td, .verbatim .vbody table th { padding:4px 9px; border:1px solid var(--line); text-align:left; vertical-align:top; }
+  .verbatim .vbody table th { background: var(--surface); font-family: var(--font-mono); font-size:9.5px; text-transform:uppercase; letter-spacing:.06em; color: var(--faint); }
+  .verbatim .vbody .vdate { font-family: var(--font-mono); font-weight:700; color: var(--study-ink); }
+  .verbatim .vbody .vsrc { display:block; margin-top:12px; font-family: var(--font-mono); font-size:10px; color: var(--faint); }
+
   .dgfoot { max-width:1080px; margin:26px auto 0; text-align:center; font-family: var(--font-mono); font-size:11.5px; color: var(--faint); letter-spacing:.04em; }
   .dgfoot .dots { display:inline-block; border-top:2px dotted var(--line); width:46px; vertical-align:middle; margin:0 12px; }
 </style>
@@ -411,7 +433,7 @@
         </div>
 
         <!-- =================== TRAVERSABLE SUBGRAPH ==================== -->
-        <div class="sec-head reveal d5">
+        <div class="sec-head reveal d5" id="verbatim">
           <h3>Follow the lineage to the method</h3>
           <span class="rule"></span>
         </div>
@@ -419,6 +441,8 @@
           Each card is one discourse node. Typed edges connect the result to the experiment and the protocol —
           <b>pointers only; no raw payloads travel over the web,</b> and they resolve across system boundaries
           (vault → GitHub → the lab array). The rail draws down to the payoff: the <b>segmentation choice</b>.
+          Every node also carries its <b>verbatim author text</b> — open <i>“Read verbatim”</i> on any node to see the
+          human-written grounding each summary is condensed from.
         </p>
 
         <div class="chain">
@@ -434,6 +458,18 @@
             <div class="ptr-row">
               <span class="pointer"><span class="kind data">data</span><span class="path">granule_composition_by_time.csv (this figure)</span></span>
             </div>
+            <!-- verbatim grounding: the author's own key points, the summary is condensed from these -->
+            <details class="verbatim">
+              <summary>Read verbatim — key points from Sean's result note <svg class="vchev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></summary>
+              <div class="vbody">
+                <ul>
+                  <li>In both conditions, the Pearson correlation coefficient between the two channels starts negative and becomes positive over time. This implies that the two tagged proteins (Protein 1 and Protein 2) are co-localizing more over time and they even start to coalesce independently of each other in the beginning.</li>
+                  <li>While this shows that the proteins start off excluding each other and then mix over time, it is not clear what the nature of this exclusion is. They could be forming different droplets which merge over time, or they could both be forming in the same droplet, but occupying different sub-compartments in the droplet. Another experiment will need to be done to understand the nature/structure of these early SGs.</li>
+                  <li>While the two stress conditions look similar after 10–15 minutes, there is a significant difference in them prior to that point. The interpretation of this would depend on the result of the previous point. Although, it does imply that there is a measurable difference in the co-localization of these proteins during different stress, perhaps implying that they are related to how the SGs form in response to a particular type of stress.</li>
+                </ul>
+                <span class="vsrc">Verbatim · RES node · protein names redacted</span>
+              </div>
+            </details>
             <!-- R5 progressive disclosure: a withheld working note, signalled not leaked -->
             <div class="withheld" title="An adjacent node exists in Sean's vault but was not shared">
               <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
@@ -452,6 +488,26 @@
             <span class="ntype study">Study · "the experiment"</span>
             <div class="node-title">Live Lattice-SIM imaging of granule formation at staged times</div>
             <div class="node-body">Protein 1–GFP (endogenous) and Protein 2–mKate (transfected) in HeLa, imaged on a ZEISS Elyra 7 in Lattice SIM on fresh fields of view up to 30 min after stress.</div>
+            <!-- verbatim grounding: the author's dated lab-notebook note + hypotheses -->
+            <details class="verbatim">
+              <summary>Read verbatim — experiment note: progress, design choices &amp; hypothesis <svg class="vchev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></summary>
+              <div class="vbody">
+                <h6>Progress &amp; notes</h6>
+                <p><span class="vdate">2025-08-23</span> — Kate's student visited Montreal and they sent their cells ahead of time. Khalid is maintaining the cell culture using their protocol. (See linked protocol node.) This cell line has Protein 1 tagged with GFP and we will transfect it with a plasmid expressing Protein 2-mKate. Applied the stress to the cells and imaged them on the microscope to measure the rate/amount/coordination of the two proteins forming stress granules.</p>
+                <p><span class="vdate">2025-10-14</span> — I have developed the segmentation and subsequent image analysis pipeline. This has yielded initial results (attached). There were several design choices which had to be made including:</p>
+                <ul>
+                  <li>What channel to use for the segmentation, or whether to use the SUM or the MAX (pixel-wise) for the segmentation.</li>
+                  <li>What intensity threshold to use to exclude local maxima which are due to background noise? (This is a parameter of the <code>ijm</code> macro and was set by choosing a value that is just above the background max intensity.)</li>
+                </ul>
+                <h6>Hypothesis</h6>
+                <p>We have multiple hypotheses that are addressed by this experiment:</p>
+                <ol>
+                  <li>Stress granule components begin to form droplets independently of each other, and these components later mix into the same droplet to give the SGs we typically observe.</li>
+                  <li>This process will be perturbed when we change the type of stress because different types of stress have different sensors which trigger the SG formation mechanism. The different nature of the formation (with respect to the two tagged proteins) will give us insight into how these two proteins are related to the downstream effects of the stress sensing mechanism which lead to the droplet formation.</li>
+                </ol>
+                <span class="vsrc">Verbatim · EXP node · protein names redacted</span>
+              </div>
+            </details>
             <div class="ptr-row">
               <span class="pointer gated"><span class="kind local">raw</span><span class="path">NDTiff z-stacks ≈ 80 GB · Elyra 7</span><span class="req">request access</span></span>
             </div>
@@ -518,6 +574,68 @@
             <div class="ptr-row">
               <span class="pointer"><span class="kind git">git</span><span class="path">vogel-lab/sg-imaging · segment_stress_granules.ijm</span></span>
             </div>
+
+            <!-- verbatim grounding: the three protocol nodes the Study follows, in full -->
+            <details class="verbatim">
+              <summary>Read verbatim — full protocol: steps &amp; parameters <svg class="vchev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></summary>
+              <div class="vbody">
+                <p>The pipeline summary above is condensed from three protocol nodes the Study <code>follows</code>. Their verbatim text:</p>
+
+                <h6>① Cell culture</h6>
+                <p>TODO: Get growth information from Khalid and Kate's students.</p>
+
+                <h6>② High-resolution stress-granule imaging (Lattice SIM)</h6>
+                <ol>
+                  <li>Cultured cells were adhered to a coverslip and placed in a well containing 1µl of the media they were grown in. This cell line was tagged with endogenous Protein 1-GFP and was transfected with a plasmid expressing Protein 2-mKate.</li>
+                  <li>As quickly as possible:
+                    <ol>
+                      <li>The media was removed from the well with a pipette.</li>
+                      <li>New media containing the stress (Sodium Arsenite or osmotic stress) was added using a pipette. Do not pipette directly onto the coverslip. Deposit the new media on the side of the well to avoid disturbing the cells or applying any mechanical stress.</li>
+                      <li>Start a stopwatch to calculate the amount of time since the stress was applied.</li>
+                    </ol>
+                  </li>
+                  <li>Place the cells on the Elyra 7 stage and shut the enclosure in preparation for imaging. The time from the exchange of the media to the first image acquisition should be as short as possible to observe the stress response in its early stages.</li>
+                  <li>Scan over the cells using the bright-field to identify cells which are healthy and which are close enough together that you can get a good amount (purely to increase the data acquisition efficiency). You can position the center of the z-stack in the bright-field to avoid using the laser and initiating any photobleaching so that we can quantitatively compare the intensities in the analysis step.</li>
+                  <li>Define the "center" of the z-stack in the ZEN software controlling the microscope.</li>
+                  <li>Switch to the Lattice SIM acquisition track and acquire a z-stack using the parameters outlined below. Note the time since the stress was applied using your stopwatch and include this time in the filename for the raw image.</li>
+                  <li>Move to a NEW field of view so we have fresh cells which have never been exposed to the laser and repeat the imaging steps above (4–6). Repeat this until you have imaged for 30 minutes after the stress application.</li>
+                  <li>Repeat steps 1–7 with a new coverslip in a new well of cultured cells to generate replicates.</li>
+                  <li>Process the RAW image files using batch mode in ZEN to perform the SIM deconvolution and generate the super-resolution images. Use the parameters in the table below. Use the default parameters otherwise.</li>
+                </ol>
+                <table>
+                  <thead><tr><th>Imaging parameter</th><th>Value</th></tr></thead>
+                  <tbody>
+                    <tr><td>Number of Z slices</td><td>25</td></tr>
+                    <tr><td>Z slice spacing</td><td>300 nm</td></tr>
+                    <tr><td>488 nm laser power</td><td>0.8</td></tr>
+                    <tr><td>561 nm laser power</td><td>0.8</td></tr>
+                    <tr><td>Exposure time</td><td>30 ms</td></tr>
+                    <tr><td>Number of SIM phases</td><td>13</td></tr>
+                    <tr><td>Use Z-piezo</td><td>Yes</td></tr>
+                  </tbody>
+                </table>
+                <table>
+                  <thead><tr><th>Processing parameter</th><th>Value</th></tr></thead>
+                  <tbody>
+                    <tr><td>SIM Squared</td><td>No</td></tr>
+                    <tr><td>Leap Mode</td><td>3D Leap</td></tr>
+                    <tr><td>Processing Strength</td><td>Weak</td></tr>
+                    <tr><td>Scale To Raw</td><td>Yes</td></tr>
+                    <tr><td>Gaussian Fit Method</td><td>Fast Fit</td></tr>
+                  </tbody>
+                </table>
+
+                <h6>③ Segmentation &amp; composition measurement</h6>
+                <ol>
+                  <li>Crop individual cells into their own 3D stack <code>tif</code> images using Fiji from the processed SIM data.</li>
+                  <li>For each <code>tif</code> of a cell, run the <code>segment_stress_granules.ijm</code> ImageJ macro to generate a label image which segments the stress granules in the fluorescent image. This is done using the 3D Suite plugin to identify local signal maxima and then fit a 3D gaussian to use a FWHM threshold for each object (stress granule). Because there are two signal channels, this was done on the per-pixel SUM of the channels to prevent bias toward segmenting objects which have more or less of a single component.</li>
+                  <li>Then in python (see python script in data), the fluorescent <code>tif</code> is loaded and the label image <code>tif</code> is loaded, and the <code>regionprops</code> function is used to compute the statistics for each color channel on each spot.</li>
+                </ol>
+                <p><b>Analysis &amp; statistics.</b> Each cell was binned into time bins based on how long it has been since the stress was applied.</p>
+
+                <span class="vsrc">Verbatim · 3 × PRO nodes · protein names redacted</span>
+              </div>
+            </details>
           </article>
 
         </div>

@@ -105,12 +105,16 @@
   .threshold-note { margin-top:9px; font-size:11.5px; color: var(--muted); font-style:italic; line-height:1.45; }
   .threshold-note b { color: var(--protocol-ink); font-style:normal; }
 
-  /* the PI glance-and-trust strip */
-  .trust { margin-top:13px; padding:11px 13px; border-radius: var(--r-md); background: var(--claim-wash); border:1px solid var(--claim-edge); }
-  .trust .q { font-size:12px; color: var(--claim-ink); font-style:italic; line-height:1.45; }
-  .trust .q b { font-style:normal; }
-  .trust .act { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
-  .trust .act .btn { min-width:0; white-space:normal; }
+  /* the PI region: no action to take — just an easy way to open the study.
+     Promote the inline study/protocol expander to the primary affordance here. */
+  .ecard__method.studyx { margin-top:14px; }
+  .ecard__method.studyx > summary { font-size:11px; padding:12px 13px; }
+  .ecard__method.studyx > summary .openhint { margin-left:auto; font-family: var(--font-body); text-transform:none; letter-spacing:0; font-size:11px; font-weight:600; color: var(--protocol-ink); opacity:.85; }
+  .ecard__method.studyx[open] > summary .openhint { display:none; }
+  .ecard__method.studyx > summary .chev { margin-left:9px; }
+  .studyx-verbatim { display:inline-flex; align-items:center; gap:6px; margin-top:12px; font-size:11.5px; font-weight:600; color: var(--protocol-ink); text-decoration:none; }
+  .studyx-verbatim:hover { text-decoration:underline; }
+  .studyx-verbatim svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2; }
   .req-note { margin-top:10px; font-size:11px; color: var(--request-ink); display:flex; align-items:center; gap:7px; }
   .req-note svg { width:13px; height:13px; stroke: currentColor; fill:none; stroke-width:2; }
 
@@ -514,9 +518,10 @@
               <li>Illustrative · unpublished — workshop prototype</li>
             </ul>
 
-            <!-- method & context — collapsed by default (PI glance path) -->
-            <details class="ecard__method">
-              <summary>Method &amp; context <svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></summary>
+            <!-- Study & protocol — collapsed by default (PI glances; opens in place if wanted).
+                 Primary affordance of the PI region: no action to take, just open the study. -->
+            <details class="ecard__method studyx">
+              <summary>How it was done — study &amp; protocol <span class="openhint">open ▾</span><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></summary>
               <div class="method-body">
                 <table class="ctx-table">
                   <tbody>
@@ -534,6 +539,10 @@
                   <span class="pointer gated"><span class="kind local">raw</span><span class="path">NDTiff z-stacks ≈ 80 GB · request access</span></span>
                   <span class="pointer"><span class="kind video">video</span><span class="path">2-min walkthrough</span></span>
                 </div>
+                <a class="studyx-verbatim" href="08-traverse-and-request.html#verbatim">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/></svg>
+                  Read the full study &amp; protocol, verbatim →
+                </a>
               </div>
             </details>
 
@@ -541,19 +550,6 @@
             <a class="btn ghost ecard__studyfoot" href="08-traverse-and-request.html">Open full study details →</a>
 
           </div><!-- /.ecard -->
-
-          <!-- PI glance-and-trust -->
-          <div class="trust" style="margin:0 16px 0;">
-            <div class="q">"As the PI, often that's sufficient. <b>I see you have this new information — I trust you.</b>"</div>
-            <div class="act">
-              <button class="btn sm primary" type="button"
-                onclick="this.textContent='✓ Endorsed';this.disabled=true;this.style.opacity=.7;">
-                <svg class="ic" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px;"><path d="M20 6 9 17l-5-5"/></svg>
-                Endorse
-              </button>
-              <a class="btn sm" href="08-traverse-and-request.html">For the grad student → how was it done?</a>
-            </div>
-          </div>
 
           <div class="req-note" style="padding:0 16px 16px;">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
