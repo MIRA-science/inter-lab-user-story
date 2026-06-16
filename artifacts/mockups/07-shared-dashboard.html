@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stress-granule assembly order — shared dashboard · dashboard.mira.science/vogel-kate</title>
+<title>Stress-granule formation — shared dashboard · dashboard.mira.science/vogel-kate</title>
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="components.css">
 <style>
@@ -65,7 +65,7 @@
   .kcard.evidence { border-left-color: var(--evidence-ink); }
   .kcard.request  { border-left-color: var(--request-ink); }
   .kcard.candidate{ border-left-color: var(--faint); border-style:dashed; }
-  .kcard.sel { outline:2px solid var(--brand); outline-offset:1px; border-left-color: var(--evidence-ink); }
+  .kcard.sel { outline:2px solid var(--brand); outline-offset:1px; }
   .kcard .kt { font-family: var(--font-display); font-size:13.5px; font-weight:600; line-height:1.32; margin:7px 0 0; color: var(--ink); }
   .kcard .kmeta { display:flex; align-items:center; gap:8px; margin-top:9px; font-size:11px; color: var(--faint); }
   .kcard .kmeta .avatar { width:18px; height:18px; font-size:8.5px; }
@@ -85,7 +85,7 @@
   .insp .obs { font-size:12.5px; color: var(--ink-2); line-height:1.5; margin-top:8px; }
   .insp .obs .accent { color: var(--evidence-ink); font-weight:600; font-style:italic; }
 
-  /* mini two-curve plot: G3BP1 (blue) leads PABP1 (coral) */
+  /* mini Pearson-r plot: two stress conditions, negative → positive */
   .pdraw { stroke-dasharray: 300; stroke-dashoffset: 300; animation: drawline 1.3s var(--ease-out) .35s forwards; }
   @media (prefers-reduced-motion: reduce){ .pdraw { animation:none; stroke-dashoffset:0; } }
 
@@ -150,6 +150,46 @@
   body.show-graph .kanban { display:none; }
   body.show-graph .graphview { display:block; }
 
+  /* ---- v0.4: hover/focus ANY card → light its subgraph, dim the rest ------- */
+  .kcard { cursor:pointer; transition: transform .18s var(--ease), box-shadow .18s var(--ease), border-color .18s var(--ease), opacity .2s var(--ease), filter .2s var(--ease); }
+  .kanban.subgraph-on .kcard { opacity:.3; filter: saturate(.55); }
+  .kanban.subgraph-on .kcard.subhit { opacity:1; filter:none; box-shadow: var(--shadow-2); }
+  .kcard .sublink { font-family: var(--font-mono); font-size:9.5px; font-weight:600; color: var(--faint); padding:1px 6px; border:1px solid var(--line); border-radius: var(--r-pill); }
+  .kanban.subgraph-on .kcard.subhit .sublink { color: var(--question-ink); border-color: var(--question-edge); background: var(--question-wash); }
+
+  /* ---- v0.4: audience presets filter the board (toolbar-driven) ------------ */
+  .kcard.preset-off { opacity:.26; filter: saturate(.45); }
+  .reqpanel.preset-hot { border-color: var(--request-ink); box-shadow: 0 0 0 3px var(--request-wash); }
+
+  /* ---- v0.4: the inspector swaps to the clicked card ----------------------- */
+  .insp-panel[hidden] { display:none; }
+  .insp-panel .ecard { border:0; border-radius:0; box-shadow:none; padding:16px; border-left:0; }
+  .insp-lead { font-size:12.5px; color: var(--muted); line-height:1.55; margin:8px 0 0; }
+
+  /* ---- v0.4: "make a request" panel beneath the kanban (07 feedback) ------- */
+  .reqpanel { margin-top:18px; display:grid; grid-template-columns: minmax(0,288px) minmax(0,1fr); gap:22px;
+    padding:18px 20px; border:1px solid var(--request-edge); border-radius: var(--r-lg);
+    background: linear-gradient(180deg, var(--request-wash), var(--surface) 72%); }
+  @media (max-width:760px){ .reqpanel { grid-template-columns:1fr; } }
+  body.show-graph .reqpanel { display:none; }
+  .reqpanel .rq-intro h3 { font-family: var(--font-display); font-size:16px; margin:9px 0 5px; }
+  .reqpanel .rq-intro p { font-size:12px; color: var(--muted); line-height:1.5; margin:0; }
+  .reqpanel .rq-intro code { font-family: var(--font-mono); font-size:.9em; color: var(--request-ink); }
+  .rq-form { display:flex; flex-direction:column; gap:11px; }
+  .rq-row { display:flex; align-items:center; gap:11px; flex-wrap:wrap; }
+  .rq-l { font-family: var(--font-mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color: var(--request-ink); font-weight:700; min-width:70px; }
+  .rq-seg { display:inline-flex; gap:3px; padding:3px; background: var(--surface-2); border:1px solid var(--line); border-radius: var(--r-pill); }
+  .rq-opt { font-family: var(--font-body); font-size:11.5px; font-weight:600; color: var(--muted); padding:5px 11px; border:0; background:transparent; border-radius: var(--r-pill); cursor:pointer; transition: all .15s var(--ease); }
+  .rq-opt.active { background: var(--surface); color: var(--request-ink); box-shadow: var(--shadow-1); }
+  .rq-target { display:inline-flex; align-items:center; gap:7px; font-size:12px; color: var(--ink-2); background: var(--surface); border:1px solid var(--line); border-radius: var(--r-pill); padding:5px 11px; }
+  .rq-text { width:100%; font-family: var(--font-body); font-size:12.5px; color: var(--ink); background: var(--surface); border:1px solid var(--line); border-radius: var(--r-md); padding:9px 11px; resize:vertical; line-height:1.5; }
+  .rq-text:focus { outline:2px solid var(--request-edge); outline-offset:1px; border-color: var(--request-ink); }
+  .rq-foot { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .rq-hint { font-size:11px; color: var(--faint); }
+  .rq-sent { display:flex; align-items:flex-start; gap:9px; font-size:12.5px; color: var(--request-ink); line-height:1.5;
+    background: var(--surface); border:1px solid var(--request-edge); border-radius: var(--r-md); padding:12px 14px; }
+  .rq-sent svg { width:16px; height:16px; stroke: var(--request-ink); fill:none; stroke-width:2; flex:none; margin-top:1px; }
+
   .dgfoot { max-width:1080px; margin:26px auto 0; text-align:center; font-family: var(--font-mono); font-size:11.5px; color: var(--faint); letter-spacing:.04em; }
   .dgfoot .dots { display:inline-block; border-top:2px dotted var(--line); width:46px; vertical-align:middle; margin:0 12px; }
 </style>
@@ -190,7 +230,7 @@
         </svg>
         <div>
           <div class="name"><b>MIRA</b> · shared dashboard</div>
-          <div class="proj">Stress-granule assembly order · Vogel × Kate</div>
+          <div class="proj">Stress-granule formation · Vogel × Kate</div>
         </div>
       </div>
       <div class="viewer">
@@ -214,10 +254,6 @@
           <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="11" rx="1"/><rect x="17" y="4" width="4" height="14" rx="1"/></svg>
           Kanban
         </button>
-        <button type="button" role="tab" onclick="document.body.classList.add('show-graph');this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active');">
-          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-          Table
-        </button>
       </div>
 
       <span class="dash-search" style="min-width:184px;">
@@ -228,9 +264,9 @@
       <span class="grow" style="flex:1;"></span>
 
       <div class="presets" aria-label="audience presets">
-        <button class="preset active" type="button">Results</button>
-        <button class="preset" type="button">Experiments in progress</button>
-        <button class="preset" type="button">Questions &amp; requests</button>
+        <button class="preset active" type="button" data-preset="results">Results</button>
+        <button class="preset" type="button" data-preset="experiments">Experiments in progress</button>
+        <button class="preset" type="button" data-preset="questions">Questions &amp; requests</button>
       </div>
 
       <span class="ro-pill" title="The dashboard is a read-only viewing surface; authoring happens in the vault">
@@ -272,7 +308,7 @@
       <!-- ====================== KANBAN BOARD ======================= -->
       <section class="board">
         <div class="board-head reveal d3">
-          <span class="lbl">Kanban · preset "Results" · question → experiment → result · drag a card between columns to set its status · owner/PI only</span>
+          <span class="lbl">Kanban · <span id="presetName">Results · question → experiment → result</span> · hover a card to light its subgraph · click to inspect</span>
           <span class="rule"></span>
         </div>
 
@@ -281,20 +317,20 @@
           <!-- QUESTIONS -->
           <div class="kcol reveal d4">
             <div class="col-h"><span class="ttl"><span class="dot" style="background:var(--question-ink)"></span>Questions</span><span class="ct">2</span></div>
-            <article class="kcard question">
+            <article class="kcard question" data-node="q1" data-q="q1" data-sub="q1" tabindex="0" aria-label="Question — hover to light its subgraph, click to inspect">
               <span class="kcard__grip" aria-hidden="true"><svg viewBox="0 0 12 16"><circle cx="3" cy="3" r="1.4"/><circle cx="9" cy="3" r="1.4"/><circle cx="3" cy="8" r="1.4"/><circle cx="9" cy="8" r="1.4"/><circle cx="3" cy="13" r="1.4"/><circle cx="9" cy="13" r="1.4"/></svg></span>
               <div class="kcard__body">
                 <span class="ntype question">Question</span>
-                <div class="kt">What sets the order in which proteins are recruited into stress granules?</div>
-                <div class="kmeta"><span class="avatar kate">K</span><span>Kate's lab</span><span class="grow"></span><span class="vis consortium" title="consortium"></span></div>
+                <div class="kt">Do the two granule proteins condense together, or separately and then mix?</div>
+                <div class="kmeta"><span class="avatar kate">K</span><span>Kate's lab</span><span class="grow"></span><span class="sublink" aria-hidden="true">3 linked</span><span class="vis consortium" title="consortium"></span></div>
               </div>
             </article>
-            <article class="kcard question">
+            <article class="kcard question" data-node="q2" data-q="q2" data-sub="q2" tabindex="0" aria-label="Question — hover to light its subgraph, click to inspect">
               <span class="kcard__grip" aria-hidden="true"><svg viewBox="0 0 12 16"><circle cx="3" cy="3" r="1.4"/><circle cx="9" cy="3" r="1.4"/><circle cx="3" cy="8" r="1.4"/><circle cx="9" cy="8" r="1.4"/><circle cx="3" cy="13" r="1.4"/><circle cx="9" cy="13" r="1.4"/></svg></span>
               <div class="kcard__body">
                 <span class="ntype question">Question</span>
-                <div class="kt">Does disassembly reverse the recruitment order?</div>
-                <div class="kmeta"><span class="avatar sean">S</span><span>Sean</span><span class="grow"></span><span class="vis consortium"></span></div>
+                <div class="kt">Are early granules two merging droplets, or one droplet with sub-compartments?</div>
+                <div class="kmeta"><span class="avatar sean">S</span><span>Sean</span><span class="grow"></span><span class="sublink" aria-hidden="true">2 linked</span><span class="vis consortium"></span></div>
               </div>
             </article>
           </div>
@@ -302,27 +338,27 @@
           <!-- EXPERIMENTS (Study) -->
           <div class="kcol reveal d5">
             <div class="col-h"><span class="ttl"><span class="dot" style="background:var(--study-ink)"></span>Experiments</span><span class="ct">3</span></div>
-            <article class="kcard study">
+            <article class="kcard study" data-node="s1" data-sub="q1" tabindex="0" aria-label="Study — click to inspect">
               <span class="kcard__grip" aria-hidden="true"><svg viewBox="0 0 12 16"><circle cx="3" cy="3" r="1.4"/><circle cx="9" cy="3" r="1.4"/><circle cx="3" cy="8" r="1.4"/><circle cx="9" cy="8" r="1.4"/><circle cx="3" cy="13" r="1.4"/><circle cx="9" cy="13" r="1.4"/></svg></span>
               <div class="kcard__body">
                 <span class="ntype study">Study</span>
-                <div class="kt">Live two-channel imaging of G3BP1/PABP1 during granule assembly</div>
-                <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel</span><span class="grow"></span><span class="pin-mini"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>4</span><span class="vis consortium"></span></div>
+                <div class="kt">Lattice-SIM imaging of granule formation over time</div>
+                <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel</span><span class="grow"></span><span class="pin-mini"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>3</span><span class="vis consortium"></span></div>
               </div>
             </article>
-            <article class="kcard study inprog">
+            <article class="kcard study inprog" data-node="s2" data-sub="q2" tabindex="0" aria-label="Study (in progress) — click to inspect">
               <span class="kcard__grip" aria-hidden="true"><svg viewBox="0 0 12 16"><circle cx="3" cy="3" r="1.4"/><circle cx="9" cy="3" r="1.4"/><circle cx="3" cy="8" r="1.4"/><circle cx="9" cy="8" r="1.4"/><circle cx="3" cy="13" r="1.4"/><circle cx="9" cy="13" r="1.4"/></svg></span>
               <div class="kcard__body">
                 <span class="ntype study">Study</span>
-                <div class="kt">Arsenite dose–response</div>
+                <div class="kt">Architecture test of early granules (FRAP)</div>
                 <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel</span><span class="grow"></span><span class="vis consortium"></span></div>
               </div>
             </article>
-            <article class="kcard candidate">
+            <article class="kcard candidate" data-node="cand" data-sub="q1" tabindex="0" aria-label="Candidate — click to inspect">
               <span class="kcard__grip" aria-hidden="true"><svg viewBox="0 0 12 16"><circle cx="3" cy="3" r="1.4"/><circle cx="9" cy="3" r="1.4"/><circle cx="3" cy="8" r="1.4"/><circle cx="9" cy="8" r="1.4"/><circle cx="3" cy="13" r="1.4"/><circle cx="9" cy="13" r="1.4"/></svg></span>
               <div class="kcard__body">
                 <span class="ntype candidate">Candidate</span>
-                <div class="kt">Disassembly time-course (idea — not yet formalized)</div>
+                <div class="kt">Compare the two stresses under 5 min (idea — not yet formalized)</div>
                 <div class="kmeta"><span class="avatar grad">M</span><span>Kate's student</span><span class="grow"></span><span class="vis consortium"></span></div>
               </div>
             </article>
@@ -331,19 +367,19 @@
           <!-- RESULTS (Evidence) -->
           <div class="kcol reveal d6">
             <div class="col-h"><span class="ttl"><span class="dot" style="background:var(--evidence-ink)"></span>Results</span><span class="ct">2</span></div>
-            <article class="kcard evidence sel" aria-current="true">
+            <article class="kcard evidence sel" aria-current="true" data-node="e1" data-sub="q1" tabindex="0" aria-label="Evidence — selected; click to inspect">
               <span class="kcard__grip" aria-hidden="true"><svg viewBox="0 0 12 16"><circle cx="3" cy="3" r="1.4"/><circle cx="9" cy="3" r="1.4"/><circle cx="3" cy="8" r="1.4"/><circle cx="9" cy="8" r="1.4"/><circle cx="3" cy="13" r="1.4"/><circle cx="9" cy="13" r="1.4"/></svg></span>
               <div class="kcard__body">
                 <span class="ntype evidence">Evidence</span>
-                <div class="kt">G3BP1 is recruited to forming granules before PABP1</div>
-                <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel</span><span class="grow"></span><span class="pin-mini"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>4</span><span class="vis consortium"></span></div>
+                <div class="kt">Stress granules change composition over time</div>
+                <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel</span><span class="grow"></span><span class="pin-mini"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>3</span><span class="vis consortium"></span></div>
               </div>
             </article>
-            <article class="kcard evidence">
+            <article class="kcard evidence" data-node="e2" data-sub="q2" tabindex="0" aria-label="Evidence (preliminary) — click to inspect">
               <span class="kcard__grip" aria-hidden="true"><svg viewBox="0 0 12 16"><circle cx="3" cy="3" r="1.4"/><circle cx="9" cy="3" r="1.4"/><circle cx="3" cy="8" r="1.4"/><circle cx="9" cy="8" r="1.4"/><circle cx="3" cy="13" r="1.4"/><circle cx="9" cy="13" r="1.4"/></svg></span>
               <div class="kcard__body">
                 <span class="ntype evidence">Evidence</span>
-                <div class="kt">PABP1 intensity lags G3BP1 by ~40 s at granule onset</div>
+                <div class="kt">Early granules look like two adjacent condensates <span style="color:var(--faint);font-weight:400;font-size:11px;">· preliminary</span></div>
                 <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel</span><span class="grow"></span><span class="vis consortium"></span></div>
               </div>
             </article>
@@ -378,13 +414,47 @@
             <text x="380" y="222" text-anchor="middle" font-size="10" style="font-family:var(--font-mono);fill:var(--muted)">drag nodes to arrange · click to open · same data, different view</text>
           </svg>
         </div>
+
+        <!-- ============ MAKE A REQUEST (beneath the kanban) ============ -->
+        <section class="reqpanel reveal d7" aria-label="Send a request back to Sean">
+          <div class="rq-intro">
+            <span class="ntype request">Request</span>
+            <h3>Send a request back to Sean</h3>
+            <p>The dashboard is read-only — but the graph has a back-channel. Ask for a follow-up study, a missing protocol detail, or raw data. It lands on Sean's node as a typed <code>Request</code>, not an email in a thread he'll lose.</p>
+          </div>
+          <form class="rq-form" onsubmit="return false;">
+            <div class="rq-row">
+              <span class="rq-l">request_for</span>
+              <div class="rq-seg" role="group" aria-label="Request type">
+                <button type="button" class="rq-opt active" onclick="this.parentNode.querySelectorAll('.rq-opt').forEach(function(b){b.classList.remove('active');});this.classList.add('active');">Study</button>
+                <button type="button" class="rq-opt" onclick="this.parentNode.querySelectorAll('.rq-opt').forEach(function(b){b.classList.remove('active');});this.classList.add('active');">Protocol detail</button>
+                <button type="button" class="rq-opt" onclick="this.parentNode.querySelectorAll('.rq-opt').forEach(function(b){b.classList.remove('active');});this.classList.add('active');">Raw data</button>
+              </div>
+            </div>
+            <div class="rq-row">
+              <span class="rq-l">on</span>
+              <span class="rq-target"><span class="vis consortium" style="width:7px;height:7px;border-radius:50%;background:var(--evidence-ink);display:inline-block;"></span> Stress granules change composition over time</span>
+            </div>
+            <textarea class="rq-text" rows="2" aria-label="Request message" placeholder="e.g. Can you push the time-course below 5 min? The early gap between the two stresses is the interesting part."></textarea>
+            <div class="rq-foot">
+              <span class="rq-hint">Goes to Sean as a typed Request — he sees it on the node, with your name.</span>
+              <button type="button" class="btn sm primary" onclick="sendReq07(this)">
+                <svg class="ic" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px;"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                Send request
+              </button>
+            </div>
+          </form>
+        </section>
       </section>
 
       <!-- ====================== INSPECTOR ========================== -->
       <aside class="inspector reveal d4">
 
-        <!-- Evidence card (.ecard atom) — result-first, method collapsed inline -->
-        <div class="panel insp">
+        <!-- The inspector swaps to whichever kanban card is clicked (default: the Evidence) -->
+        <div class="panel insp" id="inspector">
+
+          <!-- ===== E1 · Evidence (default selection) ===== -->
+          <div class="insp-panel" data-node="e1">
           <div class="ecard" style="border:0;border-radius:0;box-shadow:none;padding:16px;">
 
             <!-- top row: node type + share level -->
@@ -398,46 +468,49 @@
               <span class="avatar sean">S</span>
               <span><b style="color:var(--ink)">Sean</b> · Vogel Lab</span>
               <span style="color:var(--line)">·</span>
-              <span>updated 2 h ago</span>
+              <span>updated Oct 14</span>
             </div>
 
             <!-- plot — result FIRST -->
             <div class="ecard__plot" style="margin-top:10px;">
-              <svg viewBox="0 0 318 168" role="img" aria-label="Illustrative: G3BP1 fluorescence intensity rises before PABP1 over time during granule assembly.">
+              <svg viewBox="0 0 318 168" role="img" aria-label="Illustrative: Pearson correlation between Protein 1 and Protein 2 starts negative and becomes positive over ~10–15 min, for arsenite and osmotic stress that differ early then converge.">
                 <rect width="318" height="168" style="fill:var(--surface)"/>
                 <g style="stroke:var(--line)" stroke-width="1"><line x1="40" y1="14" x2="40" y2="134"/><line x1="40" y1="134" x2="300" y2="134"/></g>
+                <line x1="40" y1="74" x2="300" y2="74" style="stroke:var(--muted)" stroke-width="1" stroke-dasharray="3 3" opacity=".5"/>
                 <g font-size="8.5" style="font-family:var(--font-mono);fill:var(--faint)">
-                  <text x="34" y="26" text-anchor="end">max</text>
-                  <text x="34" y="134" text-anchor="end">0</text>
+                  <text x="34" y="24" text-anchor="end">+1</text>
+                  <text x="34" y="78" text-anchor="end">0</text>
+                  <text x="34" y="132" text-anchor="end">−1</text>
                   <text x="40" y="148" text-anchor="middle">stress</text>
-                  <text x="300" y="148" text-anchor="end">time →</text>
+                  <text x="300" y="148" text-anchor="end">30 min →</text>
                 </g>
-                <text x="13" y="74" text-anchor="middle" font-size="8.5" transform="rotate(-90 13 74)" style="font-family:var(--font-mono);fill:var(--muted)">intensity (a.u.)</text>
-                <!-- PABP1 (coral) lags -->
-                <path class="pdraw" d="M40,128 C120,126 150,120 180,96 C210,72 235,40 300,30" style="fill:none;stroke:var(--evidence-ink)" stroke-width="2.4" stroke-linecap="round"/>
-                <!-- G3BP1 (blue) leads -->
-                <path class="pdraw" d="M40,126 C95,122 120,96 150,62 C178,34 205,26 300,22" style="fill:none;stroke:var(--study-ink)" stroke-width="2.4" stroke-linecap="round"/>
-                <!-- lead gap marker -->
-                <line x1="150" y1="20" x2="150" y2="134" style="stroke:var(--question-edge)" stroke-width="1" stroke-dasharray="2 4"/>
-                <line x1="186" y1="20" x2="186" y2="134" style="stroke:var(--question-edge)" stroke-width="1" stroke-dasharray="2 4"/>
-                <text x="168" y="13" text-anchor="middle" font-size="8.5" font-weight="700" style="font-family:var(--font-body);fill:var(--question-ink)">G3BP1 leads</text>
+                <text x="13" y="74" text-anchor="middle" font-size="8.5" transform="rotate(-90 13 74)" style="font-family:var(--font-mono);fill:var(--muted)">Pearson r · P1·P2</text>
+                <!-- early-difference marker -->
+                <line x1="165" y1="20" x2="165" y2="134" style="stroke:var(--question-edge)" stroke-width="1" stroke-dasharray="2 4"/>
+                <text x="165" y="13" text-anchor="middle" font-size="8.5" font-weight="700" style="font-family:var(--font-body);fill:var(--question-ink)">≈10–15 min</text>
+                <!-- osmotic (blue) -->
+                <path class="pdraw" d="M40,96 C80,98 112,92 150,74 C195,54 250,48 300,46" style="fill:none;stroke:var(--study-ink)" stroke-width="2.4" stroke-linecap="round"/>
+                <!-- arsenite (coral) -->
+                <path class="pdraw" d="M40,106 C80,118 116,112 165,75 C205,52 250,46 300,42" style="fill:none;stroke:var(--evidence-ink)" stroke-width="2.4" stroke-linecap="round"/>
+                <text x="256" y="38" font-size="8.5" font-weight="700" style="font-family:var(--font-body);fill:var(--evidence-ink)">arsenite</text>
+                <text x="256" y="60" font-size="8.5" font-weight="700" style="font-family:var(--font-body);fill:var(--study-ink)">osmotic</text>
               </svg>
               <div class="pcap">
                 <div class="mlegend">
-                  <span><i style="width:11px;height:11px;border-radius:50%;display:inline-block;background:var(--study-ink)"></i> G3BP1</span>
-                  <span><i style="width:11px;height:11px;border-radius:50%;display:inline-block;background:var(--evidence-ink)"></i> PABP1</span>
+                  <span><i style="width:11px;height:11px;border-radius:50%;display:inline-block;background:var(--evidence-ink)"></i> arsenite</span>
+                  <span><i style="width:11px;height:11px;border-radius:50%;display:inline-block;background:var(--study-ink)"></i> osmotic</span>
                 </div>
                 <span class="illus">illustrative · unpublished</span>
               </div>
             </div>
 
             <!-- summary — the result in one sentence -->
-            <h3 class="ecard__summary">G3BP1 is recruited to forming stress granules before PABP1 — <span class="accent">G3BP1 intensity rises earlier than PABP1</span> as granules assemble.</h3>
+            <h3 class="ecard__summary">Stress granules change composition over time — <span class="accent">the two proteins go from excluding each other to co-localizing</span> over the first ~10–15 min.</h3>
 
             <!-- caveats -->
             <ul class="ecard__caveats">
-              <li>HeLa · acute arsenite stress</li>
-              <li>Order reverses as granules dissolve</li>
+              <li>HeLa · sodium-arsenite and osmotic stress</li>
+              <li>The two stresses differ significantly in the first 10–15 min</li>
               <li>Illustrative · unpublished — workshop prototype</li>
             </ul>
 
@@ -448,17 +521,17 @@
                 <table class="ctx-table">
                   <tbody>
                     <tr><th>Cell line</th><td>HeLa</td></tr>
-                    <tr><th>Stress</th><td>Arsenite (oxidative)</td></tr>
-                    <tr><th>Channels</th><td>G3BP1 · PABP1 (fluorescent)</td></tr>
-                    <tr><th>Readout</th><td>Per-granule intensity over time</td></tr>
-                    <tr><th>Protocol</th><td>HeLa culture → arsenite stress → live imaging → segmentation (threshold) → per-granule quantification</td></tr>
+                    <tr><th>Stress</th><td>Sodium arsenite · osmotic</td></tr>
+                    <tr><th>Channels</th><td>Protein 1–GFP (488) · Protein 2–mKate (561)</td></tr>
+                    <tr><th>Imaging</th><td>Lattice SIM · ZEISS Elyra 7</td></tr>
+                    <tr><th>Protocol</th><td>HeLa culture → stress → Lattice-SIM time-course → segment on per-pixel SUM → per-granule composition over time</td></tr>
                   </tbody>
                 </table>
-                <p class="threshold-note">Segmentation threshold <b>0.18</b> (load-bearing — alters which granules are counted; see pointer for rationale).</p>
+                <p class="threshold-note">Granules are segmented on the per-pixel <b>SUM of both channels</b> (not one), thresholded just above background — load-bearing: it defines every co-localization number that follows.</p>
                 <div class="ptr-row" style="margin-top:11px;">
-                  <span class="pointer"><span class="kind git">git</span><span class="path">vogel-lab/sg-imaging @ a3f9c21 · /segmentation/</span></span>
-                  <span class="pointer"><span class="kind data">data</span><span class="path">granule_intensity_by_time.csv</span></span>
-                  <span class="pointer gated"><span class="kind local">raw</span><span class="path">NDTiff ≈ 80 GB · request access</span></span>
+                  <span class="pointer"><span class="kind git">git</span><span class="path">vogel-lab/sg-imaging · segment_stress_granules.ijm</span></span>
+                  <span class="pointer"><span class="kind data">data</span><span class="path">granule_composition_by_time.csv</span></span>
+                  <span class="pointer gated"><span class="kind local">raw</span><span class="path">NDTiff z-stacks ≈ 80 GB · request access</span></span>
                   <span class="pointer"><span class="kind video">video</span><span class="path">2-min walkthrough</span></span>
                 </div>
               </div>
@@ -486,8 +559,87 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             1 open <b style="color:var(--request-ink)">Request</b> from Kate's lab on this result
           </div>
+          </div><!-- /e1 -->
 
-        </div><!-- /.panel (ecard wrapper) -->
+          <!-- ===== E2 · Evidence (preliminary) ===== -->
+          <div class="insp-panel" data-node="e2" hidden>
+            <div class="ecard">
+              <div class="ecard__top"><span class="ntype evidence">Evidence</span><span class="tag">preliminary</span></div>
+              <div class="byline" style="margin-top:9px;"><span class="avatar sean">S</span><span><b style="color:var(--ink)">Sean</b> · Vogel Lab</span><span style="color:var(--line)">·</span><span>this week</span></div>
+              <h3 class="ecard__summary" style="margin-top:10px;">Early granules look like <span class="accent">two adjacent condensates</span> — not one sub-compartmented droplet.</h3>
+              <ul class="ecard__caveats">
+                <li>Manufactured demo · illustrative — preliminary</li>
+                <li>From the early-granule architecture test (FRAP + dual-label)</li>
+              </ul>
+              <a class="btn ghost ecard__studyfoot" href="08-traverse-and-request.html" style="margin-top:4px;">Open the node →</a>
+            </div>
+          </div>
+
+          <!-- ===== Q1 · Question (anchor) ===== -->
+          <div class="insp-panel" data-node="q1" hidden>
+            <div class="ecard">
+              <div class="ecard__top"><span class="ntype question">Question</span><span class="share-level consortium" style="font-size:11px;padding:3px 9px;">consortium</span></div>
+              <div class="byline" style="margin-top:9px;"><span class="avatar kate">K</span><span><b style="color:var(--ink)">Kate's lab</b></span></div>
+              <h3 class="ecard__summary" style="margin-top:10px;">Do the two granule proteins condense together, or separately and then mix?</h3>
+              <p class="insp-lead">The anchoring question for the project. Hover its card and the three nodes in its subgraph light up — a Lattice-SIM study, a candidate, and the composition Evidence.</p>
+              <div class="reuse" style="margin-top:10px;"><span class="dotg"></span><b>3</b>&nbsp;linked nodes</div>
+            </div>
+          </div>
+
+          <!-- ===== Q2 · Question (follow-up) ===== -->
+          <div class="insp-panel" data-node="q2" hidden>
+            <div class="ecard">
+              <div class="ecard__top"><span class="ntype question">Question</span><span class="share-level consortium" style="font-size:11px;padding:3px 9px;">consortium</span></div>
+              <div class="byline" style="margin-top:9px;"><span class="avatar sean">S</span><span><b style="color:var(--ink)">Sean</b> · Vogel Lab</span></div>
+              <h3 class="ecard__summary" style="margin-top:10px;">Are early granules two merging droplets, or one droplet with sub-compartments?</h3>
+              <p class="insp-lead">The follow-up the composition result opened. Its subgraph: the FRAP architecture study and the preliminary early-granules Evidence.</p>
+              <div class="reuse" style="margin-top:10px;"><span class="dotg" style="background:var(--study-ink)"></span><b>2</b>&nbsp;linked nodes</div>
+            </div>
+          </div>
+
+          <!-- ===== S1 · Study (Lattice-SIM) ===== -->
+          <div class="insp-panel" data-node="s1" hidden>
+            <div class="ecard">
+              <div class="ecard__top"><span class="ntype study">Study</span><span class="share-level consortium" style="font-size:11px;padding:3px 9px;">consortium</span></div>
+              <div class="byline" style="margin-top:9px;"><span class="avatar sean">S</span><span><b style="color:var(--ink)">Sean</b> · Vogel Lab</span></div>
+              <h3 class="ecard__summary" style="margin-top:10px;">Live Lattice-SIM imaging of granule formation at staged times</h3>
+              <p class="insp-lead">Protein 1–GFP + Protein 2–mKate in HeLa on a ZEISS Elyra 7, imaged up to 30 min after stress; per-granule composition over time. Grounds the composition Evidence; follows three protocols.</p>
+              <div class="ptr-row" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:11px;">
+                <span class="pointer" style="font-size:11px;padding:4px 8px;"><span class="kind git" style="font-size:8.5px;">git</span><span class="path">segment_stress_granules.ijm</span></span>
+                <span class="pointer gated" style="font-size:11px;padding:4px 8px;border-style:dashed;border-color:var(--question-edge);background:var(--question-wash);"><span class="kind local" style="font-size:8.5px;">raw</span><span class="path">NDTiff ≈ 80 GB</span></span>
+              </div>
+              <a class="btn ghost ecard__studyfoot" href="08-traverse-and-request.html" style="margin-top:8px;">Traverse to the method →</a>
+            </div>
+          </div>
+
+          <!-- ===== S2 · Study (architecture test, in progress) ===== -->
+          <div class="insp-panel" data-node="s2" hidden>
+            <div class="ecard">
+              <div class="ecard__top"><span class="ntype study">Study</span><span class="tag">in progress</span></div>
+              <div class="byline" style="margin-top:9px;"><span class="avatar sean">S</span><span><b style="color:var(--ink)">Sean</b> · Vogel Lab</span></div>
+              <h3 class="ecard__summary" style="margin-top:10px;">Architecture test of early granules (FRAP)</h3>
+              <p class="insp-lead">Designed to tell two merging condensates from one sub-compartmented droplet — two-colour FRAP + dual-label super-resolution on sub-10-min granules. Addresses the follow-up Question.</p>
+              <div class="kfoot" style="margin-top:11px;">
+                <span class="agenda-tag"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg> For next sync · Jun 16</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== Candidate ===== -->
+          <div class="insp-panel" data-node="cand" hidden>
+            <div class="ecard" style="background:var(--surface-2);">
+              <div class="ecard__top"><span class="ntype candidate">Candidate</span><span class="tag">pre-formalized</span></div>
+              <div class="byline" style="margin-top:9px;"><span class="avatar grad">M</span><span><b style="color:var(--ink)">Kate's student</b></span></div>
+              <h3 class="ecard__summary" style="margin-top:10px;color:var(--muted);">Compare the two stresses under 5 min</h3>
+              <p class="insp-lead">An informal idea riding along — not yet a formal Study. Anyone in the consortium can formalize it, or just read it as-is.</p>
+              <button class="convert-btn to-evidence" type="button" style="margin-top:11px;" onclick="this.textContent='✓ Promoted to Study';this.disabled=true;this.style.opacity=.7;">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 12l2 2 4-4M12 3a9 9 0 1 0 0 18A9 9 0 0 0 12 3z"/></svg>
+                Promote to Study
+              </button>
+            </div>
+          </div>
+
+        </div><!-- /.panel (inspector) -->
 
         <!-- Related-work newsfeed — below the ecard panel -->
         <div class="panel pad relfeed">
@@ -500,9 +652,9 @@
           <div class="relfeed__item">
             <span class="avatar grad" title="Maya">M</span>
             <div class="rf-main">
-              <div class="rf-title">Gibson assembly into BL21 — low yield, codon issue</div>
+              <div class="rf-title">Two RBPs co-condense over time — measured by cross-correlation</div>
               <div class="rf-by">Maya · Rivera Lab · 2d</div>
-              <div class="relfeed__why">matched: <b>method=Gibson</b> · <b>strain=BL21</b></div>
+              <div class="relfeed__why">matched: <b>readout=co-localization</b> · <b>cell line=HeLa</b></div>
             </div>
           </div>
 
@@ -510,9 +662,9 @@
           <div class="relfeed__item">
             <span class="avatar lab" title="Okafor Lab">O</span>
             <div class="rf-main">
-              <div class="rf-title">Heat-shock vs oxidative stress panel — SG dynamics compared</div>
+              <div class="rf-title">Granule assembly differs by stress type — arsenite vs heat-shock</div>
               <div class="rf-by">Okafor Lab · 5d</div>
-              <div class="relfeed__why">matched: <b>cell line=HeLa</b> · <b>assay=stress-granule</b></div>
+              <div class="relfeed__why">matched: <b>assay=stress-granule</b> · <b>stress-type</b></div>
             </div>
           </div>
 
@@ -520,9 +672,9 @@
           <div class="relfeed__item">
             <span class="avatar kate" title="Kate's student">M</span>
             <div class="rf-main">
-              <div class="rf-title">Lithium acetate lot gave low transformation — drop the concentration</div>
+              <div class="rf-title">Segmenting on the per-pixel SUM avoids single-channel bias</div>
               <div class="rf-by">Kate's student (candidate) · 1d</div>
-              <div class="relfeed__why">matched: <b>method=transformation</b></div>
+              <div class="relfeed__why">matched: <b>method=segmentation</b></div>
             </div>
           </div>
 
@@ -553,8 +705,87 @@
 </div><!-- /.screen -->
 
 <footer class="dgfoot reveal d8">
-  <span class="dots"></span>MIRA × Discourse Graphs · push results to a shared web interface · draft v0.2<span class="dots"></span>
+  <span class="dots"></span>MIRA × Discourse Graphs · push results to a shared web interface · draft v0.4<span class="dots"></span>
 </footer>
+
+<script>
+  (function(){
+    var kanban = document.querySelector('.kanban');
+    if(!kanban) return;
+    var cards  = Array.prototype.slice.call(document.querySelectorAll('.kanban .kcard'));
+    var panels = Array.prototype.slice.call(document.querySelectorAll('.insp-panel'));
+
+    /* --- hover/focus ANY card → light up the subgraph it belongs to --- */
+    function highlight(sub){
+      if(!sub) return;
+      kanban.classList.add('subgraph-on');
+      cards.forEach(function(c){
+        var mem = (c.getAttribute('data-sub')||'').split(/\s+/);
+        c.classList.toggle('subhit', mem.indexOf(sub) !== -1);
+      });
+    }
+    function clearHi(){ kanban.classList.remove('subgraph-on'); cards.forEach(function(c){ c.classList.remove('subhit'); }); }
+
+    /* --- click a card → select it and swap the inspector to that node --- */
+    function selectCard(card){
+      var node = card.getAttribute('data-node');
+      cards.forEach(function(c){
+        var on = c === card;
+        c.classList.toggle('sel', on);
+        c.setAttribute('aria-current', on ? 'true' : 'false');
+      });
+      panels.forEach(function(p){ p.hidden = p.getAttribute('data-node') !== node; });
+    }
+
+    cards.forEach(function(card){
+      var sub = card.getAttribute('data-sub');
+      card.addEventListener('mouseenter', function(){ highlight(sub); });
+      card.addEventListener('mouseleave', clearHi);
+      card.addEventListener('focus', function(){ highlight(sub); });
+      card.addEventListener('blur', clearHi);
+      card.addEventListener('click', function(e){ if(e.target.closest('a')) return; selectCard(card); });
+      card.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); selectCard(card); } });
+    });
+
+    /* --- audience presets filter the board --- */
+    var PRESETS = {
+      results:     { off: function(){ return false; },
+                     label: 'Results · question → experiment → result' },
+      experiments: { off: function(c){ return !(c.classList.contains('study') || c.classList.contains('candidate')); },
+                     label: 'Experiments in progress · ongoing & planned studies' },
+      questions:   { off: function(c){ return !c.classList.contains('question'); },
+                     label: 'Questions & requests · open threads — ask back below' }
+    };
+    var reqpanel = document.querySelector('.reqpanel');
+    var labelEl  = document.getElementById('presetName');
+    function applyPreset(key){
+      var p = PRESETS[key] || PRESETS.results;
+      cards.forEach(function(c){ c.classList.toggle('preset-off', p.off(c)); });
+      if(reqpanel) reqpanel.classList.toggle('preset-hot', key === 'questions');
+      if(labelEl)  labelEl.textContent = p.label;
+    }
+    document.querySelectorAll('.preset').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        document.querySelectorAll('.preset').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        applyPreset(btn.getAttribute('data-preset'));
+      });
+    });
+  })();
+
+  /* "Send request" → replace the composer with a typed-Request confirmation. */
+  function sendReq07(btn){
+    var form = btn.closest('.rq-form');
+    if(!form) return;
+    var activeOpt = form.querySelector('.rq-opt.active');
+    var kind = activeOpt ? activeOpt.textContent.trim() : 'Study';
+    var div = document.createElement('div');
+    div.className = 'rq-sent';
+    div.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>'
+      + '<span>Request sent to Sean — <b>request_for ' + kind + '</b> on “Stress granules change composition over time.” It’s on the node now, with your name — no email.</span>';
+    form.replaceWith(div);
+  }
+</script>
 
 </body>
 </html>

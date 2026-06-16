@@ -192,12 +192,23 @@
   }
   .cbx:disabled { opacity: .92; cursor: default; }
 
+  /* share-with checkbox rows (v0.4: multi-select — share with >1 group at once) */
+  .ctx-check { display: flex; align-items: center; gap: 10px; padding: 6px 9px; border-radius: var(--r-sm); cursor: pointer; }
+  .ctx-check:hover { background: var(--surface-2); }
+  .ctx-check .cbx { flex: none; }
+  .ctx-share-btn { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; margin-top: 2px;
+    font-family: var(--font-body); font-size: 12.5px; font-weight: 600; color: #fff; background: var(--brand);
+    border: 1px solid var(--brand); border-radius: var(--r-sm); padding: 8px 10px; cursor: pointer; transition: background .15s var(--ease); }
+  .ctx-share-btn:hover { background: var(--brand-press); }
+  .ctx-share-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+  .ctx-share-btn b { font-weight: 700; }
+
   .ptr-line { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
   .ptr-line .pointer { font-size: 10.5px; padding: 4px 7px; }
   .ptr-line .pointer .kind { font-size: 8px; }
   .ptr-line .pointer.gated { border-style: dashed; border-color: var(--question-edge); background: var(--question-wash); }
 
-  /* illustrative two-curve plot inside the evidence card (G3BP1 leads PABP1) */
+  /* illustrative two-curve plot inside the evidence card (Pearson r, neg → pos) */
   .evspark {
     margin-top: 9px; display: flex; gap: 11px; align-items: center;
     background: var(--surface-2); border: 1px solid var(--line-2); border-radius: var(--r-sm);
@@ -464,7 +475,7 @@
   <div class="screen reveal d2">
     <div class="winbar">
       <div class="lights"><i></i><i></i><i></i></div>
-      <span class="addr">Obsidian — Vogel Lab vault — G3BP1 before PABP1.md</span>
+      <span class="addr">Obsidian — Vogel Lab vault — SG composition over time.md</span>
       <span class="grow"></span>
       <span class="kbd">⌘ ⇧ S</span>
     </div>
@@ -486,13 +497,13 @@
         <!-- file / node list — the WHOLE vault; Sean shares only a subset -->
         <aside class="filetree" aria-label="Vault files" style="position:relative">
           <div class="vault">Vault · stress granules</div>
-          <div class="f"><span class="swatch" style="background:var(--question-ink)"></span>Q · What sets recruitment order?</div>
-          <div class="f"><span class="swatch" style="background:var(--claim-ink)"></span>C · Fixed assembly order</div>
-          <div class="f sel"><span class="swatch" style="background:var(--evidence-ink)"></span>E · G3BP1 before PABP1</div>
-          <div class="f indent"><span class="swatch" style="background:var(--study-ink)"></span>S · Live two-channel imaging</div>
+          <div class="f"><span class="swatch" style="background:var(--question-ink)"></span>Q · Condense together or separately?</div>
+          <div class="f"><span class="swatch" style="background:var(--claim-ink)"></span>C · Components mix as granule matures</div>
+          <div class="f sel"><span class="swatch" style="background:var(--evidence-ink)"></span>E · Composition changes over time</div>
+          <div class="f indent"><span class="swatch" style="background:var(--study-ink)"></span>S · Lattice-SIM time-course</div>
           <div class="f indent"><span class="swatch" style="background:var(--protocol-ink)"></span>P · Culture → stress → segment</div>
-          <div class="f"><span class="swatch" style="background:var(--evidence-ink)"></span>E · PABP1 lags by ~40 s</div>
-          <div class="f"><span class="swatch cand-dot"></span>Candidate · Disassembly idea</div>
+          <div class="f"><span class="swatch" style="background:var(--evidence-ink)"></span>E · Early granules: two condensates</div>
+          <div class="f"><span class="swatch cand-dot"></span>Candidate · Compare stresses &lt;5 min</div>
           <div class="f dim"><span class="swatch" style="background:var(--private)"></span>Sean&rsquo;s working notes (private)</div>
 
           <!-- multi-select hint caption -->
@@ -503,55 +514,65 @@
                Both are kept visible: this menu is the trigger,
                the Share panel (center) is the full flow. -->
           <div class="ctx-menu ctx-menu--filetree" role="menu" aria-label="Share with">
-            <div class="ctx-h">Share with</div>
+            <div class="ctx-h">Share with — pick one or more</div>
 
-            <!-- groups -->
-            <div class="ctx-item" role="menuitem">
+            <!-- groups (multi-select) -->
+            <label class="ctx-check" role="menuitemcheckbox" aria-checked="true">
+              <input class="cbx" type="checkbox" checked
+                onclick="var n=document.querySelectorAll('.ctx-menu--filetree .cbx:checked').length;document.getElementById('shareCount').textContent=n;this.closest('.ctx-check').setAttribute('aria-checked',this.checked);">
               <span class="group-pill consortium">
                 <svg class="hex" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l9 5v10l-9 5-9-5V7z"/></svg>
                 Kate&rsquo;s Lab
               </span>
-            </div>
-            <div class="ctx-item" role="menuitem">
+            </label>
+            <label class="ctx-check" role="menuitemcheckbox" aria-checked="true">
+              <input class="cbx" type="checkbox" checked
+                onclick="var n=document.querySelectorAll('.ctx-menu--filetree .cbx:checked').length;document.getElementById('shareCount').textContent=n;this.closest('.ctx-check').setAttribute('aria-checked',this.checked);">
               <span class="group-pill consortium">
                 <svg class="hex" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l9 5v10l-9 5-9-5V7z"/></svg>
                 McGill Consortium
               </span>
-            </div>
-            <div class="ctx-item" role="menuitem">
+            </label>
+            <label class="ctx-check" role="menuitemcheckbox" aria-checked="false">
+              <input class="cbx" type="checkbox"
+                onclick="var n=document.querySelectorAll('.ctx-menu--filetree .cbx:checked').length;document.getElementById('shareCount').textContent=n;this.closest('.ctx-check').setAttribute('aria-checked',this.checked);">
               <span class="group-pill world">
                 <svg class="hex" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l9 5v10l-9 5-9-5V7z"/></svg>
                 McGill Public
               </span>
-            </div>
+            </label>
 
             <div class="ctx-sep" role="separator"></div>
 
-            <!-- people -->
-            <div class="ctx-item" role="menuitem">
+            <!-- people (multi-select) -->
+            <label class="ctx-check" role="menuitemcheckbox" aria-checked="false">
+              <input class="cbx" type="checkbox"
+                onclick="var n=document.querySelectorAll('.ctx-menu--filetree .cbx:checked').length;document.getElementById('shareCount').textContent=n;this.closest('.ctx-check').setAttribute('aria-checked',this.checked);">
               <span class="avatar kate" aria-hidden="true">K</span>
               Kate
-            </div>
-            <div class="ctx-item" role="menuitem">
-              <span class="avatar grad" aria-hidden="true">M</span>
-              Maya
-            </div>
+            </label>
+            <label class="ctx-check" role="menuitemcheckbox" aria-checked="false">
+              <input class="cbx" type="checkbox"
+                onclick="var n=document.querySelectorAll('.ctx-menu--filetree .cbx:checked').length;document.getElementById('shareCount').textContent=n;this.closest('.ctx-check').setAttribute('aria-checked',this.checked);">
+              <span class="avatar grad" aria-hidden="true">K</span>
+              Khalid <span style="color:var(--faint);font-size:11px;margin-left:4px;">· Montreal</span>
+            </label>
 
             <div class="ctx-sep" role="separator"></div>
 
-            <!-- open full panel -->
-            <div class="ctx-item" role="menuitem" style="font-weight:600;color:var(--brand)">
+            <!-- share with the selected groups/people -->
+            <button class="ctx-share-btn" type="button" onclick="return false;">
               <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
-              Open share panel&hellip;
-              <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-            </div>
+              Share with <b id="shareCount">2</b> selected&hellip;
+              <svg class="chev" viewBox="0 0 24 24" aria-hidden="true" style="margin-left:2px;"><path d="M9 6l6 6-6 6"/></svg>
+            </button>
           </div>
         </aside>
 
         <!-- editor surface, dimmed under the panel -->
         <main class="editor">
-          <div class="doc-h">G3BP1 is recruited to forming stress granules before PABP1</div>
-          <div class="doc-meta">EVIDENCE · supports → &ldquo;fixed assembly order&rdquo; · is_grounded_in → live-imaging study</div>
+          <div class="doc-h">Stress granules change composition over time</div>
+          <div class="doc-meta">EVIDENCE · supports → &ldquo;components mix as the granule matures&rdquo; · is_grounded_in → Lattice-SIM study</div>
           <div class="doc-line w1"></div>
           <div class="doc-line w3"></div>
           <div class="doc-line w2"></div>
@@ -567,7 +588,7 @@
                 <span class="ntype evidence">Evidence</span>
                 <div class="title">
                   <h3>Share to dashboard</h3>
-                  <small>from <b>G3BP1 is recruited to forming stress granules before PABP1</b></small>
+                  <small>from <b>Stress granules change composition over time</b></small>
                   <div>
                     <span class="dest-chip">
                       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/></svg>
@@ -594,22 +615,23 @@
                       <input class="cbx" type="checkbox" checked aria-label="Include Evidence node">
                       <div class="ttl">
                         <div class="row"><span class="ntype evidence">Evidence</span><span class="auto-pill">selected</span></div>
-                        <div class="nm">G3BP1 is recruited to forming stress granules before PABP1</div>
-                        <div class="bd">In stressed HeLa cells, G3BP1 intensity rises earlier than PABP1 as granules assemble &mdash; a fixed recruitment order, reversing as they dissolve.</div>
-                        <!-- illustrative summary figure: two curves, G3BP1 (blue) leads PABP1 (coral) -->
+                        <div class="nm">Stress granules change composition over time</div>
+                        <div class="bd">Across both stresses, the correlation between the two granule proteins climbs from negative to positive over ~10&ndash;15 min &mdash; they first exclude each other, then co-localize as the granule matures.</div>
+                        <!-- illustrative summary figure: Pearson r between the two proteins, negative → positive -->
                         <div class="evspark">
-                          <svg class="spk" width="124" height="58" viewBox="0 0 124 58" aria-label="Illustrative: G3BP1 fluorescence intensity rises before PABP1 over time during granule assembly.">
+                          <svg class="spk" width="124" height="58" viewBox="0 0 124 58" aria-label="Illustrative: Pearson correlation between Protein 1 and Protein 2 goes from negative to positive over time, for two stress conditions.">
                             <line class="axis" x1="12" y1="8" x2="12" y2="50"/>
                             <line class="axis" x1="12" y1="50" x2="118" y2="50"/>
-                            <line class="lead" x1="52" y1="8" x2="52" y2="50"/>
-                            <!-- PABP1 (coral) lags -->
-                            <path class="pa" d="M14,46 C46,45 58,42 70,33 C84,23 96,13 116,11"/>
-                            <!-- G3BP1 (blue) leads -->
-                            <path class="g3" d="M14,45 C38,43 50,32 62,21 C74,12 92,9 116,8"/>
+                            <line x1="12" y1="29" x2="118" y2="29" style="stroke:var(--muted);stroke-width:1;stroke-dasharray:2 3;opacity:.5"/>
+                            <line class="lead" x1="62" y1="8" x2="62" y2="50"/>
+                            <!-- osmotic (blue) -->
+                            <path class="g3" d="M14,40 C40,41 52,36 62,29 C80,21 100,16 116,15"/>
+                            <!-- arsenite (coral) -->
+                            <path class="pa" d="M14,44 C40,49 56,46 70,30 C86,20 100,15 116,13"/>
                           </svg>
                           <div class="lg">
-                            <span class="leg"><i style="background:var(--study-ink)"></i>G3BP1</span> &nbsp;
-                            <span class="leg"><i style="background:var(--evidence-ink)"></i>PABP1</span>
+                            <span class="leg"><i style="background:var(--evidence-ink)"></i>arsenite</span> &nbsp;
+                            <span class="leg"><i style="background:var(--study-ink)"></i>osmotic</span>
                             <span class="cap">illustrative · unpublished — workshop prototype</span>
                           </div>
                         </div>
@@ -622,8 +644,8 @@
                       <input class="cbx" type="checkbox" checked disabled aria-label="Study auto-included">
                       <div class="ttl">
                         <div class="row"><span class="ntype study">Study</span><span class="auto-pill">grounds · auto</span></div>
-                        <div class="nm">Live two-channel fluorescence microscopy of stressed HeLa cells</div>
-                        <div class="bd">Tracking per-granule G3BP1/PABP1 intensity over time as granules form and dissolve.</div>
+                        <div class="nm">Lattice-SIM imaging of granule formation at staged times</div>
+                        <div class="bd">Protein 1&ndash;GFP and Protein 2&ndash;mKate in HeLa, imaged on a ZEISS Elyra 7 up to 30 min after stress; per-granule composition measured over time.</div>
                       </div>
                       <span class="pubmark"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span>
                     </div>
@@ -633,13 +655,13 @@
                       <input class="cbx" type="checkbox" checked disabled aria-label="Protocol auto-included">
                       <div class="ttl">
                         <div class="row"><span class="ntype protocol">Protocol</span><span class="auto-pill">follows · auto</span></div>
-                        <div class="nm">HeLa culture → stress → live imaging → segmentation (threshold) → quantification</div>
-                        <div class="bd">The <b style="color:var(--protocol-ink)">segmentation threshold</b> is the load-bearing methods detail a reproducer traverses to.</div>
+                        <div class="nm">HeLa culture → stress → Lattice-SIM → segment on SUM → composition over time</div>
+                        <div class="bd">Segmenting on the <b style="color:var(--protocol-ink)">per-pixel SUM of both channels</b> is the load-bearing methods detail a reproducer traverses to.</div>
                         <!-- POINTERS, not payloads (R2) -->
                         <div class="ptr-line">
-                          <span class="pointer"><span class="kind git">git</span><span class="path">vogel-lab/sg-imaging @ a3f9c21 · /segmentation/</span></span>
-                          <span class="pointer"><span class="kind data">data</span><span class="path">granule_intensity_by_time.csv</span></span>
-                          <span class="pointer gated"><span class="kind local">raw</span><span class="path">NDTiff ≈ 80 GB · 25 TB array</span></span>
+                          <span class="pointer"><span class="kind git">git</span><span class="path">vogel-lab/sg-imaging · segment_stress_granules.ijm</span></span>
+                          <span class="pointer"><span class="kind data">data</span><span class="path">granule_composition_by_time.csv</span></span>
+                          <span class="pointer gated"><span class="kind local">raw</span><span class="path">NDTiff z-stacks ≈ 80 GB · Elyra 7</span></span>
                           <span class="pointer"><span class="kind video">video</span><span class="path">2-min walkthrough</span></span>
                         </div>
                       </div>
@@ -657,7 +679,7 @@
                       <input class="cbx" type="checkbox" checked aria-label="Include connected Question">
                       <div class="ttl">
                         <div class="row"><span class="ntype question">Question</span><span class="offer-pill">addresses · connected</span></div>
-                        <div class="nm">What sets the order in which proteins are recruited into stress granules?</div>
+                        <div class="nm">When granules form, do the two proteins condense together, or separately and then mix?</div>
                       </div>
                       <span class="pubmark"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span>
                     </label>
@@ -667,7 +689,7 @@
                       <input class="cbx" type="checkbox" aria-label="Include connected second Evidence">
                       <div class="ttl">
                         <div class="row"><span class="ntype evidence">Evidence</span><span class="offer-pill">supports · connected</span></div>
-                        <div class="nm">PABP1 intensity lags G3BP1 by ~40 s at granule onset</div>
+                        <div class="nm">Early granules look like two adjacent condensates</div>
                       </div>
                       <span class="offer-pill" style="align-self:center">off</span>
                     </label>
@@ -677,7 +699,7 @@
                       <input class="cbx" type="checkbox" checked aria-label="Include candidate node as-is">
                       <div class="ttl">
                         <div class="row"><span class="ntype candidate">Candidate</span><span class="cand-pill">informal · shared as-is</span></div>
-                        <div class="nm">Disassembly time-course (idea &mdash; not yet formalized)</div>
+                        <div class="nm">Compare the two stresses under 5 min (idea &mdash; not yet formalized)</div>
                         <div class="bd">Shared as-is &mdash; someone in Kate&rsquo;s lab can formalize it, or just view it as it is.</div>
                       </div>
                       <span class="pubmark"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span>
@@ -753,7 +775,7 @@
                     </div>
 
                     <div class="vis-row">
-                      <div class="vk"><div class="vn">Analysis &amp; curated data</div><div class="vp">git @ a3f9c21 · granule_intensity_by_time.csv</div></div>
+                      <div class="vk"><div class="vn">Analysis &amp; curated data</div><div class="vp">segment_stress_granules.ijm · granule_composition_by_time.csv</div></div>
                       <span class="share-level consortium">
                         <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
                         Consortium
@@ -777,7 +799,7 @@
                         <span class="ntype" style="color:var(--private);background:var(--surface-2);border-color:var(--line)">Private</span>
                         <span class="never-tag">won&rsquo;t be shared</span>
                       </div>
-                      <div class="node-title">Sean&rsquo;s working notes &mdash; &ldquo;not sure the ~40 s lag holds at lower stress&rdquo;</div>
+                      <div class="node-title">Sean&rsquo;s working notes &mdash; &ldquo;is the early divergence between the two stresses real below 5 min?&rdquo;</div>
                       <div class="redact" aria-hidden="true"></div>
                       <div class="redact" style="width:46%" aria-hidden="true"></div>
                     </div>
@@ -834,7 +856,7 @@
                     <div class="sv-row" role="listitem">
                       <span class="sv-state ok" aria-label="Will be shared">&#10003;</span>
                       <div class="sv-main">
-                        <div class="sv-name">Evidence: G3BP1 is recruited before PABP1</div>
+                        <div class="sv-name">Evidence: Stress granules change composition over time</div>
                         <div class="sv-target">&rarr; Kate&rsquo;s Lab &middot; consortium</div>
                       </div>
                       <span class="share-level consortium" aria-hidden="true">
@@ -945,7 +967,7 @@
     </div>
   </div>
 
-  <p class="footer-note reveal d8"><span class="dots"></span>MIRA × Discourse Graphs · push results to a shared web interface · draft v0.2<span class="dots"></span></p>
+  <p class="footer-note reveal d8"><span class="dots"></span>MIRA × Discourse Graphs · push results to a shared web interface · draft v0.4<span class="dots"></span></p>
 
   <!-- ===================================================================
        Tiny vanilla JS — all progressive; the screen is complete & correct

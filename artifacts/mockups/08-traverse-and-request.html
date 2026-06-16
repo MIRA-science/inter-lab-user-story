@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>G3BP1 before PABP1 — traverse the lineage &amp; request back · mira.science</title>
+<title>Stress-granule composition — traverse the lineage &amp; request back · mira.science</title>
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="components.css">
 <style>
@@ -72,7 +72,7 @@
   .ask {
     margin-top:26px; display:flex; gap:13px; align-items:flex-start;
     padding:15px 17px; border-radius: var(--r-lg);
-    background: var(--brand-tint); border:1px solid #aeb4eb;
+    background: var(--brand-tint);
   }
   .ask .who { display:flex; flex-direction:column; align-items:center; gap:5px; flex:none; }
   .ask .who .avatar { width:30px; height:30px; font-size:12px; }
@@ -82,7 +82,7 @@
   .ask .sub { font-size:12.5px; color: var(--ink-2); margin-top:6px; line-height:1.5; }
   .ask .sub i { color: var(--evidence-ink); font-style:italic; font-weight:600; }
   .ask .down { display:flex; align-items:center; gap:7px; margin-top:9px; font-family: var(--font-mono); font-size:11px; color: var(--brand); font-weight:600; }
-  .ask .down svg { width:14px; height:14px; stroke: currentColor; fill:none; stroke-width:2; animation: nudge 1.8s var(--ease-out) infinite; }
+  .ask .down svg { width:14px; height:14px; stroke: currentColor; fill:none; stroke-width:2; }
   @keyframes nudge { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(3px);} }
   @media (prefers-reduced-motion: reduce){ .ask .down svg { animation:none; } }
 
@@ -111,8 +111,8 @@
   .withheld svg { width:13px; height:13px; stroke: var(--faint); fill:none; stroke-width:2; }
 
   /* the payoff node — the segmentation threshold — gets a soft highlight */
-  .node.payoff { box-shadow: 0 0 0 3px var(--protocol-wash), var(--shadow-2); }
-  .threshold-detail { margin-top:11px; padding:11px 13px; border-radius: var(--r-md); background: var(--protocol-wash); border:1px solid var(--protocol-edge); }
+  .node.payoff { box-shadow: 0 0 0 2px var(--protocol-edge), var(--shadow-1); }
+  .threshold-detail { margin-top:11px; padding:11px 13px 12px 14px; border-radius: var(--r-sm); background: var(--protocol-wash); border:0; border-left:3px solid var(--protocol-ink); }
   .threshold-detail .th-h { font-family: var(--font-mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color: var(--protocol-ink); font-weight:700; margin-bottom:7px; display:flex; align-items:center; gap:7px; }
   .threshold-detail .th-h .tag { background: var(--surface); color: var(--protocol-ink); border-color: var(--protocol-edge); }
   .th-tbl { width:100%; border-collapse:collapse; font-size:12px; }
@@ -138,14 +138,15 @@
   .video .caption i { color: var(--ink-2); font-style:italic; }
 
   /* ---- "why provenance matters" callout ------------------------------------ */
+  /* quieted to a plain note (impeccable · distill): the node cards are the only
+     cards on the page — explanatory asides don't compete as colored boxes. */
   .why {
-    margin-top:24px; display:flex; gap:12px; align-items:flex-start;
-    padding:14px 16px; border-radius: var(--r-md);
-    background: var(--question-wash); border:1px solid var(--question-edge);
+    margin-top:24px; display:flex; gap:11px; align-items:flex-start;
+    padding:2px 0 2px 14px; border-left:2px solid var(--line);
   }
-  .why svg { width:18px; height:18px; stroke: var(--question-ink); fill:none; stroke-width:2; flex:none; margin-top:1px; }
-  .why .txt { font-size:12.5px; color: var(--ink-2); line-height:1.5; }
-  .why .txt b { color: var(--question-ink); }
+  .why svg { width:17px; height:17px; stroke: var(--muted); fill:none; stroke-width:2; flex:none; margin-top:1px; }
+  .why .txt { font-size:12.5px; color: var(--muted); line-height:1.5; }
+  .why .txt b { color: var(--ink-2); }
 
   /* ---- Sidebar: request-access + the Request-back current ------------------ */
   .aside { position:sticky; top:22px; display:grid; gap:14px; }
@@ -156,14 +157,15 @@
   .note { font-size:11px; color: var(--faint); margin-top:10px; line-height:1.45; }
 
   .access-state { display:none; }
-  .perm-mini { border:1px dashed var(--question-edge); background: var(--question-wash); border-radius: var(--r-md); padding:12px 14px; }
+  .perm-mini { border:1px solid var(--line); background: var(--surface-2); border-radius: var(--r-md); padding:12px 14px; }
   .perm-mini .row { gap:8px; align-items:flex-start; }
-  .perm-mini .ttl { font-size:12.5px; font-weight:700; color: var(--question-ink); }
-  .perm-mini .sub { font-size:11.5px; color: var(--question-ink); opacity:.85; margin-top:4px; }
-  .perm-mini svg { width:15px; height:15px; stroke: var(--question-ink); fill:none; stroke-width:2; margin-top:1px; }
+  .perm-mini .ttl { font-size:12.5px; font-weight:700; color: var(--ink); }
+  .perm-mini .sub { font-size:11.5px; color: var(--muted); margin-top:4px; }
+  .perm-mini svg { width:15px; height:15px; stroke: var(--muted); fill:none; stroke-width:2; margin-top:1px; }
 
-  /* the Request-back card — indigo, the reverse current */
-  .req-card { padding:17px; border-color: var(--request-edge); box-shadow: 0 0 0 3px var(--request-wash), var(--shadow-1); }
+  /* the Request-back card — marked by a request-ink left accent, the same
+     "left border = node type" language the chain nodes use (impeccable · distill). */
+  .req-card { padding:17px; border-left:3px solid var(--request-ink); box-shadow: var(--shadow-1); }
   .req-card .req-head { display:flex; align-items:center; gap:9px; }
   .req-card .req-head .ntype { margin-left:auto; }
   .req-card h4 { font-family: var(--font-display); font-size:15.5px; margin:11px 0 4px; }
@@ -212,7 +214,7 @@
 <div class="frame-caption reveal d1">
   <span class="eyebrow">Mockup 08 · traverse &amp; request · push results to a shared web interface</span>
   <h2>A grad student traverses to the threshold, then sends a Request back</h2>
-  <p>From Sean's <strong>Evidence</strong>, the reproducer follows the lineage <strong>down to the segmentation threshold</strong>, resolves the <code>git</code>/<code>data</code> pointers across system boundaries and watches the walkthrough, hits the <strong>gated</strong> raw stacks gracefully — then opens the reverse current and <strong>sends a Request</strong> for a follow-up (R2, R4, R5, R7, plus the first-class Request: results out, requests back).</p>
+  <p>From Sean's <strong>Evidence</strong>, the reproducer follows the lineage <strong>down to the segmentation choice</strong>, resolves the <code>git</code>/<code>data</code> pointers across system boundaries and watches the walkthrough, hits the <strong>gated</strong> raw stacks gracefully — then opens the reverse current and <strong>sends a Request</strong> for a follow-up (R2, R4, R5, R7, plus the first-class Request: results out, requests back).</p>
 </div>
 
 <!-- ============================ THE SCREEN =============================== -->
@@ -221,7 +223,7 @@
   <!-- public web chrome — the node permalink, consortium lock -->
   <div class="winbar">
     <div class="lights"><i></i><i></i><i></i></div>
-    <span class="addr">🔒 mira.science/n/sg-recruit-order-a3f9c21</span>
+    <span class="addr">🔒 mira.science/n/sg-composition-019ea6d6</span>
     <span class="grow"></span>
     <span class="kbd">⌘ L</span>
   </div>
@@ -243,7 +245,7 @@
         </svg>
         <div>
           <div class="name"><b>MIRA</b> · shared dashboard</div>
-          <div class="proj">Stress-granule assembly order · Vogel × Kate</div>
+          <div class="proj">Stress-granule formation · Vogel × Kate</div>
         </div>
       </div>
       <div class="viewer" style="position:relative;">
@@ -312,11 +314,11 @@
         <!-- Evidence summary up front (R4) -->
         <div class="lede reveal d3">
           <span class="eyebrow" style="display:block;">Evidence · supports a Claim · grounded in a Study</span>
-          <h1>G3BP1 is recruited to forming stress granules before PABP1</h1>
+          <h1>Stress granules change composition over time</h1>
           <p class="summary">
-            In stressed HeLa cells, <span class="accent">G3BP1 intensity rises earlier than PABP1</span> as
-            granules assemble — a fixed recruitment order, reversing as granules dissolve. Tracked per granule by
-            live two-channel fluorescence microscopy.
+            Across both stresses, the correlation between the two granule proteins
+            <span class="accent">climbs from negative to positive over ~10–15 min</span> — they first exclude
+            each other, then co-localize as the granule matures. Measured per granule by live Lattice-SIM imaging.
           </p>
           <div class="byline">
             <span class="avatar sean">S</span>
@@ -324,48 +326,50 @@
             <span class="dotsep">·</span>
             <span>shared with Kate's lab</span>
             <span class="dotsep">·</span>
-            <span>node <code>sg-recruit-order-a3f9c21</code></span>
+            <span>node <code>sg-composition-019ea6d6</code></span>
           </div>
         </div>
 
         <!-- Figure: illustrative two intensity-vs-time curves + context table -->
         <figure class="figure reveal d4">
           <div class="plotwrap">
-            <svg class="plot" viewBox="0 0 460 260" role="img" aria-label="Illustrative: G3BP1 fluorescence intensity (blue) rises before PABP1 (coral) over time during stress-granule assembly.">
+            <svg class="plot" viewBox="0 0 460 260" role="img" aria-label="Illustrative: Pearson correlation between Protein 1 and Protein 2 starts negative and becomes positive over the first ~10–15 min after stress, for two stress conditions (arsenite, osmotic) that differ early then converge.">
               <rect x="0" y="0" width="460" height="260" style="fill:var(--surface)"/>
               <!-- axes -->
               <g style="stroke:var(--line)" stroke-width="1">
                 <line x1="56" y1="26" x2="56" y2="212"/>
                 <line x1="56" y1="212" x2="430" y2="212"/>
               </g>
+              <!-- r = 0 reference line -->
+              <line x1="56" y1="119" x2="430" y2="119" style="stroke:var(--muted)" stroke-width="1" stroke-dasharray="3 3" opacity=".5"/>
               <!-- y label -->
               <g font-size="9" style="font-family:var(--font-mono);fill:var(--faint)">
-                <text x="48" y="46"  text-anchor="end">max</text>
-                <text x="48" y="212" text-anchor="end">0</text>
+                <text x="48" y="44"  text-anchor="end">+1</text>
+                <text x="48" y="123" text-anchor="end">0</text>
+                <text x="48" y="208" text-anchor="end">−1</text>
               </g>
-              <text x="18" y="119" text-anchor="middle" font-size="9.5" transform="rotate(-90 18 119)" style="font-family:var(--font-mono);fill:var(--muted)">per-granule intensity (a.u.)</text>
+              <text x="18" y="119" text-anchor="middle" font-size="9.5" transform="rotate(-90 18 119)" style="font-family:var(--font-mono);fill:var(--muted)">Pearson r · Protein 1 · Protein 2</text>
               <!-- x ticks -->
               <g font-size="9" style="font-family:var(--font-mono);fill:var(--faint)">
                 <text x="56"  y="226" text-anchor="middle">stress</text>
-                <text x="430" y="226" text-anchor="end">time →</text>
+                <text x="430" y="226" text-anchor="end">30 min →</text>
               </g>
-              <text x="243" y="240" text-anchor="middle" font-size="9.5" style="font-family:var(--font-mono);fill:var(--muted)">time since stress induction (s)</text>
+              <text x="243" y="240" text-anchor="middle" font-size="9.5" style="font-family:var(--font-mono);fill:var(--muted)">time since stress (min)</text>
 
-              <!-- PABP1 (coral) lags -->
-              <path class="pdraw" d="M56,200 C150,196 196,184 240,150 C286,114 326,70 430,52"
-                    style="fill:none;stroke:var(--evidence-ink)" stroke-width="2.6" stroke-linecap="round"/>
-              <!-- G3BP1 (blue) leads -->
-              <path class="pdraw" d="M56,198 C120,192 152,150 196,98 C236,54 272,42 430,38"
+              <!-- osmotic (blue) -->
+              <path class="pdraw" d="M56,160 C140,164 188,150 240,119 C300,86 370,72 430,68"
                     style="fill:none;stroke:var(--study-ink)" stroke-width="2.6" stroke-linecap="round"/>
+              <!-- arsenite (coral) -->
+              <path class="pdraw" d="M56,178 C140,196 196,188 256,121 C310,88 372,72 430,64"
+                    style="fill:none;stroke:var(--evidence-ink)" stroke-width="2.6" stroke-linecap="round"/>
 
-              <!-- lead-gap markers between the two half-max crossings -->
-              <line x1="196" y1="30" x2="196" y2="212" style="stroke:var(--question-edge)" stroke-width="1" stroke-dasharray="2 4"/>
-              <line x1="244" y1="30" x2="244" y2="212" style="stroke:var(--question-edge)" stroke-width="1" stroke-dasharray="2 4"/>
-              <text x="220" y="22" text-anchor="middle" font-size="9.5" font-weight="700" style="font-family:var(--font-body);fill:var(--question-ink)">G3BP1 leads ≈ 40 s</text>
+              <!-- early-difference marker -->
+              <line x1="250" y1="30" x2="250" y2="212" style="stroke:var(--question-edge)" stroke-width="1" stroke-dasharray="2 4"/>
+              <text x="250" y="22" text-anchor="middle" font-size="9.5" font-weight="700" style="font-family:var(--font-body);fill:var(--question-ink)">≈10–15 min</text>
 
               <!-- inline curve labels (redundant with legend, colorblind aid) -->
-              <text x="300" y="60" font-size="9" font-weight="700" style="font-family:var(--font-body);fill:var(--study-ink)">G3BP1</text>
-              <text x="320" y="92" font-size="9" font-weight="700" style="font-family:var(--font-body);fill:var(--evidence-ink)">PABP1</text>
+              <text x="374" y="56" font-size="9" font-weight="700" style="font-family:var(--font-body);fill:var(--evidence-ink)">arsenite</text>
+              <text x="374" y="90" font-size="9" font-weight="700" style="font-family:var(--font-body);fill:var(--study-ink)">osmotic</text>
             </svg>
 
             <!-- "what's in the dish" context table -->
@@ -373,18 +377,18 @@
               <h4>What's in the dish</h4>
               <table class="ctx-tbl">
                 <tr><td class="k">Cell line</td><td class="v">HeLa</td></tr>
-                <tr><td class="k">Stress</td><td class="v">arsenite</td></tr>
-                <tr><td class="k">Channels</td><td class="v">G3BP1 · PABP1</td></tr>
-                <tr><td class="k">Modality</td><td class="v">live 2-ch fluor.</td></tr>
-                <tr><td class="k">Readout</td><td class="v">per-granule intensity</td></tr>
-                <tr><td class="k">Tracking</td><td class="v">per granule, over time</td></tr>
+                <tr><td class="k">Stress</td><td class="v">arsenite · osmotic</td></tr>
+                <tr><td class="k">Channels</td><td class="v">P1–GFP · P2–mKate</td></tr>
+                <tr><td class="k">Imaging</td><td class="v">Lattice SIM · Elyra 7</td></tr>
+                <tr><td class="k">Readout</td><td class="v">co-localization</td></tr>
+                <tr><td class="k">Binned</td><td class="v">by time since stress</td></tr>
               </table>
             </div>
           </div>
           <figcaption class="figcaption">
             <div class="legend">
-              <span><i style="background:var(--study-ink)"></i> G3BP1 (leads)</span>
-              <span><i style="background:var(--evidence-ink)"></i> PABP1 (lags)</span>
+              <span><i style="background:var(--evidence-ink)"></i> arsenite</span>
+              <span><i style="background:var(--study-ink)"></i> osmotic</span>
             </div>
             <span class="illus">illustrative · unpublished — workshop prototype</span>
           </figcaption>
@@ -397,8 +401,8 @@
             <small>REPRODUCER</small>
           </div>
           <div>
-            <div class="q">“What <span class="em">segmentation threshold</span> did Sean use?”</div>
-            <div class="sub">Because <i>the thresholding can change all the measurements</i> — so before building on this, follow the lineage down to the method that produced the curve.</div>
+            <div class="q">“How exactly did Sean <span class="em">segment the granules</span>?”</div>
+            <div class="sub">Because <i>the segmentation choice can change all the measurements</i> — so before building on this, follow the lineage down to the method that produced the curve.</div>
             <div class="down">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
               traverse: Evidence ← grounds ← Study → follows → Protocol
@@ -414,7 +418,7 @@
         <p class="sec-sub reveal d5">
           Each card is one discourse node. Typed edges connect the result to the experiment and the protocol —
           <b>pointers only; no raw payloads travel over the web,</b> and they resolve across system boundaries
-          (vault → GitHub → the lab array). The rail draws down to the payoff: the <b>segmentation threshold</b>.
+          (vault → GitHub → the lab array). The rail draws down to the payoff: the <b>segmentation choice</b>.
         </p>
 
         <div class="chain">
@@ -425,10 +429,10 @@
               <span class="ntype evidence">Evidence · this node</span>
               <span class="tag">you are here</span>
             </div>
-            <div class="node-title">G3BP1 is recruited to forming granules before PABP1</div>
-            <div class="node-body">In stressed HeLa cells, G3BP1 intensity rises ~40 s before PABP1 at granule onset; the order reverses as granules dissolve — the curve above.</div>
+            <div class="node-title">Stress granules change composition over time</div>
+            <div class="node-body">Across both stresses, the correlation between the two proteins goes from negative to positive over ~10–15 min — they start by excluding each other, then co-localize — the curve above.</div>
             <div class="ptr-row">
-              <span class="pointer"><span class="kind data">data</span><span class="path">granule_intensity_by_time.csv (this figure)</span></span>
+              <span class="pointer"><span class="kind data">data</span><span class="path">granule_composition_by_time.csv (this figure)</span></span>
             </div>
             <!-- R5 progressive disclosure: a withheld working note, signalled not leaked -->
             <div class="withheld" title="An adjacent node exists in Sean's vault but was not shared">
@@ -446,10 +450,10 @@
           <!-- Study -->
           <article class="node study reveal d6">
             <span class="ntype study">Study · "the experiment"</span>
-            <div class="node-title">Live two-channel fluorescence microscopy of stressed HeLa cells</div>
-            <div class="node-body">Live two-channel fluorescence microscopy of stressed HeLa cells, tracking per-granule G3BP1/PABP1 intensity over time, at high spatial resolution.</div>
+            <div class="node-title">Live Lattice-SIM imaging of granule formation at staged times</div>
+            <div class="node-body">Protein 1–GFP (endogenous) and Protein 2–mKate (transfected) in HeLa, imaged on a ZEISS Elyra 7 in Lattice SIM on fresh fields of view up to 30 min after stress.</div>
             <div class="ptr-row">
-              <span class="pointer gated"><span class="kind local">raw</span><span class="path">NDTiff ≈ 80 GB · 25 TB lab array</span><span class="req">request access</span></span>
+              <span class="pointer gated"><span class="kind local">raw</span><span class="path">NDTiff z-stacks ≈ 80 GB · Elyra 7</span><span class="req">request access</span></span>
             </div>
 
             <!-- embedded walkthrough video (re-used idiom) -->
@@ -466,7 +470,7 @@
                   <circle cx="180" cy="120" r="7" fill="#3877cf" opacity=".6"/>
                   <circle cx="340" cy="76" r="6" fill="#d9573f" opacity=".5"/>
                 </g>
-                <text x="22" y="32" font-size="10" fill="#9fb0d6" style="font-family:var(--font-mono)">HeLa · arsenite · G3BP1 / PABP1</text>
+                <text x="22" y="32" font-size="10" fill="#9fb0d6" style="font-family:var(--font-mono)">HeLa · arsenite/osmotic · Protein 1 / Protein 2</text>
               </svg>
               <button class="play" type="button" aria-label="Play 2-minute walkthrough" onclick="this.closest('.video').classList.add('played')">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
@@ -493,26 +497,26 @@
               <span class="ntype protocol">Protocol</span>
               <span class="tag">the method that matters</span>
             </div>
-            <div class="node-title">HeLa culture → stress → live imaging → segmentation (threshold) → per-granule quantification</div>
-            <div class="node-body">The full pipeline behind the curve. The load-bearing step is the segmentation — how a granule is defined sets every intensity that follows.</div>
+            <div class="node-title">HeLa culture → stress → Lattice-SIM → segment on per-pixel SUM → composition over time</div>
+            <div class="node-body">The full pipeline behind the curve. The load-bearing step is the segmentation — how a granule is defined sets every co-localization number that follows.</div>
 
             <!-- the segmentation-threshold detail -->
             <div class="threshold-detail">
               <div class="th-h">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 18 8 6l4 9 3-5 5 8"/></svg>
-                Segmentation (threshold)
+                Segmentation choice
                 <span class="tag">what the grad student came for</span>
               </div>
               <table class="th-tbl">
-                <tr><td class="k">Method</td><td class="v">standard stress-granule</td></tr>
-                <tr><td class="k">Intensity threshold</td><td class="v">fixed, per channel</td></tr>
-                <tr><td class="k">Min granule area</td><td class="v">applied before tracking</td></tr>
-                <tr><td class="k">Tracking</td><td class="v">per-granule, over time</td></tr>
+                <tr><td class="k">Segment on</td><td class="v">per-pixel SUM of both</td></tr>
+                <tr><td class="k">Detector</td><td class="v">3D Suite · maxima + FWHM</td></tr>
+                <tr><td class="k">Threshold</td><td class="v">just above background</td></tr>
+                <tr><td class="k">Readout</td><td class="v">regionprops, per channel</td></tr>
               </table>
             </div>
 
             <div class="ptr-row">
-              <span class="pointer"><span class="kind git">git</span><span class="path">vogel-lab/sg-imaging @ a3f9c21 · /segmentation/</span></span>
+              <span class="pointer"><span class="kind git">git</span><span class="path">vogel-lab/sg-imaging · segment_stress_granules.ijm</span></span>
             </div>
           </article>
 
@@ -545,7 +549,7 @@
               <div class="c-meta">
                 <b>Kate</b> · 2d
               </div>
-              <div class="c-body">Why a fixed intensity threshold and not Otsu here?</div>
+              <div class="c-body">Why segment on the SUM of the two channels, and not each one separately?</div>
             </div>
           </div>
 
@@ -554,7 +558,7 @@
             <span class="avatar sean" title="Sean">S</span>
             <div class="c-main">
               <div class="c-meta"><b>Sean</b> · 1d</div>
-              <div class="c-body">Otsu over-segments the dim PABP1 channel — fixed keeps the two channels comparable.</div>
+              <div class="c-body">Per-channel biases toward whichever protein is brighter — the SUM keeps a granule a granule even while one component is still excluded.</div>
             </div>
           </div>
 
@@ -572,7 +576,7 @@
                   Convert to request
                 </button>
               </div>
-              <div class="c-body">Makes sense. Can we also try a lower arsenite dose — does G3BP1 still lead if granules form more slowly?</div>
+              <div class="c-body">Makes sense. Can you push the time-course below 5 min? The early gap between the two stresses is the interesting part.</div>
             </div>
           </div>
 
@@ -644,14 +648,14 @@
               <span class="reltag">request_for · request_target ↓</span>
               <div class="end">
                 <span class="lab">new Study (proposed)</span>
-                <span class="val">Repeat at a lower stress dose</span>
+                <span class="val">Finer early time-course (&lt;5 min)</span>
               </div>
             </div>
           </div>
 
           <div class="req-body">
-            Repeat the assembly-order experiment at a <b>lower arsenite dose</b> — does G3BP1 still lead PABP1
-            when granules form more slowly? <span class="ph">— M, Kate's lab</span>
+            Push the composition time-course <b>below 5 min</b> — is the early divergence between arsenite and
+            osmotic real, or noise at low granule counts? <span class="ph">— M, Kate's lab</span>
           </div>
 
           <button class="btn primary" type="button" id="reqSendBtn"
@@ -703,7 +707,7 @@
 </div><!-- /.screen -->
 
 <footer class="dgfoot reveal d8">
-  <span class="dots"></span>MIRA × Discourse Graphs · push results to a shared web interface · draft v0.2<span class="dots"></span>
+  <span class="dots"></span>MIRA × Discourse Graphs · push results to a shared web interface · draft v0.4<span class="dots"></span>
 </footer>
 
 <script>

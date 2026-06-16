@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stress-granule assembly order — consortium &amp; recruiting · dashboard.mira.science/vogel-kate</title>
+<title>Stress-granule formation — consortium &amp; recruiting · dashboard.mira.science/vogel-kate</title>
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="components.css">
 <style>
@@ -109,6 +109,9 @@
   /* progress meter for the funder board */
   .kbar { height:4px; border-radius:3px; background: var(--line); margin-top:9px; overflow:hidden; }
   .kbar i { display:block; height:100%; background: var(--study-ink); border-radius:3px; }
+  /* v0.4: grab handles on EVERY card — a persistent reorder affordance, brighter on hover */
+  .kcard__grip { opacity:.4; }
+  .kcard:hover .kcard__grip, .kcard:focus-within .kcard__grip { opacity:.75; }
 
   /* R5 made visible: a consortium-only card greys + locks when the surface goes public */
   body.is-public .kcard.con-only { opacity:.42; filter:saturate(.4); pointer-events:none; }
@@ -264,7 +267,7 @@
         </svg>
         <div>
           <div class="name"><b>MIRA</b> · consortium board</div>
-          <div class="proj">Stress-granule assembly order · Vogel × Kate consortium</div>
+          <div class="proj">Stress-granule formation · Vogel × Kate consortium</div>
         </div>
       </div>
       <div class="lead">
@@ -372,8 +375,8 @@
           <!-- question-chip strip: the 2 driving Questions -->
           <div class="reveal d4" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
             <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);">Questions:</span>
-            <span class="ntype question" style="font-size:10px;">What sets recruitment order?</span>
-            <span class="ntype question" style="font-size:10px;">Does disassembly reverse the order?</span>
+            <span class="ntype question" style="font-size:10px;">Condense together or separately?</span>
+            <span class="ntype question" style="font-size:10px;">Early granules: merging or sub-compartments?</span>
           </div>
           <p class="preset-blurb reveal d4">For a <strong>funder</strong> checking momentum: ongoing <span style="color:var(--study-ink);font-weight:600;">Studies</span> from every lab, with whose bench they sit on (R8). Studies roll up under the Question they address; click a study to open its Evidence card. The flagship result graduates to the <a href="07-shared-dashboard.html">Results</a> view.</p>
 
@@ -383,13 +386,19 @@
             <div class="kcol reveal d4">
               <div class="col-h"><span class="ttl"><span class="dot" style="background:var(--study-ink)"></span>Planned</span><span class="ct">2</span></div>
               <article class="kcard study con-only">
-                <span class="ntype study">Study</span>
-                <div class="kt">Disassembly time-course — does the order reverse?<span class="con-tag"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span></div>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="ntype study">Study</span>
+                  <span class="kcard__grip" aria-hidden="true" title="Drag to reorder priority"><svg viewBox="0 0 12 16" width="12" height="16" aria-hidden="true"><circle cx="3" cy="3" r="1.3" fill="currentColor"/><circle cx="9" cy="3" r="1.3" fill="currentColor"/><circle cx="3" cy="8" r="1.3" fill="currentColor"/><circle cx="9" cy="8" r="1.3" fill="currentColor"/><circle cx="3" cy="13" r="1.3" fill="currentColor"/><circle cx="9" cy="13" r="1.3" fill="currentColor"/></svg></span>
+                </div>
+                <div class="kt">Architecture test of early granules (FRAP)<span class="con-tag"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span></div>
                 <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel Lab</span><span class="grow"></span><span class="vis consortium" title="consortium-only"></span></div>
                 <div class="kbar"><i style="width:12%"></i></div>
               </article>
               <article class="kcard study con-only">
-                <span class="ntype study">Study</span>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="ntype study">Study</span>
+                  <span class="kcard__grip" aria-hidden="true" title="Drag to reorder priority"><svg viewBox="0 0 12 16" width="12" height="16" aria-hidden="true"><circle cx="3" cy="3" r="1.3" fill="currentColor"/><circle cx="9" cy="3" r="1.3" fill="currentColor"/><circle cx="3" cy="8" r="1.3" fill="currentColor"/><circle cx="9" cy="8" r="1.3" fill="currentColor"/><circle cx="3" cy="13" r="1.3" fill="currentColor"/><circle cx="9" cy="13" r="1.3" fill="currentColor"/></svg></span>
+                </div>
                 <div class="kt">Cross-cell-line replication (U2OS)<span class="con-tag"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span></div>
                 <div class="kmeta"><span class="avatar lab">R</span><span>Reyes Lab</span><span class="grow"></span><span class="vis consortium"></span></div>
                 <div class="kbar"><i style="width:8%"></i></div>
@@ -419,7 +428,7 @@
                     </svg>
                   </span>
                 </div>
-                <div class="kt">Arsenite dose–response</div>
+                <div class="kt">Sub-5-min early time-course</div>
                 <div class="kmeta">
                   <span class="avatar sean">S</span><span>Sean · Vogel Lab</span><span class="grow"></span>
                   <span class="due-chip overdue" title="Owner-set deadline — Sean set this himself, not the PI"><span class="dot"></span> next step by Jun 6 · 5d over</span>
@@ -458,8 +467,11 @@
                 <div class="kbar"><i style="width:44%"></i></div>
               </article>
               <article class="kcard candidate">
-                <span class="ntype candidate">Candidate</span>
-                <div class="kt">FRAP to probe granule fluidity (idea — not yet formalized)</div>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="ntype candidate">Candidate</span>
+                  <span class="kcard__grip" aria-hidden="true" title="Drag to reorder priority"><svg viewBox="0 0 12 16" width="12" height="16" aria-hidden="true"><circle cx="3" cy="3" r="1.3" fill="currentColor"/><circle cx="9" cy="3" r="1.3" fill="currentColor"/><circle cx="3" cy="8" r="1.3" fill="currentColor"/><circle cx="9" cy="8" r="1.3" fill="currentColor"/><circle cx="3" cy="13" r="1.3" fill="currentColor"/><circle cx="9" cy="13" r="1.3" fill="currentColor"/></svg></span>
+                </div>
+                <div class="kt">Compare a third stress type (idea — not yet formalized)</div>
                 <div class="kmeta"><span class="avatar grad">M</span><span>Kate's student</span><span class="grow"></span><span class="vis world"></span></div>
               </article>
             </div>
@@ -468,14 +480,20 @@
             <div class="kcol reveal d6">
               <div class="col-h"><span class="ttl"><span class="dot" style="background:var(--study-ink)"></span>In analysis</span><span class="ct">2</span></div>
               <article class="kcard study inprog">
-                <span class="ntype study">Study</span>
-                <a href="07-shared-dashboard.html" class="kt" style="display:block;color:inherit;text-decoration:none;" title="Open Evidence card for this study">Live two-channel imaging of G3BP1/PABP1 during assembly</a>
-                <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel Lab</span><span class="grow"></span><span class="pin-mini"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>4</span><span class="vis world"></span></div>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="ntype study">Study</span>
+                  <span class="kcard__grip" aria-hidden="true" title="Drag to reorder priority"><svg viewBox="0 0 12 16" width="12" height="16" aria-hidden="true"><circle cx="3" cy="3" r="1.3" fill="currentColor"/><circle cx="9" cy="3" r="1.3" fill="currentColor"/><circle cx="3" cy="8" r="1.3" fill="currentColor"/><circle cx="9" cy="8" r="1.3" fill="currentColor"/><circle cx="3" cy="13" r="1.3" fill="currentColor"/><circle cx="9" cy="13" r="1.3" fill="currentColor"/></svg></span>
+                </div>
+                <a href="07-shared-dashboard.html" class="kt" style="display:block;color:inherit;text-decoration:none;" title="Open Evidence card for this study">Lattice-SIM imaging of composition over time</a>
+                <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel Lab</span><span class="grow"></span><span class="pin-mini"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>3</span><span class="vis world"></span></div>
                 <a href="07-shared-dashboard.html" style="display:block;text-decoration:none;" title="Open Evidence card for this study"><div class="kbar"><i style="width:86%"></i></div></a>
               </article>
               <article class="kcard study inprog con-only">
-                <span class="ntype study">Study</span>
-                <div class="kt">Per-granule tracking pipeline benchmark<span class="con-tag"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span></div>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="ntype study">Study</span>
+                  <span class="kcard__grip" aria-hidden="true" title="Drag to reorder priority"><svg viewBox="0 0 12 16" width="12" height="16" aria-hidden="true"><circle cx="3" cy="3" r="1.3" fill="currentColor"/><circle cx="9" cy="3" r="1.3" fill="currentColor"/><circle cx="3" cy="8" r="1.3" fill="currentColor"/><circle cx="9" cy="8" r="1.3" fill="currentColor"/><circle cx="3" cy="13" r="1.3" fill="currentColor"/><circle cx="9" cy="13" r="1.3" fill="currentColor"/></svg></span>
+                </div>
+                <div class="kt">Benchmark the SUM-segmentation pipeline<span class="con-tag"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span></div>
                 <div class="kmeta"><span class="avatar lab" style="background:linear-gradient(135deg,#1b9a92,#3877cf)">T</span><span>Tanaka Lab</span><span class="grow"></span><span class="vis consortium"></span></div>
                 <div class="kbar"><i style="width:72%"></i></div>
               </article>
@@ -496,8 +514,8 @@
 
             <article class="rcard request">
               <div class="row" style="gap:8px;"><span class="ntype request">Request</span><span class="request open" style="font-size:11px;padding:4px 9px;">open</span></div>
-              <div class="rt">Looking for a lab to run the disassembly time-course in a second cell line</div>
-              <div class="rb">Follow-up to Sean's recruitment-order result. <code>request_for</code> a `Study`; segmentation protocol &amp; curated CSV provided — bring your own imaging.</div>
+              <div class="rt">Looking for a lab to test early-granule architecture in a second cell line</div>
+              <div class="rb">Follow-up to the composition-over-time result. <code>request_for</code> a `Study`; segmentation protocol &amp; curated CSV provided — bring your own imaging.</div>
               <div class="rfoot">
                 <span class="who"><span class="avatar kate">K</span> Kate · consortium lead</span>
                 <button class="recruit-btn" type="button" onclick="this.textContent='✓ Interest noted';this.disabled=true;this.style.opacity=.7;">
@@ -509,7 +527,7 @@
 
             <article class="rcard question">
               <span class="ntype question">Question</span>
-              <div class="rt">What sets the order in which proteins are recruited into stress granules?</div>
+              <div class="rt">When granules form, do the two proteins condense together, or separately and then mix?</div>
               <div class="rb">The consortium's anchoring question. New students: this is the thread to pull — see the Vogel result and the open studies behind it.</div>
               <div class="rfoot">
                 <span class="who"><span class="avatar kate">K</span> Kate's lab</span>
@@ -520,7 +538,7 @@
             <article class="rcard request">
               <div class="row" style="gap:8px;"><span class="ntype request">Request</span><span class="request open" style="font-size:11px;padding:4px 9px;">open · recruiting</span></div>
               <div class="rt">Seeking a graduate student for quantitative live-cell microscopy</div>
-              <div class="rb">Join the Vogel × Kate consortium. You'd build on the recruitment-order work — imaging, segmentation, and per-granule analysis. <code>request_target</code> the project umbrella.</div>
+              <div class="rb">Join the Vogel × Kate consortium. You'd build on the composition-over-time work — imaging, segmentation, and per-granule analysis. <code>request_target</code> the project umbrella.</div>
               <div class="rfoot">
                 <span class="who"><span class="avatar sean">S</span> Sean · Vogel Lab</span>
                 <button class="recruit-btn" type="button" onclick="this.textContent='✓ Interest noted';this.disabled=true;this.style.opacity=.7;">
@@ -532,7 +550,7 @@
 
             <article class="rcard question">
               <span class="ntype question">Question</span>
-              <div class="rt">Does disassembly reverse the recruitment order?</div>
+              <div class="rt">Are early granules two merging droplets, or one droplet with sub-compartments?</div>
               <div class="rb">Open across the consortium. An obvious follow-up study — claim the linked open Request to take it on.</div>
               <div class="rfoot">
                 <span class="who"><span class="avatar sean">S</span> Sean · Vogel Lab</span>
@@ -575,7 +593,7 @@
               <span class="mtx"><span class="cell on"></span><span class="cell off"></span></span>
             </li>
             <li>
-              <span class="lab-id"><span class="avatar lab" style="background:linear-gradient(135deg,#1b9a92,#3877cf)">T</span><span class="nm"><b>Tanaka Lab</b><small>tracking pipeline</small></span></span>
+              <span class="lab-id"><span class="avatar lab" style="background:linear-gradient(135deg,#1b9a92,#3877cf)">T</span><span class="nm"><b>Tanaka Lab</b><small>segmentation benchmark</small></span></span>
               <span class="mtx"><span class="cell on"></span><span class="cell off"></span></span>
             </li>
           </ul>
@@ -594,28 +612,28 @@
             <li>
               <span class="ic-dot ev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 14 3-4 3 2 4-6"/></svg></span>
               <div class="ftext">
-                <b class="by">G3BP1 is recruited to forming stress granules before PABP1</b> — unpublished, now searchable on the board <a href="07-shared-dashboard.html" style="font-size:11px;">open →</a>
+                <b class="by">Stress granules change composition over time</b> — unpublished, now searchable on the board <a href="07-shared-dashboard.html" style="font-size:11px;">open →</a>
                 <span class="n">Sean · Vogel Lab · consortium · illustrative · unpublished — workshop prototype</span>
               </div>
             </li>
             <li>
               <span class="ic-dot ev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 14 3-4 3 2 4-6"/></svg></span>
               <div class="ftext">
-                <b class="by">PABP1 lags G3BP1 by ~40 s at granule onset</b> — a single unpublished session, now findable
+                <b class="by">Early granules look like two adjacent condensates</b> — a single unpublished session, now findable
                 <span class="n">Sean · Vogel Lab · consortium · was: a folder on the 25 TB array</span>
               </div>
             </li>
             <li>
               <span class="ic-dot ev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 14 3-4 3 2 4-6"/></svg></span>
               <div class="ftext">
-                <b class="by">U2OS pilot: same order, weaker contrast</b> — a one-off never written up
+                <b class="by">U2OS pilot: same trend, weaker contrast</b> — a one-off never written up
                 <span class="n">Reyes Lab · consortium · request access to raw stacks</span>
               </div>
             </li>
             <li>
               <span class="ic-dot"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg></span>
               <div class="ftext">
-                <b>Searched</b> "segmentation threshold" → surfaced 3 results across 2 labs
+                <b>Searched</b> "co-localization" → surfaced 3 results across 2 labs
                 <span class="n">durable index · still here three years from now</span>
               </div>
             </li>
@@ -632,8 +650,8 @@
             <h4 style="margin:0;">In plain language</h4>
             <span class="tagp">for any reader</span>
           </div>
-          <p class="ptext plainv">When cells are stressed, they bundle certain proteins into little droplets. This consortium found that one protein, <b>G3BP1</b>, shows up <b>before</b> another, <b>PABP1</b>, as a droplet forms — a consistent order. The board collects that finding, the experiments behind it, and what's still open.</p>
-          <p class="ptext tech">Evidence (n live-imaging sessions, HeLa, two-channel): G3BP1 fluorescence onset precedes PABP1 by ~40 s during stress-granule assembly; order inverts on disassembly. Grounds → Study; follows → segmentation Protocol. Illustrative · unpublished — workshop prototype.</p>
+          <p class="ptext plainv">When cells are stressed, they bundle certain proteins into little droplets. This consortium found that two of those proteins <b>start out kept apart</b> and then <b>mix together</b> as a droplet matures. The board collects that finding, the experiments behind it, and what's still open.</p>
+          <p class="ptext tech">Evidence (HeLa, two-channel Lattice SIM): the Pearson correlation between Protein 1 and Protein 2 climbs from negative to positive over ~10–15 min after stress, and differs significantly between arsenite and osmotic in the first 10–15 min. Grounds → Study; follows → segmentation Protocol. Illustrative · unpublished — workshop prototype.</p>
           <button class="ptoggle" type="button" onclick="document.getElementById('plainCard').classList.toggle('show-tech'); this.querySelector('.lbl').textContent = document.getElementById('plainCard').classList.contains('show-tech') ? 'show plain summary' : 'show the technical version';">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
             <span class="lbl">show the technical version</span>
@@ -670,7 +688,7 @@
 </div><!-- /.screen -->
 
 <footer class="dgfoot reveal d8">
-  <span class="dots"></span>MIRA × Discourse Graphs · push results to a shared web interface · draft v0.2<span class="dots"></span>
+  <span class="dots"></span>MIRA × Discourse Graphs · push results to a shared web interface · draft v0.4<span class="dots"></span>
 </footer>
 
 <!-- ----------------------------------------------------------------------------
