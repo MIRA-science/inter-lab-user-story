@@ -204,16 +204,26 @@
   .buildline svg { width:14px; height:14px; stroke: var(--faint); fill:none; stroke-width:1.8; }
   .buildline b { color: var(--brand); font-weight:600; }
 
-  /* ---- Verbatim node content — the human-authored ground truth, on demand --- */
-  /* Cards are summaries; this opens the actual author text each summary derives from. */
-  .verbatim { margin-top:13px; border:1px dashed var(--line-2); border-radius: var(--r-md); background: var(--surface-2); overflow:hidden; }
-  .verbatim > summary { list-style:none; cursor:pointer; display:flex; align-items:center; gap:8px; padding:9px 13px;
-    font-family: var(--font-mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color: var(--muted); font-weight:700; }
+  /* ---- The author's own words — the human-written ground truth, on demand --- */
+  /* Each card is a summary; this opens the actual author text it was condensed from. */
+  /* Same inset idiom as .threshold-detail (left accent + r-sm), kept quieter:    */
+  /* neutral fill not a colored wash, so the payoff inset stays the loudest one.  */
+  .verbatim { margin-top:13px; border:0; border-left:3px solid var(--line-2); border-radius: var(--r-sm);
+    background: var(--surface-2); overflow:hidden; transition: border-color .2s var(--ease); }
+  .verbatim:hover, .verbatim[open] { border-left-color: var(--muted); }
+  .verbatim > summary { list-style:none; cursor:pointer; display:flex; align-items:center; gap:11px; padding:10px 14px; }
   .verbatim > summary::-webkit-details-marker { display:none; }
-  .verbatim > summary:hover { background: var(--surface); color: var(--ink-2); }
-  .verbatim > summary .vchev { width:12px; height:12px; stroke:currentColor; fill:none; stroke-width:2.4; margin-left:auto; transition: transform .2s var(--ease); }
+  .verbatim > summary:hover { background: var(--surface); }
+  .verbatim .vicon { width:17px; height:17px; stroke: var(--muted); fill:none; stroke-width:1.7;
+    stroke-linecap:round; stroke-linejoin:round; flex:none; transition: stroke .2s var(--ease); }
+  .verbatim[open] .vicon, .verbatim > summary:hover .vicon { stroke: var(--ink-2); }
+  .verbatim .vlabel { display:flex; flex-direction:column; gap:2px; min-width:0; }
+  .verbatim .vlabel b { font-family: var(--font-display); font-size:13.5px; font-weight:600; color: var(--ink); letter-spacing:-.01em; line-height:1.2; }
+  .verbatim .vlabel span { font-size:11.5px; color: var(--muted); line-height:1.3; }
+  .verbatim .vchev { width:13px; height:13px; stroke: var(--faint); fill:none; stroke-width:2.4; flex:none; margin-left:auto; transition: transform .2s var(--ease), stroke .2s var(--ease); }
   .verbatim[open] > summary .vchev { transform: rotate(90deg); }
-  .verbatim .vbody { padding:2px 15px 14px; font-size:12.5px; color: var(--ink-2); line-height:1.55; animation: rise .3s var(--ease-out); }
+  .verbatim > summary:hover .vchev { stroke: var(--muted); }
+  .verbatim .vbody { padding:4px 16px 15px; font-size:12.5px; color: var(--ink-2); line-height:1.55; animation: rise .3s var(--ease-out); }
   .verbatim .vbody h6 { font-family: var(--font-display); font-size:12.5px; color: var(--ink); margin:13px 0 5px; }
   .verbatim .vbody p { margin:7px 0; }
   .verbatim .vbody ul, .verbatim .vbody ol { margin:7px 0; padding-left:20px; }
@@ -441,8 +451,8 @@
           Each card is one discourse node. Typed edges connect the result to the experiment and the protocol —
           <b>pointers only; no raw payloads travel over the web,</b> and they resolve across system boundaries
           (vault → GitHub → the lab array). The rail draws down to the payoff: the <b>segmentation choice</b>.
-          Every node also carries its <b>verbatim author text</b> — open <i>“Read verbatim”</i> on any node to see the
-          human-written grounding each summary is condensed from.
+          Every node also carries the <b>author’s own words</b> — open <b>Sean’s notes</b> or <b>the full protocol</b>
+          on a node to read, unedited, the human-written grounding each summary is condensed from.
         </p>
 
         <div class="chain">
@@ -460,7 +470,11 @@
             </div>
             <!-- verbatim grounding: the author's own key points, the summary is condensed from these -->
             <details class="verbatim">
-              <summary>Read verbatim — key points from Sean's result note <svg class="vchev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></summary>
+              <summary>
+                <svg class="vicon" viewBox="0 0 24 24"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 16h4"/></svg>
+                <span class="vlabel"><b>Sean's notes</b><span>his read on what the curve actually means</span></span>
+                <svg class="vchev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+              </summary>
               <div class="vbody">
                 <ul>
                   <li>In both conditions, the Pearson correlation coefficient between the two channels starts negative and becomes positive over time. This implies that the two tagged proteins (Protein 1 and Protein 2) are co-localizing more over time and they even start to coalesce independently of each other in the beginning.</li>
@@ -490,7 +504,11 @@
             <div class="node-body">Protein 1–GFP (endogenous) and Protein 2–mKate (transfected) in HeLa, imaged on a ZEISS Elyra 7 in Lattice SIM on fresh fields of view up to 30 min after stress.</div>
             <!-- verbatim grounding: the author's dated lab-notebook note + hypotheses -->
             <details class="verbatim">
-              <summary>Read verbatim — experiment note: progress, design choices &amp; hypothesis <svg class="vchev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></summary>
+              <summary>
+                <svg class="vicon" viewBox="0 0 24 24"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 16h4"/></svg>
+                <span class="vlabel"><b>Experiment notes</b><span>Sean's lab-notebook progress, design choices &amp; hypothesis</span></span>
+                <svg class="vchev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+              </summary>
               <div class="vbody">
                 <h6>Progress &amp; notes</h6>
                 <p><span class="vdate">2025-08-23</span> — Kate's student visited Montreal and they sent their cells ahead of time. Khalid is maintaining the cell culture using their protocol. (See linked protocol node.) This cell line has Protein 1 tagged with GFP and we will transfect it with a plasmid expressing Protein 2-mKate. Applied the stress to the cells and imaged them on the microscope to measure the rate/amount/coordination of the two proteins forming stress granules.</p>
@@ -577,7 +595,11 @@
 
             <!-- verbatim grounding: the three protocol nodes the Study follows, in full -->
             <details class="verbatim">
-              <summary>Read verbatim — full protocol: steps &amp; parameters <svg class="vchev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></summary>
+              <summary>
+                <svg class="vicon" viewBox="0 0 24 24"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 16h4"/></svg>
+                <span class="vlabel"><b>The full protocol</b><span>every step &amp; parameter, as written at the bench</span></span>
+                <svg class="vchev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+              </summary>
               <div class="vbody">
                 <p>The pipeline summary above is condensed from three protocol nodes the Study <code>follows</code>. Their verbatim text:</p>
 

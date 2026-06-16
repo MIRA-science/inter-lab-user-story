@@ -146,7 +146,13 @@ marks the request-back card (same "left border = node type" language as the chai
 The explanatory `.why` aside and the gated-stacks note were **quieted to plain notes**
 (no wash), the framing prompt lost its border and its auto-animating arrow, and the payoff
 node's double shadow became a single ring. Net: from five competing coloured boxes to a
-clear hierarchy.
+clear hierarchy. **Later same-day refinement:** the per-node grounding expanders were relabelled
+from the cryptic *"Read verbatim"* to plain, human openers — **Sean's notes** · **Experiment
+notes** · **The full protocol**, each with a one-line descriptor and a document icon — and
+restyled to the page's own inset idiom (left accent + `--r-sm`, neutral fill, no dashed border)
+so each reads as an inviting "open me" note rather than a debug toggle, while staying quieter than
+the colour-washed payoff inset. The 07 → 08 cross-link lost its trailing ", verbatim" for the same
+reason; the honest `.vsrc` provenance footer ("Verbatim · … · protein names redacted") stays.
 
 **10 — removed the card-anatomy strip.** The region-map callout was design documentation;
 it belongs in this spec, not in the rendered mockup. (Same principle as the 11 v0.4 change.)

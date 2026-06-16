@@ -36,7 +36,7 @@ belong in the spec, not the rendered screen.)
 **Promote** the existing `<details class="ecard__method">` from a low-key "Method & context" to the **primary
 affordance of this region**: a clearly-labelled, obviously-expandable **"How it was done — study & protocol"**
 collapse/open, sitting where the endorse block was, with a direct path to the verbatim grounding
-(**"Read the full study & protocol, verbatim →"** → screen 08).
+(**"Read the full study & protocol →"** → screen 08).
 
 Net: the PI glances and is done; opening the study is one obvious, in-place click — and no action is implied
 that isn't real.
@@ -47,7 +47,7 @@ that isn't real.
 summary derives from**, and it must be available when a reader clicks into a Study or Protocol — not paraphrased
 away. Today screen 08 shows only derived summaries (a 2-sentence study blurb; a 4-row "segmentation choice"
 table). The verbatim content already exists in `discourse-graph/*.md` and must be surfaced, summary-first /
-**verbatim-on-demand** (e.g. a "Read verbatim" collapsible under each node):
+**verbatim-on-demand** (a per-node collapsible, opened by a plain human label — "Sean's notes" / "Experiment notes" / "The full protocol" — not a cryptic "Read verbatim"):
 
 | Node | Verbatim source (`discourse-graph/`) | What must be reachable |
 |---|---|---|
