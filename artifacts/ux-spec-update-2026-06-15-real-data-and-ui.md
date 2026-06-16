@@ -1,5 +1,10 @@
 # Dashboard mockups v0.4 — real data + UI refinements (2026-06-15)
 
+> 🗂️ **Historical delta — folded into the current spec.** The single, up-to-date specification is
+> **[`ux-spec.md`](./ux-spec.md)**; build and maintain the mockups from it. This dated update is kept only
+> as the record of how these decisions were reached. Its conclusions (composition-over-time science;
+> Table view removed; subgraph-highlight + click-to-inspect; impeccable distill pass) are **current**. *(Consolidated 2026-06-15.)*
+
 **Status:** spec delta. Supersedes the *placeholder science* used through v0.3.
 **Scope:** screens 06–11 + the index. No changes to `tokens.css` / `components.css`
 (all v0.4 CSS is screen-local).

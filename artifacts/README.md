@@ -7,10 +7,12 @@ the people who need it on a **shared web surface**, readable with no discourse-g
 **Quantum Biology Institute** pilot, the [MIRA schema](https://github.com/MIRA-science/schema), and the
 [inter-lab story](../lab-to-lab/) it varies.*
 
-> **Start here:** open the **[live mockup gallery ↗](https://mira-science.github.io/inter-lab-user-story/)**
-> (hosted on GitHub Pages — GitHub shows the `.html` files as raw source), then read the **central** story
-> [`ux-user-story-dashboard.md`](./ux-user-story-dashboard.md). PNG previews are inlined below so the work
-> is viewable on GitHub without opening anything.
+> **Start here.** To **build or maintain the mockups**, read the single current spec
+> **[`ux-spec.md`](./ux-spec.md)** — it folds the user stories, the design brief, and the dated
+> `ux-spec-update-*` deltas into one document and matches the screens as built. To **see** the work, open
+> the **[live mockup gallery ↗](https://mira-science.github.io/inter-lab-user-story/)** (hosted on GitHub
+> Pages — GitHub shows the `.html` files as raw source). PNG previews are inlined below so the work is
+> viewable on GitHub without opening anything.
 
 ---
 
@@ -18,12 +20,15 @@ the people who need it on a **shared web surface**, readable with no discourse-g
 
 | Artifact | What it is |
 |---|---|
-| **[`ux-user-story-dashboard.md`](./ux-user-story-dashboard.md)** ★ | **The central narrative** — Sean → Kate's dashboard: the cast, the **two currents** (results out, requests back), the **five moments** (share → glance-and-trust → traverse → request → consortium), journey maps, the mockup-map, acceptance, open questions. |
+| **[`ux-spec.md`](./ux-spec.md)** ★ **canonical** | **The single current UX spec — build from this.** Folds the narratives, the brief, and the four dated `ux-spec-update-*` deltas + the glance-trust correction into one current document (screens · components · design system · acceptance · changelog), matching the mockups as built. |
+| **[`dev-handoff-dashboard.md`](./dev-handoff-dashboard.md)** | **Developer handoff for screens 06–11** — exact measurements, tokens, component contracts, states, breakpoints, animations, accessibility, and a spec-vs-built **consistency report**. Generated from `ux-spec.md`, verified against the mockups. |
+| **[`ux-user-story-dashboard.md`](./ux-user-story-dashboard.md)** | *(folded into `ux-spec.md`)* **The central narrative** — Sean → Kate's dashboard: the cast, the **two currents** (results out, requests back), the **five moments** (share → glance-and-trust → traverse → request → consortium), journey maps, the mockup-map, acceptance, open questions. |
 | **[`_grounding-dashboard.md`](./_grounding-dashboard.md)** ★ | **The central context pack** — user story / user constraints / tech constraints, with verified quotes from the three Granola sessions and the user-story canvas. |
 | **[`ux-user-story.md`](./ux-user-story.md)** | The retained **public-extreme** narrative — QBI → the world: the four moments (publish → read-cold → cite → compile). |
 | **[`_grounding.md`](./_grounding.md)** | The retained **public-extreme** context pack (QBI). |
-| **[`_design-brief.md`](./_design-brief.md)** | The visual brief both mockup sets were built against — the shared design system, both worked examples, the per-screen specs. |
-| **[`mockups/`](./mockups/)** | **Nine** interactive HTML screens + a gallery `index.html` — **[view live ↗](https://mira-science.github.io/inter-lab-user-story/)** — sharing one design system (`tokens.css` + `components.css`, reused from the inter-lab repo). **06–09** the dashboard (central); **01–05** the public extreme. |
+| **[`_design-brief.md`](./_design-brief.md)** | The visual brief both mockup sets were built against — the shared design system, both worked examples, the per-screen specs. *(predates v0.4; folded into `ux-spec.md`)* |
+| `ux-spec-update-*.md` · `ux-research-synthesis-*.md` | **The dated decision record** (v0.1 → v0.4 + the glance-trust correction) — how each change was reached. Folded into `ux-spec.md`; kept for provenance. |
+| **[`mockups/`](./mockups/)** | **Eleven** interactive HTML screens + a gallery `index.html` — **[view live ↗](https://mira-science.github.io/inter-lab-user-story/)** — sharing one design system (`tokens.css` + `components.css`). **06–11** the dashboard (central); **01–05** the public extreme. |
 | **[`mockups/previews/`](./mockups/previews/)** | PNG renders of every screen (shown below) for quick/GitHub viewing. |
 
 ---
@@ -58,10 +63,12 @@ open** the surface is and **whether a `Request` flows back**:
 
 ## Mockups — the Sean → Kate dashboard (central)
 
-The worked example: the Vogel × Kate **stress-granule assembly order** result (illustrative, unpublished):
-*in stressed HeLa cells, **G3BP1 is recruited to forming stress granules before PABP1***, grounded in a
-live two-channel imaging `Study`, following a culture → stress → imaging → **segmentation** `Protocol`,
-carrying **pointers** (git / curated CSV / gated 80 GB raw stacks / video), never the raw images.
+The worked example: the Vogel × Kate **stress-granule composition-over-time** result (illustrative,
+unpublished): *stress granules change composition over time — the Pearson correlation of two granule
+proteins climbs from negative to positive over ~10–15 min*, grounded in a live Lattice-SIM imaging
+`Study`, following a culture → stress → imaging → **segmentation** `Protocol`, carrying **pointers** (git /
+curated CSV / gated 80 GB raw stacks / video), never the raw images. *(Proteins redacted to Protein 1 /
+Protein 2.)*
 
 ### Gallery — [`mockups/index.html`](./mockups/index.html) · [**open live ↗**](https://mira-science.github.io/inter-lab-user-story/)
 ![Gallery](./mockups/previews/index.png)
@@ -74,16 +81,17 @@ via KOI** (shared = visible, not editable) (R1, R2, R4, R5, R12).*
 ![Share a selected subgraph](./mockups/previews/06-share-to-dashboard.png)
 
 ### 07 · The shared dashboard — [`mockups/07-shared-dashboard.html`](./mockups/07-shared-dashboard.html) · [**open live ↗**](https://mira-science.github.io/inter-lab-user-story/07-shared-dashboard.html)
-*The headline screen. A **read-only** web view at a URL — **Graph · Kanban · Table** views, **audience
+*The headline screen. A **read-only** web view at a URL — **Graph · Kanban** views, **audience
 presets** (Results / Experiments-in-progress / Questions & requests), node cards with provenance and a
 **public/consortium** badge — where Kate **glances at the result and trusts it**. Colorblind-safe,
 legible (R6, R8).*
 ![The shared dashboard](./mockups/previews/07-shared-dashboard.png)
 
 ### 08 · Traverse & request back — [`mockups/08-traverse-and-request.html`](./mockups/08-traverse-and-request.html) · [**open live ↗**](https://mira-science.github.io/inter-lab-user-story/08-traverse-and-request.html)
-*A grad student traverses `Evidence ←grounds← Study →follows→ Protocol` to the **segmentation threshold**,
-follows the `git`/`data` **pointer chips** and the **video walkthrough**, hits **request-access** on the
-80 GB raw stacks, and **sends a `Request`** back for a follow-up — the reverse current (R2, R4, R5, R7, R13).*
+*A grad student traverses `Evidence ←grounds← Study →follows→ Protocol` to the **segmentation choice**
+(segment on the per-pixel SUM of both channels), follows the `git`/`data` **pointer chips** and the
+**video walkthrough**, hits **request-access** on the 80 GB raw stacks, and **sends a `Request`** back for
+a follow-up — the reverse current (R2, R4, R5, R7, R13).*
 ![Traverse and request](./mockups/previews/08-traverse-and-request.png)
 
 ### 09 · The consortium view & recruiting — [`mockups/09-consortium-view.html`](./mockups/09-consortium-view.html) · [**open live ↗**](https://mira-science.github.io/inter-lab-user-story/09-consortium-view.html)
@@ -92,6 +100,19 @@ follows the `git`/`data` **pointer chips** and the **video walkthrough**, hits *
 questions/requests for **recruiting**), and unpublished one-off results made **discoverable** instead of
 lost on a drive (R5, R6, R8).*
 ![The consortium view](./mockups/previews/09-consortium-view.png)
+
+### 10 · The evidence card — embedded method — [`mockups/10-evidence-card.html`](./mockups/10-evidence-card.html) · [**open live ↗**](https://mira-science.github.io/inter-lab-user-story/10-evidence-card.html)
+*The headline component in isolation: one **result-first** Evidence card with the method **folded in**,
+shown at all four states — collapsed (PI glance), method open at the **segmentation choice** (reproducer),
+a **candidate** awaiting "Convert to evidence", and a comment **thread that converts to a `Request`**.
+Glance-and-trust is passive — there is no Endorse (R2, R4, R8).*
+![The evidence card](./mockups/previews/10-evidence-card.png)
+
+### 11 · Meeting prep — since last sync — [`mockups/11-meeting-prep.html`](./mockups/11-meeting-prep.html) · [**open live ↗**](https://mira-science.github.io/inter-lab-user-story/11-meeting-prep.html)
+*Mobile-first. A **"since last sync" diff** the student opens to prepare — what's **on the agenda** for the
+next meeting, what **changed**, and (folded) what **hasn't** — with self-set deadlines and an opt-in
+**Follow** for the PI. The calm replacement for a nudge: staleness is folded, never pushed (R4, R5, R6).*
+![Meeting prep](./mockups/previews/11-meeting-prep.png)
 
 ---
 
@@ -168,4 +189,4 @@ PNG previews (Chrome headless, with a virtual-time budget so the load animations
 
 ---
 
-*MIRA × Discourse Graphs · push results to a shared web interface · dashboard (central) + QBI (public) · draft v0.1*
+*MIRA × Discourse Graphs · push results to a shared web interface · dashboard (central) + QBI (public) · v0.4 · UX spec consolidated 2026-06-15 — see [`ux-spec.md`](./ux-spec.md)*

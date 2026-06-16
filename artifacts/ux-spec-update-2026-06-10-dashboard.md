@@ -1,5 +1,10 @@
 # UX spec update — the Sean → Kate dashboard, after Kate's live walkthrough
 
+> 🗂️ **Historical delta — folded into the current spec.** The single, up-to-date specification is
+> **[`ux-spec.md`](./ux-spec.md)**; build and maintain the mockups from it. This dated update is kept only
+> as the record of how these decisions were reached — and some of it has since been **superseded** (e.g.
+> the PI nudge in §4 was reversed; see the changelog in [`ux-spec.md §11`](./ux-spec.md#11-changelog--provenance)). *(Consolidated 2026-06-15.)*
+
 ### Developer-handoff delta · **draft v0.1 → v0.2** (+ design-review corrections, Jun 11 — see §12) · source: *Cell imaging project update — UX feedback* (Jun 10, 2026)
 
 > **What this is.** A focused, buildable **update** to [`ux-user-story-dashboard.md`](./ux-user-story-dashboard.md)

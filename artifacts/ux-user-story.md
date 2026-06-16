@@ -1,5 +1,10 @@
 # A result, standing on its own at a public URL — trustworthy to a stranger
 
+> 🗂️ **Superseded for day-to-day work by [`ux-spec.md`](./ux-spec.md)** — the single current UX spec (this
+> QBI narrative is folded into it as the public track, screens 01–05, which are stable). Retained for
+> reference; its embedded design-system mirror (§9) predates the AA token corrections — `ux-spec.md §8` and
+> the CSS are current and win on any disagreement. *(Consolidated 2026-06-15.)*
+
 ### Publishing a result to a public repository or database — MIRA × Discourse Graphs, 🥉 low-shared-context variant, draft v0.1
 
 > **Premise.** Brian, at the Quantum Biology Institute, has a result living as markdown discourse-graph

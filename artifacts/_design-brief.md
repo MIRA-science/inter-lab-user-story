@@ -1,5 +1,11 @@
 # Design brief — MIRA "publish to a public repository or database" mockups
 
+> 🗂️ **Superseded for day-to-day work by [`ux-spec.md`](./ux-spec.md)** — the single current UX spec, whose
+> §6 (screens) + §7 (components) + §8 (design system) are the build reference. Retained here for the prose
+> rationale. **Note: this brief predates the v0.4 rebuild** — it describes **9** screens (now 11, 06–11),
+> the "assembly-order" science (now *composition over time*), and pre-correction tokens. `ux-spec.md` and
+> the CSS win on any disagreement. *(Consolidated 2026-06-15.)*
+
 > Read with [`_grounding.md`](./_grounding.md) and [`../AGENTS.md`](../AGENTS.md). Every mockup is a
 > **single self-contained `.html` file** in `artifacts/mockups/` that links the two shared
 > stylesheets and adds only screen-specific CSS. This repo **reuses the inter-lab design system

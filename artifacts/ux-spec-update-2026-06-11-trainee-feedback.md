@@ -1,5 +1,10 @@
 # UX spec update — the trainee reverses the nudge; meetings become the checkpoint
 
+> 🗂️ **Historical delta — folded into the current spec.** The single, up-to-date specification is
+> **[`ux-spec.md`](./ux-spec.md)**; build and maintain the mockups from it. This dated update is kept only
+> as the record of how these decisions were reached. Its conclusions (no nudge → meeting-anchored agenda /
+> self-set deadline / opt-in follow) are **current** and live in [`ux-spec.md §5.2, §7.5`](./ux-spec.md#5-ux-principles-normative-for-design). *(Consolidated 2026-06-15.)*
+
 ### Developer-handoff delta · **draft v0.2 → v0.3** · source: *Graph filtering ideas with Sean* (Jun 11, 2026) · research layer: [`ux-research-synthesis-2026-06-11-trainee.md`](./ux-research-synthesis-2026-06-11-trainee.md)
 
 > **What this is.** A buildable **delta** to the Sean → Kate dashboard, from the first session where the **trainee

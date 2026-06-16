@@ -1,5 +1,10 @@
 # Dashboard mockups — glance-and-trust correction + verbatim grounding (2026-06-15)
 
+> 🗂️ **Historical delta — folded into the current spec.** The single, up-to-date specification is
+> **[`ux-spec.md`](./ux-spec.md)**; build and maintain the mockups from it. This correction is kept only as
+> the record of how it was reached. Its conclusions (no "Endorse"; study/protocol expander; verbatim-on-
+> demand) are **current** and live in [`ux-spec.md §5.1, §7.1`](./ux-spec.md#5-ux-principles-normative-for-design). *(Consolidated 2026-06-15.)*
+
 **Status:** spec delta. Companion to the [v0.4 real-data + UI doc](ux-spec-update-2026-06-15-real-data-and-ui.md); both dated Jun 15.
 **Scope:** screen 07 (the inspector's PI region) and screen 08 (the study/protocol detail a reader clicks into), plus a correction to [`_grounding-dashboard.md`](_grounding-dashboard.md) §3.
 **Origin:** author's clarification of the Jun-8 "glance-and-trust" quote (see §4) — the previous reading produced an **Endorse** affordance that does not belong.

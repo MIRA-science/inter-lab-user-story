@@ -1,5 +1,11 @@
 # A result your collaborators can read without your tooling — on a shared dashboard
 
+> 🗂️ **Superseded for day-to-day work by [`ux-spec.md`](./ux-spec.md)** — the single current UX spec, which
+> folds in this narrative plus the dated `ux-spec-update-*` deltas and matches the mockups as built.
+> Retained here for its narrative. **Note the details below predate the v0.4 rebuild:** the worked science
+> is now *stress-granule composition over time* (not "G3BP1-before-PABP1 assembly order"); there are **11**
+> screens (06–11), not 9; "glance-and-trust" carries **no Endorse**; the PI **nudge was removed**. *(Consolidated 2026-06-15.)*
+
 ### Push results to a shared web interface — the Sean → Kate **dashboard** · MIRA × Discourse Graphs · the central use case · draft v0.1
 
 > **Premise.** Sean, a PhD student in the **Vogel Lab**, has a stress-granule result living as markdown
