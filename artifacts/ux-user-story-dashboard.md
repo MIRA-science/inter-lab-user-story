@@ -3,14 +3,14 @@
 > 🗂️ **Superseded for day-to-day work by [`ux-spec.md`](./ux-spec.md)** — the single current UX spec, which
 > folds in this narrative plus the dated `ux-spec-update-*` deltas and matches the mockups as built.
 > Retained here for its narrative. **Note the details below predate the v0.4 rebuild:** the worked science
-> is now *stress-granule composition over time* (not "G3BP1-before-PABP1 assembly order"); there are **11**
+> is now *cluster composition over time* (not "Component A-before-Component B assembly order"); there are **11**
 > screens (06–11), not 9; "glance-and-trust" carries **no Endorse**; the PI **nudge was removed**. *(Consolidated 2026-06-15.)*
 
 ### Push results to a shared web interface — the Sean → Kate **dashboard** · MIRA × Discourse Graphs · the central use case · draft v0.1
 
-> **Premise.** Sean, a PhD student in the **Vogel Lab**, has a stress-granule result living as markdown
-> discourse-graph nodes in his Obsidian vault: in HeLa cells under stress, two stress-granule proteins
-> are recruited in a fixed order — **G3BP1 climbs before PABP1** as granules assemble. He wants **Kate's
+> **Premise.** Sean, a PhD student in the **Vogel Lab**, has a cluster result living as markdown
+> discourse-graph nodes in his Obsidian vault: in samples under perturbation, two cluster components
+> are recruited in a fixed order — **Component A climbs before Component B** as clusters assemble. He wants **Kate's
 > lab** — a collaborating PI and her students — to **see it, trust it, and dig into it on their own
 > time**: not by installing a discourse-graph app, not on a scheduled Zoom call, and **without** him
 > shipping his 80 GB of raw images or exposing his private notes. **As a producer, Sean publishes a
@@ -41,17 +41,17 @@ tier of this work — readers need *different depths* of the same bundle — but
 _grounding-dashboard.md §2.1).
 
 #### Sean — the producer (bench)
-- **Role:** PhD student in the **Vogel Lab** (cell biology); does quantitative live-cell microscopy.
+- **Role:** PhD student in the **Vogel Lab** (quantitative imaging); does quantitative time-lapse imaging.
 - **Tool:** Obsidian + Discourse Graph plugin — a new experiment node takes *"10 seconds"*; raw images
   sit on a **25 TB lab array**, never in the graph.
 - **Wants:** to share the *result* with Kate's lab while keeping control — *"some kind of granularity"*
   so his **personal thoughts stay private** and his 80 GB of raw stacks stay put.
 - **Defining moment:** he throws the bundle together live and walks Kate's group through *"the
-  collaboration between Kate's lab and my lab, Vogel Lab"* — HeLa, stress, two proteins forming and
+  collaboration between Kate's lab and my lab, Vogel Lab"* — sample, perturbation, two components forming and
   dissolving (Jun 8).
 
 #### Kate — the consumer (PI, and consortium lead)
-- **Role:** PI of a collaborating stress-granule lab; runs **multiple collaborators across multiple
+- **Role:** PI of a collaborating cluster lab; runs **multiple collaborators across multiple
   projects** — *"if I can do this with Sean, then I can do it with all my collaborators."*
 - **Tool:** **a web browser.** No Obsidian, no plugin.
 - **Wants:** *"access everything in one place and at any time… searchable… and we can look at it three
@@ -82,7 +82,7 @@ _grounding-dashboard.md §2.1).
 
 ## 2. The spine — two currents, onto a shared read-only surface
 
-The QBI/world story has **one** current (producer → public). This tier has **two**, exactly as the
+The QSI/world story has **one** current (producer → public). This tier has **two**, exactly as the
 canvas draws them — *Sean's notebook → Kate's lab → a shared web interface*, with a `Request for study`
 node sitting in Kate's column (_grounding-dashboard.md §2.4):
 
@@ -93,7 +93,7 @@ node sitting in Kate's column (_grounding-dashboard.md §2.4):
   side: *"notification of updates… seeing the summary… importing connected nodes."*
 
 **The schema, compactly** (MIRA — the same grammar as every other tier; AGENTS.md §4). At this tier the
-**`Request` node is first-class** (it is peripheral in the QBI case):
+**`Request` node is first-class** (it is peripheral in the QSI case):
 
 > **Question · Claim · Evidence · Study · Protocol · `Request`**
 
@@ -120,9 +120,9 @@ When Sean shares, the question is *"will my collaborators understand it without 
 I share it without losing control of my data and my half-formed thoughts?"* The story has five moments,
 each pointed at the mockup that depicts it (AGENTS.md §6; _grounding-dashboard.md §2-3).
 
-The worked content throughout: Sean's `Evidence` — *G3BP1 is recruited to forming stress granules
-before PABP1* — grounded in a live-imaging `Study` of stressed HeLa cells, following a culture →
-stress → imaging → **segmentation** `Protocol`, captioned *illustrative · unpublished — workshop
+The worked content throughout: Sean's `Evidence` — *Component A is recruited to forming clusters
+before Component B* — grounded in a live-imaging `Study` of perturbed samples, following a preparation →
+perturbation → imaging → **segmentation** `Protocol`, captioned *illustrative · unpublished — workshop
 prototype*.
 
 ### Moment A — Sean shares a *selected subgraph* to the dashboard
@@ -151,7 +151,7 @@ prototype*.
 2. **She picks a view.** **Graph** (*"move the nodes around… understand what questions the group is
    trying to answer"*), **Kanban**, or **Table** (*"left is the question, the next column the
    experiments, then results"*). A **preset** — *Results centered* — puts Sean's finding front and center.
-3. **She glances and trusts** — the summary plot (G3BP1 before PABP1) + the provenance byline *Sean ·
+3. **She glances and trusts** — the summary plot (Component A before Component B) + the provenance byline *Sean ·
    Vogel Lab*. *"As the PI, often that will be sufficient."*
 4. **It's legible and durable** — colorblind-safe, readable by *"a 60-year-old-plus professor,"*
    searchable, and still here *"three years from now."*
@@ -173,7 +173,7 @@ prototype*.
    to know everything downstream and recompute it"* — provenance is the point.
 
 ### Moment D — The request goes back
-*The collaboration's reverse current — the thing the QBI tier doesn't have.*
+*The collaboration's reverse current — the thing the QSI tier doesn't have.*
 → **mockups/08-traverse-and-request.html**
 
 1. **They send a `Request`** for a follow-up — *"a request for [experiment, analysis]"* — attached to
@@ -240,7 +240,7 @@ summary (mockups 07, 09).
 
 ## 6. Acceptance — "done when" (dashboard track; complements AGENTS.md §9)
 
-For the worked Sean → Kate stress-granule case:
+For the worked Sean → Kate cluster case:
 1. **Share path.** Sean publishes a **selected subgraph** (`Evidence` + grounding `Study` + `Protocol`,
    each with a **pointer**) from Obsidian to a **read-only dashboard at a URL**, setting per-node
    visibility (raw stacks gated; personal note withheld, **not leaked**).
@@ -261,9 +261,9 @@ For the worked Sean → Kate stress-granule case:
 
 - **Writing/contributing from the dashboard** — it is **read-only**; authoring stays in the vault.
 - **Hosting or transferring raw data** — referenced only; the raw-stack pointer is access-gated.
-- **Non-text assets as first-class schema fields** (CSV/image/DNA) — **flagged as a gap**, deferred.
+- **Non-text assets as first-class schema fields** (CSV/image/binary) — **flagged as a gap**, deferred.
 - **Conflict resolution / graph merge** when labs diverge — design to allow later; don't build now.
-- **Expanding the grammar** to Analysis/ELN/Data node types — deferred, as in the QBI case.
+- **Expanding the grammar** to Analysis/ELN/Data node types — deferred, as in the QSI case.
 
 ## 8. Open questions carried into design
 

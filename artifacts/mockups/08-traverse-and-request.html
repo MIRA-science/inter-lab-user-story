@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stress-granule composition — traverse the lineage &amp; request back · mira.science</title>
+<title>Cluster composition — traverse the lineage &amp; request back · mira.science</title>
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="components.css">
 <style>
@@ -47,7 +47,7 @@
   .byline .avatar { width:22px; height:22px; font-size:9.5px; }
   .dotsep { color: var(--line); }
 
-  /* ---- Figure block (illustrative two-curve plot + "what's in the dish") --- */
+  /* ---- Figure block (illustrative two-curve plot + "what's in the sample") --- */
   .figure { margin-top:24px; border:1px solid var(--line); border-radius: var(--r-lg); overflow:hidden; background: var(--surface); box-shadow: var(--shadow-1); }
   .figure .plotwrap { display:grid; grid-template-columns: minmax(0,1.35fr) minmax(0,1fr); }
   @media (max-width: 620px){ .figure .plotwrap { grid-template-columns:1fr; } }
@@ -255,7 +255,7 @@
   <!-- public web chrome — the node permalink, consortium lock -->
   <div class="winbar">
     <div class="lights"><i></i><i></i><i></i></div>
-    <span class="addr">🔒 mira.science/n/sg-composition-019ea6d6</span>
+    <span class="addr">🔒 mira.science/n/cluster-composition-019ea6d6</span>
     <span class="grow"></span>
     <span class="kbd">⌘ L</span>
   </div>
@@ -277,7 +277,7 @@
         </svg>
         <div>
           <div class="name"><b>MIRA</b> · shared dashboard</div>
-          <div class="proj">Stress-granule formation · Vogel × Kate</div>
+          <div class="proj">Cluster formation · Vogel × Kate</div>
         </div>
       </div>
       <div class="viewer" style="position:relative;">
@@ -346,11 +346,11 @@
         <!-- Evidence summary up front (R4) -->
         <div class="lede reveal d3">
           <span class="eyebrow" style="display:block;">Evidence · supports a Claim · grounded in a Study</span>
-          <h1>Stress granules change composition over time</h1>
+          <h1>Clusters change composition over time</h1>
           <p class="summary">
-            Across both stresses, the correlation between the two granule proteins
+            Across both perturbations, the correlation between the two cluster components
             <span class="accent">climbs from negative to positive over ~10–15 min</span> — they first exclude
-            each other, then co-localize as the granule matures. Measured per granule by live Lattice-SIM imaging.
+            each other, then co-localize as the cluster matures. Measured per cluster by live high-resolution imaging.
           </p>
           <div class="byline">
             <span class="avatar sean">S</span>
@@ -358,14 +358,14 @@
             <span class="dotsep">·</span>
             <span>shared with Kate's lab</span>
             <span class="dotsep">·</span>
-            <span>node <code>sg-composition-019ea6d6</code></span>
+            <span>node <code>cluster-composition-019ea6d6</code></span>
           </div>
         </div>
 
         <!-- Figure: illustrative two intensity-vs-time curves + context table -->
         <figure class="figure reveal d4">
           <div class="plotwrap">
-            <svg class="plot" viewBox="0 0 460 260" role="img" aria-label="Illustrative: Pearson correlation between Protein 1 and Protein 2 starts negative and becomes positive over the first ~10–15 min after stress, for two stress conditions (arsenite, osmotic) that differ early then converge.">
+            <svg class="plot" viewBox="0 0 460 260" role="img" aria-label="Illustrative: Pearson correlation between Component 1 and Component 2 starts negative and becomes positive over the first ~10–15 min after perturbation, for two perturbation conditions (perturbant, osmotic) that differ early then converge.">
               <rect x="0" y="0" width="460" height="260" style="fill:var(--surface)"/>
               <!-- axes -->
               <g style="stroke:var(--line)" stroke-width="1">
@@ -380,18 +380,18 @@
                 <text x="48" y="123" text-anchor="end">0</text>
                 <text x="48" y="208" text-anchor="end">−1</text>
               </g>
-              <text x="18" y="119" text-anchor="middle" font-size="9.5" transform="rotate(-90 18 119)" style="font-family:var(--font-mono);fill:var(--muted)">Pearson r · Protein 1 · Protein 2</text>
+              <text x="18" y="119" text-anchor="middle" font-size="9.5" transform="rotate(-90 18 119)" style="font-family:var(--font-mono);fill:var(--muted)">Pearson r · Component 1 · Component 2</text>
               <!-- x ticks -->
               <g font-size="9" style="font-family:var(--font-mono);fill:var(--faint)">
-                <text x="56"  y="226" text-anchor="middle">stress</text>
+                <text x="56"  y="226" text-anchor="middle">perturbation</text>
                 <text x="430" y="226" text-anchor="end">30 min →</text>
               </g>
-              <text x="243" y="240" text-anchor="middle" font-size="9.5" style="font-family:var(--font-mono);fill:var(--muted)">time since stress (min)</text>
+              <text x="243" y="240" text-anchor="middle" font-size="9.5" style="font-family:var(--font-mono);fill:var(--muted)">time since perturbation (min)</text>
 
               <!-- osmotic (blue) -->
               <path class="pdraw" d="M56,160 C140,164 188,150 240,119 C300,86 370,72 430,68"
                     style="fill:none;stroke:var(--study-ink)" stroke-width="2.6" stroke-linecap="round"/>
-              <!-- arsenite (coral) -->
+              <!-- perturbant (coral) -->
               <path class="pdraw" d="M56,178 C140,196 196,188 256,121 C310,88 372,72 430,64"
                     style="fill:none;stroke:var(--evidence-ink)" stroke-width="2.6" stroke-linecap="round"/>
 
@@ -400,26 +400,26 @@
               <text x="250" y="22" text-anchor="middle" font-size="9.5" font-weight="700" style="font-family:var(--font-body);fill:var(--question-ink)">≈10–15 min</text>
 
               <!-- inline curve labels (redundant with legend, colorblind aid) -->
-              <text x="374" y="56" font-size="9" font-weight="700" style="font-family:var(--font-body);fill:var(--evidence-ink)">arsenite</text>
+              <text x="374" y="56" font-size="9" font-weight="700" style="font-family:var(--font-body);fill:var(--evidence-ink)">perturbant</text>
               <text x="374" y="90" font-size="9" font-weight="700" style="font-family:var(--font-body);fill:var(--study-ink)">osmotic</text>
             </svg>
 
-            <!-- "what's in the dish" context table -->
+            <!-- "what's in the sample" context table -->
             <div class="ctx">
-              <h4>What's in the dish</h4>
+              <h4>What's in the sample</h4>
               <table class="ctx-tbl">
-                <tr><td class="k">Cell line</td><td class="v">HeLa</td></tr>
-                <tr><td class="k">Stress</td><td class="v">arsenite · osmotic</td></tr>
-                <tr><td class="k">Channels</td><td class="v">P1–GFP · P2–mKate</td></tr>
-                <tr><td class="k">Imaging</td><td class="v">Lattice SIM · Elyra 7</td></tr>
+                <tr><td class="k">Sample line</td><td class="v">sample</td></tr>
+                <tr><td class="k">Perturbation</td><td class="v">perturbant · osmotic</td></tr>
+                <tr><td class="k">Channels</td><td class="v">P1–Label-G · P2–Label-K</td></tr>
+                <tr><td class="k">Imaging</td><td class="v">high-resolution imaging · Elyra 7</td></tr>
                 <tr><td class="k">Readout</td><td class="v">co-localization</td></tr>
-                <tr><td class="k">Binned</td><td class="v">by time since stress</td></tr>
+                <tr><td class="k">Binned</td><td class="v">by time since perturbation</td></tr>
               </table>
             </div>
           </div>
           <figcaption class="figcaption">
             <div class="legend">
-              <span><i style="background:var(--evidence-ink)"></i> arsenite</span>
+              <span><i style="background:var(--evidence-ink)"></i> perturbant</span>
               <span><i style="background:var(--study-ink)"></i> osmotic</span>
             </div>
             <span class="illus">illustrative · unpublished — workshop prototype</span>
@@ -433,7 +433,7 @@
             <small>REPRODUCER</small>
           </div>
           <div>
-            <div class="q">“How exactly did Sean <span class="em">segment the granules</span>?”</div>
+            <div class="q">“How exactly did Sean <span class="em">segment the clusters</span>?”</div>
             <div class="sub">Because <i>the segmentation choice can change all the measurements</i> — so before building on this, follow the lineage down to the method that produced the curve.</div>
             <div class="down">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
@@ -463,10 +463,10 @@
               <span class="ntype evidence">Evidence · this node</span>
               <span class="tag">you are here</span>
             </div>
-            <div class="node-title">Stress granules change composition over time</div>
-            <div class="node-body">Across both stresses, the correlation between the two proteins goes from negative to positive over ~10–15 min — they start by excluding each other, then co-localize — the curve above.</div>
+            <div class="node-title">Clusters change composition over time</div>
+            <div class="node-body">Across both perturbations, the correlation between the two components goes from negative to positive over ~10–15 min — they start by excluding each other, then co-localize — the curve above.</div>
             <div class="ptr-row">
-              <span class="pointer"><span class="kind data">data</span><span class="path">granule_composition_by_time.csv (this figure)</span></span>
+              <span class="pointer"><span class="kind data">data</span><span class="path">cluster_composition_by_time.csv (this figure)</span></span>
             </div>
             <!-- verbatim grounding: the author's own key points, the summary is condensed from these -->
             <details class="verbatim">
@@ -477,11 +477,11 @@
               </summary>
               <div class="vbody">
                 <ul>
-                  <li>In both conditions, the Pearson correlation coefficient between the two channels starts negative and becomes positive over time. This implies that the two tagged proteins (Protein 1 and Protein 2) are co-localizing more over time and they even start to coalesce independently of each other in the beginning.</li>
-                  <li>While this shows that the proteins start off excluding each other and then mix over time, it is not clear what the nature of this exclusion is. They could be forming different droplets which merge over time, or they could both be forming in the same droplet, but occupying different sub-compartments in the droplet. Another experiment will need to be done to understand the nature/structure of these early SGs.</li>
-                  <li>While the two stress conditions look similar after 10–15 minutes, there is a significant difference in them prior to that point. The interpretation of this would depend on the result of the previous point. Although, it does imply that there is a measurable difference in the co-localization of these proteins during different stress, perhaps implying that they are related to how the SGs form in response to a particular type of stress.</li>
+                  <li>In both conditions, the Pearson correlation coefficient between the two channels starts negative and becomes positive over time. This implies that the two tagged components (Component 1 and Component 2) are co-localizing more over time and they even start to coalesce independently of each other in the beginning.</li>
+                  <li>While this shows that the components start off excluding each other and then mix over time, it is not clear what the nature of this exclusion is. They could be forming different clusters which merge over time, or they could both be forming in the same cluster, but occupying different sub-compartments in the cluster. Another experiment will need to be done to understand the nature/structure of these early clusters.</li>
+                  <li>While the two perturbation conditions look similar after 10–15 minutes, there is a significant difference in them prior to that point. The interpretation of this would depend on the result of the previous point. Although, it does imply that there is a measurable difference in the co-localization of these components during different perturbation, perhaps implying that they are related to how the clusters form in response to a particular type of perturbation.</li>
                 </ul>
-                <span class="vsrc">Verbatim · RES node · protein names redacted</span>
+                <span class="vsrc">Verbatim · RES node · component names redacted</span>
               </div>
             </details>
             <!-- R5 progressive disclosure: a withheld working note, signalled not leaked -->
@@ -500,8 +500,8 @@
           <!-- Study -->
           <article class="node study reveal d6">
             <span class="ntype study">Study · "the experiment"</span>
-            <div class="node-title">Live Lattice-SIM imaging of granule formation at staged times</div>
-            <div class="node-body">Protein 1–GFP (endogenous) and Protein 2–mKate (transfected) in HeLa, imaged on a ZEISS Elyra 7 in Lattice SIM on fresh fields of view up to 30 min after stress.</div>
+            <div class="node-title">Live high-resolution imaging of cluster formation at staged times</div>
+            <div class="node-body">Component 1–Label-G (native) and Component 2–Label-K (loaded) in sample, imaged on a ZEISS Elyra 7 in high-resolution imaging on fresh fields of view up to 30 min after perturbation.</div>
             <!-- verbatim grounding: the author's dated lab-notebook note + hypotheses -->
             <details class="verbatim">
               <summary>
@@ -511,7 +511,7 @@
               </summary>
               <div class="vbody">
                 <h6>Progress &amp; notes</h6>
-                <p><span class="vdate">2025-08-23</span> — Kate's student visited Montreal and they sent their cells ahead of time. Khalid is maintaining the cell culture using their protocol. (See linked protocol node.) This cell line has Protein 1 tagged with GFP and we will transfect it with a plasmid expressing Protein 2-mKate. Applied the stress to the cells and imaged them on the microscope to measure the rate/amount/coordination of the two proteins forming stress granules.</p>
+                <p><span class="vdate">2025-08-23</span> — Kate's student visited Montreal and they sent their samples ahead of time. Khalid is maintaining the sample preparation using their protocol. (See linked protocol node.) This sample line has Component 1 tagged with Label-G and we will load it with a construct bearing Component 2-Label-K. Applied the perturbation to the samples and imaged them on the instrument to measure the rate/amount/coordination of the two components forming clusters.</p>
                 <p><span class="vdate">2025-10-14</span> — I have developed the segmentation and subsequent image analysis pipeline. This has yielded initial results (attached). There were several design choices which had to be made including:</p>
                 <ul>
                   <li>What channel to use for the segmentation, or whether to use the SUM or the MAX (pixel-wise) for the segmentation.</li>
@@ -520,10 +520,10 @@
                 <h6>Hypothesis</h6>
                 <p>We have multiple hypotheses that are addressed by this experiment:</p>
                 <ol>
-                  <li>Stress granule components begin to form droplets independently of each other, and these components later mix into the same droplet to give the SGs we typically observe.</li>
-                  <li>This process will be perturbed when we change the type of stress because different types of stress have different sensors which trigger the SG formation mechanism. The different nature of the formation (with respect to the two tagged proteins) will give us insight into how these two proteins are related to the downstream effects of the stress sensing mechanism which lead to the droplet formation.</li>
+                  <li>Cluster components begin to form clusters independently of each other, and these components later mix into the same cluster to give the clusters we typically observe.</li>
+                  <li>This process will be perturbed when we change the type of perturbation because different types of perturbation have different sensors which trigger the cluster formation mechanism. The different nature of the formation (with respect to the two tagged components) will give us insight into how these two components are related to the downstream effects of the perturbation sensing mechanism which lead to the cluster formation.</li>
                 </ol>
-                <span class="vsrc">Verbatim · EXP node · protein names redacted</span>
+                <span class="vsrc">Verbatim · EXP node · component names redacted</span>
               </div>
             </details>
             <div class="ptr-row">
@@ -535,7 +535,7 @@
               <svg class="poster" viewBox="0 0 460 178" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
                 <defs><radialGradient id="vp" cx="38%" cy="40%" r="80%"><stop offset="0%" stop-color="#27314f"/><stop offset="100%" stop-color="#0c0e16"/></radialGradient></defs>
                 <rect width="460" height="178" fill="url(#vp)"/>
-                <!-- faux granule field: glowing puncta, two channels -->
+                <!-- faux cluster field: glowing puncta, two channels -->
                 <g>
                   <circle cx="120" cy="66" r="10" fill="#3877cf" opacity=".85"/><circle cx="120" cy="66" r="19" fill="#3877cf" opacity=".16"/>
                   <circle cx="128" cy="70" r="6" fill="#d9573f" opacity=".7"/>
@@ -544,7 +544,7 @@
                   <circle cx="180" cy="120" r="7" fill="#3877cf" opacity=".6"/>
                   <circle cx="340" cy="76" r="6" fill="#d9573f" opacity=".5"/>
                 </g>
-                <text x="22" y="32" font-size="10" fill="#9fb0d6" style="font-family:var(--font-mono)">HeLa · arsenite/osmotic · Protein 1 / Protein 2</text>
+                <text x="22" y="32" font-size="10" fill="#9fb0d6" style="font-family:var(--font-mono)">sample · perturbant/osmotic · Component 1 / Component 2</text>
               </svg>
               <button class="play" type="button" aria-label="Play 2-minute walkthrough" onclick="this.closest('.video').classList.add('played')">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
@@ -571,8 +571,8 @@
               <span class="ntype protocol">Protocol</span>
               <span class="tag">the method that matters</span>
             </div>
-            <div class="node-title">HeLa culture → stress → Lattice-SIM → segment on per-pixel SUM → composition over time</div>
-            <div class="node-body">The full pipeline behind the curve. The load-bearing step is the segmentation — how a granule is defined sets every co-localization number that follows.</div>
+            <div class="node-title">sample preparation → perturbation → high-resolution imaging → segment on per-pixel SUM → composition over time</div>
+            <div class="node-body">The full pipeline behind the curve. The load-bearing step is the segmentation — how a cluster is defined sets every co-localization number that follows.</div>
 
             <!-- the segmentation-threshold detail -->
             <div class="threshold-detail">
@@ -590,7 +590,7 @@
             </div>
 
             <div class="ptr-row">
-              <span class="pointer"><span class="kind git">git</span><span class="path">vogel-lab/sg-imaging · segment_stress_granules.ijm</span></span>
+              <span class="pointer"><span class="kind git">git</span><span class="path">vogel-lab/cluster-imaging · segment_clusters.ijm</span></span>
             </div>
 
             <!-- verbatim grounding: the three protocol nodes the Study follows, in full -->
@@ -603,26 +603,26 @@
               <div class="vbody">
                 <p>The pipeline summary above is condensed from three protocol nodes the Study <code>follows</code>. Their verbatim text:</p>
 
-                <h6>① Cell culture</h6>
+                <h6>① Sample preparation</h6>
                 <p>TODO: Get growth information from Khalid and Kate's students.</p>
 
-                <h6>② High-resolution stress-granule imaging (Lattice SIM)</h6>
+                <h6>② High-resolution cluster imaging (high-resolution imaging)</h6>
                 <ol>
-                  <li>Cultured cells were adhered to a coverslip and placed in a well containing 1µl of the media they were grown in. This cell line was tagged with endogenous Protein 1-GFP and was transfected with a plasmid expressing Protein 2-mKate.</li>
+                  <li>Prepared samples were mounted on a substrate and placed in a chamber containing 1µl of the solution they were prepared in. This sample line was tagged with native Component 1-Label-G and was loaded with a construct bearing Component 2-Label-K.</li>
                   <li>As quickly as possible:
                     <ol>
-                      <li>The media was removed from the well with a pipette.</li>
-                      <li>New media containing the stress (Sodium Arsenite or osmotic stress) was added using a pipette. Do not pipette directly onto the coverslip. Deposit the new media on the side of the well to avoid disturbing the cells or applying any mechanical stress.</li>
-                      <li>Start a stopwatch to calculate the amount of time since the stress was applied.</li>
+                      <li>The solution was removed from the chamber with a dispenser.</li>
+                      <li>New solution containing the perturbant (chemical or osmotic) was added using a dispenser. Do not dispense directly onto the substrate. Deposit the new solution on the side of the chamber to avoid disturbing the samples or applying any mechanical stress.</li>
+                      <li>Start a stopwatch to calculate the amount of time since the perturbation was applied.</li>
                     </ol>
                   </li>
-                  <li>Place the cells on the Elyra 7 stage and shut the enclosure in preparation for imaging. The time from the exchange of the media to the first image acquisition should be as short as possible to observe the stress response in its early stages.</li>
-                  <li>Scan over the cells using the bright-field to identify cells which are healthy and which are close enough together that you can get a good amount (purely to increase the data acquisition efficiency). You can position the center of the z-stack in the bright-field to avoid using the laser and initiating any photobleaching so that we can quantitatively compare the intensities in the analysis step.</li>
-                  <li>Define the "center" of the z-stack in the ZEN software controlling the microscope.</li>
-                  <li>Switch to the Lattice SIM acquisition track and acquire a z-stack using the parameters outlined below. Note the time since the stress was applied using your stopwatch and include this time in the filename for the raw image.</li>
-                  <li>Move to a NEW field of view so we have fresh cells which have never been exposed to the laser and repeat the imaging steps above (4–6). Repeat this until you have imaged for 30 minutes after the stress application.</li>
-                  <li>Repeat steps 1–7 with a new coverslip in a new well of cultured cells to generate replicates.</li>
-                  <li>Process the RAW image files using batch mode in ZEN to perform the SIM deconvolution and generate the super-resolution images. Use the parameters in the table below. Use the default parameters otherwise.</li>
+                  <li>Place the samples on the Elyra 7 stage and shut the enclosure in preparation for imaging. The time from the exchange of the solution to the first image acquisition should be as short as possible to observe the perturbation response in its early stages.</li>
+                  <li>Scan over the samples using the bright-field to identify samples which are intact and which are close enough together that you can get a good amount (purely to increase the data acquisition efficiency). You can position the center of the z-stack in the bright-field to avoid using the laser and initiating any photobleaching so that we can quantitatively compare the intensities in the analysis step.</li>
+                  <li>Define the "center" of the z-stack in the ZEN software controlling the instrument.</li>
+                  <li>Switch to the high-resolution imaging acquisition track and acquire a z-stack using the parameters outlined below. Note the time since the perturbation was applied using your stopwatch and include this time in the filename for the raw image.</li>
+                  <li>Move to a NEW field of view so we have fresh samples which have never been exposed to the laser and repeat the imaging steps above (4–6). Repeat this until you have imaged for 30 minutes after the perturbation application.</li>
+                  <li>Repeat steps 1–7 with a new substrate in a new chamber of prepared samples to generate replicates.</li>
+                  <li>Process the RAW image files using batch mode in ZEN to perform the HRI deconvolution and generate the super-resolution images. Use the parameters in the table below. Use the default parameters otherwise.</li>
                 </ol>
                 <table>
                   <thead><tr><th>Imaging parameter</th><th>Value</th></tr></thead>
@@ -632,14 +632,14 @@
                     <tr><td>488 nm laser power</td><td>0.8</td></tr>
                     <tr><td>561 nm laser power</td><td>0.8</td></tr>
                     <tr><td>Exposure time</td><td>30 ms</td></tr>
-                    <tr><td>Number of SIM phases</td><td>13</td></tr>
+                    <tr><td>Number of HRI phases</td><td>13</td></tr>
                     <tr><td>Use Z-piezo</td><td>Yes</td></tr>
                   </tbody>
                 </table>
                 <table>
                   <thead><tr><th>Processing parameter</th><th>Value</th></tr></thead>
                   <tbody>
-                    <tr><td>SIM Squared</td><td>No</td></tr>
+                    <tr><td>HRI Squared</td><td>No</td></tr>
                     <tr><td>Leap Mode</td><td>3D Leap</td></tr>
                     <tr><td>Processing Strength</td><td>Weak</td></tr>
                     <tr><td>Scale To Raw</td><td>Yes</td></tr>
@@ -649,13 +649,13 @@
 
                 <h6>③ Segmentation &amp; composition measurement</h6>
                 <ol>
-                  <li>Crop individual cells into their own 3D stack <code>tif</code> images using Fiji from the processed SIM data.</li>
-                  <li>For each <code>tif</code> of a cell, run the <code>segment_stress_granules.ijm</code> ImageJ macro to generate a label image which segments the stress granules in the fluorescent image. This is done using the 3D Suite plugin to identify local signal maxima and then fit a 3D gaussian to use a FWHM threshold for each object (stress granule). Because there are two signal channels, this was done on the per-pixel SUM of the channels to prevent bias toward segmenting objects which have more or less of a single component.</li>
-                  <li>Then in python (see python script in data), the fluorescent <code>tif</code> is loaded and the label image <code>tif</code> is loaded, and the <code>regionprops</code> function is used to compute the statistics for each color channel on each spot.</li>
+                  <li>Crop individual samples into their own 3D stack <code>tif</code> images using Fiji from the processed HRI data.</li>
+                  <li>For each <code>tif</code> of a sample, run the <code>segment_clusters.ijm</code> ImageJ macro to generate a label image which segments the clusters in the labeled image. This is done using the 3D Suite plugin to identify local signal maxima and then fit a 3D gaussian to use a FWHM threshold for each object (cluster). Because there are two signal channels, this was done on the per-pixel SUM of the channels to prevent bias toward segmenting objects which have more or less of a single component.</li>
+                  <li>Then in python (see python script in data), the labeled <code>tif</code> is loaded and the label image <code>tif</code> is loaded, and the <code>regionprops</code> function is used to compute the statistics for each color channel on each spot.</li>
                 </ol>
-                <p><b>Analysis &amp; statistics.</b> Each cell was binned into time bins based on how long it has been since the stress was applied.</p>
+                <p><b>Analysis &amp; statistics.</b> Each sample was binned into time bins based on how long it has been since the perturbation was applied.</p>
 
-                <span class="vsrc">Verbatim · 3 × PRO nodes · protein names redacted</span>
+                <span class="vsrc">Verbatim · 3 × PRO nodes · component names redacted</span>
               </div>
             </details>
           </article>
@@ -698,7 +698,7 @@
             <span class="avatar sean" title="Sean">S</span>
             <div class="c-main">
               <div class="c-meta"><b>Sean</b> · 1d</div>
-              <div class="c-body">Per-channel biases toward whichever protein is brighter — the SUM keeps a granule a granule even while one component is still excluded.</div>
+              <div class="c-body">Per-channel biases toward whichever component is brighter — the SUM keeps a cluster a cluster even while one component is still excluded.</div>
             </div>
           </div>
 
@@ -716,7 +716,7 @@
                   Convert to request
                 </button>
               </div>
-              <div class="c-body">Makes sense. Can you push the time-course below 5 min? The early gap between the two stresses is the interesting part.</div>
+              <div class="c-body">Makes sense. Can you push the time-course below 5 min? The early gap between the two perturbations is the interesting part.</div>
             </div>
           </div>
 
@@ -794,8 +794,8 @@
           </div>
 
           <div class="req-body">
-            Push the composition time-course <b>below 5 min</b> — is the early divergence between arsenite and
-            osmotic real, or noise at low granule counts? <span class="ph">— M, Kate's lab</span>
+            Push the composition time-course <b>below 5 min</b> — is the early divergence between perturbant and
+            osmotic real, or noise at low cluster counts? <span class="ph">— M, Kate's lab</span>
           </div>
 
           <button class="btn primary" type="button" id="reqSendBtn"

@@ -5,12 +5,12 @@
 > as the record of how these decisions were reached — and some of it has since been **superseded** (e.g.
 > the PI nudge in §4 was reversed; see the changelog in [`ux-spec.md §11`](./ux-spec.md#11-changelog--provenance)). *(Consolidated 2026-06-15.)*
 
-### Developer-handoff delta · **draft v0.1 → v0.2** (+ design-review corrections, Jun 11 — see §12) · source: *Cell imaging project update — UX feedback* (Jun 10, 2026)
+### Developer-handoff delta · **draft v0.1 → v0.2** (+ design-review corrections, Jun 11 — see §12) · source: *Sample imaging project update — UX feedback* (Jun 10, 2026)
 
 > **What this is.** A focused, buildable **update** to [`ux-user-story-dashboard.md`](./ux-user-story-dashboard.md)
 > (the narrative spec, v0.1) and the 06–09 mockups, derived from the first session where the **real PI
 > (Kate)** drove the mockups herself instead of role-playing. Transcript + merged notes:
-> [`../../cell-imaging-project-update-ux-feedback-updated.md`](../../cell-imaging-project-update-ux-feedback-updated.md).
+> [`../../sample-imaging-project-update-ux-feedback-updated.md`](../../sample-imaging-project-update-ux-feedback-updated.md).
 > Speaker map: **Kate** = the consumer PI (Speaker C), **Sean** = the producer (Speaker B), **Speaker A** = facilitator.
 >
 > **Altitude.** v0.1 is a *user story*. This doc is the *component-level handoff* the story didn't carry —
@@ -30,7 +30,7 @@
 | 2 | **Comments & request-back** | A **comment thread** on a result, **kept separate** from the result/method body; any comment can be **"Convert to request"** or **"push to next steps."** | **NEW** | *"If there's a thread, maybe there's a button I can press — push this to request or push this to next steps."* | 08; spec §2.4, §3 D |
 | 3 | **Candidate → Evidence** | Hover a **candidate** → **"Convert to evidence"**; the full **troubleshooting history is preserved** under the promoted node. | **NEW** (v0.1 §8 had this as an *open question*) | *"The candidate will become evidence and then there'll be history of all the troubleshooting."* | 06, 07; spec §8 |
 | 4 | **Kanban status-drag + prioritization** | **Drag a card between columns** to set study **status**; the **PI can reorder** a student's backlog by priority; a **stale-experiment nudge** ("no result in a while"). | **NEW** | *"I see there's no result here for a while — I'm going to move it up or down… reorder things based on priority."* | 07, 09; spec §3 E |
-| 5 | **Related-work newsfeed** | A per-user **newsfeed of related work** triggered by **overlapping keywords/tags** (cell line · protein · method). | **NEW** | *"A little newsfeed of related… keywords curate the feed. That would be amazing."* | 07, 09 (new tile); spec §3 E |
+| 5 | **Related-work newsfeed** | A per-user **newsfeed of related work** triggered by **overlapping keywords/tags** (sample line · component · method). | **NEW** | *"A little newsfeed of related… keywords curate the feed. That would be amazing."* | 07, 09 (new tile); spec §3 E |
 | 6 | **Accessibility controls** | A **serif-font toggle** and a **spacing/line-height** control, surfaced in the dashboard chrome. | **NEW** (extends colorblind/legibility reqs) | *"For accessibility, being able to change the font… so it's all serif. And somewhat the spacing."* | 07, 08, 09; grounding §2.3 |
 | 7 | **Share mechanics** | **Right-click → "Share with [group / person]"**, **ctrl-click multi-select**, **Groups** as first-class targets, and a **"feels-robust" verification preview** before any share. | **CHANGED/expanded** | *"A really big verification step — you are about to share; this here is exactly what you're sharing."* | 06; spec §3 A |
 | 8 | **Publish model** | Private vs. public is a **local-server-vs-hosted** distinction, **not a password**: each user's dashboard is a **local server** (`localhost:7979`); going public is an **intentional hosting** act. | **CHANGED** (refines "password-protected") | *"Spin a local server… to make it public-facing you explicitly host it… that's what differentiates public and private."* | 06, 09; grounding §4 |
@@ -122,9 +122,9 @@ context · comments* → *Study details*).
 ```
 ┌─ .ecard  (border-left 4px var(--evidence-ink), radius var(--r-md), pad 16–20px) ─┐
 │  [.ntype.evidence]              Sean · Vogel Lab   [illustrative · unpublished]  │  ← provenance byline, R8
-│  .ecard__plot     two-channel intensity-vs-time figure (G3BP1 before PABP1)      │  ← the result, FIRST
-│  .ecard__summary  one bold sentence: "G3BP1 is recruited before PABP1…"          │
-│  .ecard__caveats  • HeLa, acute stress • n caveats — 2–4 muted bullets           │
+│  .ecard__plot     two-channel intensity-vs-time figure (Component A before Component B)      │  ← the result, FIRST
+│  .ecard__summary  one bold sentence: "Component A is recruited before Component B…"          │
+│  .ecard__caveats  • sample, acute perturbation • n caveats — 2–4 muted bullets           │
 │  ▸ .ecard__method  «Method & context»  (collapsed .disclosure)                   │  ← embeds Study+Protocol
 │       motivating Question · experimental context table · segmentation threshold  │
 │       pointer chips: [git][data][local· request access][video]                   │
@@ -137,7 +137,7 @@ context · comments* → *Study details*).
 |---|---|
 | Card | `background var(--surface)`; `border 1px var(--line)`; `border-left 4px var(--evidence-ink)`; `border-radius var(--r-md)`; `padding 16px` (mobile) → `20px` (≥768px); `box-shadow var(--shadow-1)`, `→ var(--shadow-2)` on hover |
 | `.ecard__plot` | full-bleed minus padding; `border-radius var(--r-sm)`; caption row uses `.illus` pill (`--warn` on `--question-wash`) |
-| `.ecard__summary` | `font-display 16.5px/1.28`; the protein-order clause in `--evidence-ink`, `font-style italic`, `font-weight 600` (matches `.insp .obs .accent` in mockup 07) |
+| `.ecard__summary` | `font-display 16.5px/1.28`; the component-order clause in `--evidence-ink`, `font-style italic`, `font-weight 600` (matches `.insp .obs .accent` in mockup 07) |
 | `.ecard__caveats` | `font-body 12.5px`, `color var(--muted)`, bullet gap `6px` |
 | `.ecard__method` header | `font-mono 10px`, `letter-spacing .1em`, `text-transform uppercase`, `color var(--protocol-ink)` (reuse `.threshold-detail .th-h` from mockup 08); chevron rotates on open |
 | `.ecard__studyfoot` | `.btn.ghost.sm`, label "Open full study details →" |
@@ -153,7 +153,7 @@ context · comments* → *Study details*).
 | `.ecard__studyfoot` | click | Routes to the standalone `Study` node (kept addressable for the reproducer who *does* want the separate view) |
 
 ### Content / edge cases
-- **No plot yet** (candidate or in-progress): replace `.ecard__plot` with a `--surface-2` placeholder + *"No result posted yet"*; summary line becomes the candidate observation (*"cells died" / "quantification all over the place"*).
+- **No plot yet** (candidate or in-progress): replace `.ecard__plot` with a `--surface-2` placeholder + *"No result posted yet"*; summary line becomes the candidate observation (*"samples died" / "quantification all over the place"*).
 - **Long method table**: cap embedded view at the **threshold + 4 key rows**; overflow lives behind `.ecard__studyfoot`. Don't duplicate rows shown inline.
 - **"Don't duplicate results & experiments"** (explicit ask): the embedded method is a **transclusion/link** to the one `Study` node, not a copy — editing the Study updates both. Result and experiment are **linked, not mirrored** into separate columns.
 - **De-dup vs. Question column**: the `Question` still exists as its own node (it's the Consortium grouping key, §8) — but within the card it appears only as the *motivating question* line, not a third peer card.
@@ -181,7 +181,7 @@ action into an **inline thread with promotion**.
 .ecard  ▸ collapsed "💬 Discussion (3)"  →  opens .thread (a separate region, not the node body)
   .thread
     .comment   [avatar.kate] Kate · 2d   "Why threshold = 0.18 and not Otsu?"   [⋯ .comment__actions]
-    .comment   [avatar.sean] Sean · 1d   "Otsu over-segments the dim PABP1 channel."
+    .comment   [avatar.sean] Sean · 1d   "Otsu over-segments the dim Component B channel."
     .comment   [avatar.kate] Kate · 4h   "Makes sense. Can we also try 3 µM?"    →  [Convert to request]
     ─ composer (read-only dashboards: disabled with "sign in to comment") ─
 ```
@@ -209,7 +209,7 @@ action into an **inline thread with promotion**.
 - **Long thread**: collapse to last 3 with *"Show 7 earlier"*; the converted-comment stays pinned.
 - **Comment references a withheld node**: never render the private target (R5) — show *"links to a private note"* with no title.
 - **Canonical handler (build note, §12-2)**: use the **one-level** convert handler in [`10-evidence-card.html`](./mockups/10-evidence-card.html) (adds the `→ request` chip). The spec-required **toast + 6 s Undo** must live in a `<script>` function (`convertToRequest(btn)`), **never an inline `onclick`** — the nested-quote inline version in [`08-traverse-and-request.html`](./mockups/08-traverse-and-request.html) breaks HTML attribute parsing and leaks JS as visible text.
-- **Canonical thread copy**: Kate's last comment reads *"Makes sense. Can we also try a lower arsenite dose — does G3BP1 still lead if granules form more slowly?"* (the `10` wording supersedes the *"3 µM"* placeholder above and `08`'s truncated variant).
+- **Canonical thread copy**: Kate's last comment reads *"Makes sense. Can we also try a lower perturbant dose — does Component A still lead if clusters form more slowly?"* (the `10` wording supersedes the *"3 µM"* placeholder above and `08`'s truncated variant).
 
 ### Accessibility
 Thread is a `role="log"`/`aria-live="polite"` region for new comments; the kebab is a `<button aria-haspopup="menu">`; convert actions are menu items with explicit labels ("Convert this comment to a Request").
@@ -263,7 +263,7 @@ Lift: `transform: translateY(-2px) rotate(1.5deg)` + `--shadow-3`, `transition .
 
 ### Overview
 The strongest *new* want: an **ambient feed of related work** so people *"know to ask"* and stop *"accidentally
-doing the same thing."* Triggered by **overlapping keywords/tags** — **cell line · protein · method** — across the
+doing the same thing."* Triggered by **overlapping keywords/tags** — **sample line · component · method** — across the
 lab (and consortium). Today this only happens at a *"bi-weekly roundtable"*; the feed makes it continuous. Distinct
 from mockup 09's *orphaned-results* feed (that's discovery of forgotten nodes; this is **match-to-my-active-work**).
 
@@ -273,8 +273,8 @@ A right-rail tile on the dashboard (and on the student's own board):
 .relfeed   « Related to your work »
   .relfeed__item
      [avatar.grad] Maya · Rivera Lab
-     "Gibson assembly into BL21 — low yield, codon issue"
-     .relfeed__why  ⟡ shared: method=Gibson · strain=BL21        ← why it matched
+     "Assembly into V21 — low yield, codon issue"
+     .relfeed__why  ⟡ shared: method=Assembly · strain=V21        ← why it matched
      [Evidence ·candidate]   2d
   .relfeed__item  …
 ```
@@ -293,16 +293,16 @@ A right-rail tile on the dashboard (and on the student's own board):
 | Default | Up to 5 items, ranked by **overlap count then recency**; *"newsfeed of related"* |
 | Item hover | Reveals a `.btn.ghost.sm` "Open" + "Express interest" (reuse `.recruit-btn` from mockup 09) |
 | Match transparency | `.relfeed__why` **always** states the matched tags — never an opaque "recommended"; this is the trust requirement |
-| Empty | *"No overlaps yet — tag your studies with cell line, protein, and method to populate this."* (teaches the tagging that powers it) |
-| Mute | Per-tag mute (⋯ → "Mute method=Gibson") so the feed doesn't get noisy |
+| Empty | *"No overlaps yet — tag your studies with sample line, component, and method to populate this."* (teaches the tagging that powers it) |
+| Mute | Per-tag mute (⋯ → "Mute method=Assembly") so the feed doesn't get noisy |
 
 ### Edge cases
 - **Privacy (R5)**: the feed may surface only nodes **shared with a scope the viewer is in** — never leak a private node because its tags matched. A match against a private node shows nothing.
 - **Candidate/troubleshooting items are first-class here** — the *"don't use this lot of lithium acetate"* / *"lower concentration"* kind of tacit fix is exactly what should surface.
-- **Over-matching**: a ubiquitous tag (e.g. `HeLa`) shouldn't dominate — weight rarer tags higher; cap one-tag-only matches.
+- **Over-matching**: a ubiquitous tag (e.g. `sample`) shouldn't dominate — weight rarer tags higher; cap one-tag-only matches.
 
 ### Accessibility
-`.relfeed` is `aria-live="polite"` (new items announced quietly); each item is a link with an accessible name combining the title + match reason ("…matched on method Gibson, strain BL21").
+`.relfeed` is `aria-live="polite"` (new items announced quietly); each item is a link with an accessible name combining the title + match reason ("…matched on method Assembly, strain V21").
 
 ---
 
@@ -370,7 +370,7 @@ as a first-class target (Joel's idea), and — emphatically — a **verification
       Share with ▸   ── .group-pill: ⬢ Kate's Lab · ⬢ McGill Consortium · ⬢ McGill Public
                      ── people:      Kate · Maya · …
 3. .share-verify sheet  «You're about to share»
-      ✓ Evidence: G3BP1 before PABP1        → Kate's Lab (consortium)
+      ✓ Evidence: Component A before Component B        → Kate's Lab (consortium)
       ✓ Study + Protocol (+ git/data ptrs)  → Kate's Lab
       ⚠ Raw stacks (80 GB)                  → request-access only
       ⊘ "Sean's working notes"              → withheld (not shared)
@@ -446,7 +446,7 @@ Add to the dashboard "done when":
    **troubleshooting history is preserved** under the promoted node. *(§3-flow / open-q resolved)*
 10. **Status & priority by drag.** The owner/PI **drags cards between columns** to set status and **reorders** a
     backlog by priority; stalled in-progress cards **surface a nudge**. Read-only for everyone else. *(§4)*
-11. **Ambient related-work.** A per-user **newsfeed** surfaces related nodes by **overlapping cell line / protein /
+11. **Ambient related-work.** A per-user **newsfeed** surfaces related nodes by **overlapping sample line / component /
     method**, always stating the **match reason**, never leaking private nodes. *(§5)*
 12. **Legibility controls.** A **serif toggle** and **spacing control** are available and persist; monospace and
     heading hierarchy are preserved. *(§6)*
@@ -465,7 +465,7 @@ Add to the dashboard "done when":
 - **Still open / refined:**
   - **Who can "make public"** — owner vs. trainee gating on the publish action (§8a). *New.*
   - **Status-write on a "read-only" surface** — the board is read-only for viewers but the owner/PI mutates status & priority; define the exact write-scope and how it rides KOI. *New.*
-  - **Newsfeed match scope & ranking** — which tags, how weighted, how to avoid `HeLa`-style over-matching, and the privacy boundary (§5). *New.*
+  - **Newsfeed match scope & ranking** — which tags, how weighted, how to avoid `sample`-style over-matching, and the privacy boundary (§5). *New.*
   - **Convert-to-request notification/claim** propagation (carried from §8 v0.1).
   - **Non-text assets as schema fields** (carried) — now also gates the Evidence card's inline plot/CSV (§2).
 

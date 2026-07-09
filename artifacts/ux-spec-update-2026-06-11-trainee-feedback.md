@@ -80,9 +80,9 @@ lives — a **pull** surface the student opens, never a push.
 ```
 ┌─ Meeting prep · Kate sync · since ⟨Jun 4⟩  [▾ change date]  [export summary] ─┐
 │  ▸ ON THE AGENDA (3)        studies marked "for next sync"                     │  ← Theme 2
-│      • G3BP1 recruitment order   ↑ new evidence · 2 comments                   │
+│      • Component A recruitment order   ↑ new evidence · 2 comments                   │
 │  ▸ WHAT CHANGED (5)         advanced / new result since the date              │  ← the diff, Theme 4
-│      • Arsenite dose–response    ▲ advanced    • U2OS replication  ＋evidence   │
+│      • Perturbant dose–response    ▲ advanced    • U2OS replication  ＋evidence   │
 │  ▾ NOT CHANGED IN A WHILE (2)   folded by default — staleness lives here       │  ← Theme 4, folded
 │      • FRAP fluidity   no update · 19 d   (set a "next step by" date ▸)         │
 └────────────────────────────────────────────────────────────────────────────────┘

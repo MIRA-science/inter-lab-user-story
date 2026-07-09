@@ -20,9 +20,9 @@ rendered mockups (see §2.4).
 Two things, on the same six screens:
 
 1. **Real data.** Every screen was rebuilt on the lab's real, prepared discourse-graph
-   nodes (the `discourse-graph/` folder), replacing the invented G3BP1/PABP1
+   nodes (the `discourse-graph/` folder), replacing the invented Component A/Component B
    *recruitment-order* placeholder. The spine is now the lab's actual finding:
-   **stress-granule composition changes over time.**
+   **cluster composition changes over time.**
 2. **Four UI refinements** from a walkthrough of the v0.3 mockups (06 share targets,
    07 subgraph + request panel, 09 grab handles, 11 de-justification).
 
@@ -37,34 +37,34 @@ schema is `subClassOf mira:Study`, `Result` is `subClassOf mira:Evidence`).
 
 | Role | Node | Source | Notes |
 |---|---|---|---|
-| **Study** (was EXP) | "Live Lattice-SIM imaging of granule formation at staged times" | `019ea6d6-d619` | Protein 1–GFP + Protein 2–mKate in HeLa, ZEISS Elyra 7 |
-| **Evidence** (was RES) | "Stress granules change composition over time" | `019ea6d6-d61a` | Pearson r(P1,P2): **negative → positive over ~10–15 min** |
-| **Protocol** ×3 | HeLa culture · Lattice-SIM imaging · **Segmentation & composition** | `…3a61 / …a227 / …1361` | Study `follows` each; Evidence `is_grounded_in` Study |
+| **Study** (was EXP) | "Live high-resolution imaging of cluster formation at staged times" | `019ea6d6-d619` | Component 1–Label-G + Component 2–Label-K in sample, ZEISS Elyra 7 |
+| **Evidence** (was RES) | "Clusters change composition over time" | `019ea6d6-d61a` | Pearson r(P1,P2): **negative → positive over ~10–15 min** |
+| **Protocol** ×3 | sample preparation · high-resolution imaging · **Segmentation & composition** | `…3a61 / …a227 / …1361` | Study `follows` each; Evidence `is_grounded_in` Study |
 
 **Generated for illustration** (clearly marked *illustrative / manufactured / preliminary*
 in-screen, per the existing honesty pill):
 
-- **Q1** (anchor Question): *"Do the two granule proteins condense together, or separately and then mix?"*
-- **Q2** (follow-up Question): *"Are early granules two merging droplets, or one droplet with sub-compartments?"* — taken directly from the real Result's open second key-point.
-- **C1** (Claim): *"Components first condense separately, then mix as the granule matures."*
-- **S2** (Study): *"Architecture test of early granules (FRAP)"* — addresses Q2; the "on the agenda / planned" follow-up.
-- **E2** (Evidence, preliminary): *"Early granules look like two adjacent condensates."*
-- **R1** (Request, Kate → Sean): *"Push the time-course below 5 min"* — the early arsenite-vs-osmotic divergence.
+- **Q1** (anchor Question): *"Do the two cluster components condense together, or separately and then mix?"*
+- **Q2** (follow-up Question): *"Are early clusters two merging clusters, or one cluster with sub-compartments?"* — taken directly from the real Result's open second key-point.
+- **C1** (Claim): *"Components first condense separately, then mix as the cluster matures."*
+- **S2** (Study): *"Architecture test of early clusters (FRAP)"* — addresses Q2; the "on the agenda / planned" follow-up.
+- **E2** (Evidence, preliminary): *"Early clusters look like two adjacent aggregates."*
+- **R1** (Request, Kate → Sean): *"Push the time-course below 5 min"* — the early perturbant-vs-osmotic divergence.
 
 **The load-bearing methods detail** (the payoff a reproducer traverses to, screen 08) is no
 longer a single "threshold" — it is the **segmentation choice**: segment on the **per-pixel
 SUM of both channels** (not one), thresholded just above background. That choice defines
-every granule, and so every co-localization number.
+every cluster, and so every co-localization number.
 
-**Anonymization preserved.** The real data redacts the two proteins to `PROTEIN 1`/`PROTEIN 2`;
-the mockups keep that redaction (shown as *Protein 1–GFP* / *Protein 2–mKate*). No real protein
-names were introduced. Methods (Lattice SIM, sodium arsenite, 3D Suite, regionprops) and the
-inter-lab provenance (cells via the Montreal exchange; Khalid maintains the culture) are real
+**Anonymization preserved.** The real data redacts the two components to `Component 1`/`Component 2`;
+the mockups keep that redaction (shown as *Component 1–Label-G* / *Component 2–Label-K*). No real component
+names were introduced. Methods (high-resolution imaging, perturbant, 3D Suite, regionprops) and the
+inter-lab provenance (samples via the Montreal exchange; Khalid maintains the preparation) are real
 and were already public.
 
 ### The result plot
 The reused illustrative figure changed from *two intensity-vs-time curves* to **Pearson r vs
-time**: a zero reference line, two stress conditions (arsenite, osmotic) that both climb from
+time**: a zero reference line, two perturbation conditions (perturbant, osmotic) that both climb from
 negative to positive, **diverging in the first ~10–15 min then converging**. Colour-blind-safe
 (coral/blue) with inline labels + legend. Rendered at four sizes across 06/07/08/10.
 
@@ -112,9 +112,9 @@ in-mockup *editorializing* was removed.
 
 ## 3 · Acceptance criteria (v0.4)
 
-1. No screen references the old recruitment-order placeholder (G3BP1/PABP1/"assembly order"); the spine is composition-over-time. ✅ (grep-clean)
+1. No screen references the old recruitment-order placeholder (Component A/Component B/"assembly order"); the spine is composition-over-time. ✅ (grep-clean)
 2. `Experiment→Study`, `Result→Evidence` morph reflected in every node badge. ✅
-3. Protein redaction preserved (`Protein 1`/`Protein 2`); no real protein names. ✅
+3. Component redaction preserved (`Component 1`/`Component 2`); no real component names. ✅
 4. 06: ≥2 share targets selectable at once; count updates live. ✅
 5. 07: hovering/focusing a Question dims non-subgraph cards; a request composer sits below the kanban. ✅
 6. 09: every card has a visible grab handle. ✅
@@ -157,7 +157,7 @@ notes** · **The full protocol**, each with a one-line descriptor and a document
 restyled to the page's own inset idiom (left accent + `--r-sm`, neutral fill, no dashed border)
 so each reads as an inviting "open me" note rather than a debug toggle, while staying quieter than
 the colour-washed payoff inset. The 07 → 08 cross-link lost its trailing ", verbatim" for the same
-reason; the honest `.vsrc` provenance footer ("Verbatim · … · protein names redacted") stays.
+reason; the honest `.vsrc` provenance footer ("Verbatim · … · component names redacted") stays.
 
 **10 — removed the card-anatomy strip.** The region-map callout was design documentation;
 it belongs in this spec, not in the rendered mockup. (Same principle as the 11 v0.4 change.)

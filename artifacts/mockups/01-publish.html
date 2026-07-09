@@ -251,7 +251,7 @@
   .prompt .ptxt .pt { font-weight: 600; font-size: 12.5px; }
   .prompt .ptxt .ps { font-size: 11px; color: var(--muted); }
   .prompt .picon.sum { background: var(--claim-wash); color: var(--claim-ink); }
-  .prompt .picon.dish { background: var(--study-wash); color: var(--study-ink); }
+  .prompt .picon.sample { background: var(--study-wash); color: var(--study-ink); }
   .prompt .picon.vid { background: #f6e3f1; color: #b3358f; }
   .prompt .picon.fmt { background: var(--brand-tint); color: var(--brand); }
   .pstate {
@@ -333,7 +333,7 @@
   <div class="screen reveal d2">
     <div class="winbar">
       <div class="lights"><i></i><i></i><i></i></div>
-      <span class="addr">Obsidian — Quantum Biology Institute vault — MagLOV2 MFE.md</span>
+      <span class="addr">Obsidian — Quantum Sensing Institute vault — MFX-2 MFE.md</span>
       <span class="grow"></span>
       <span class="kbd">⌘ ⇧ P</span>
     </div>
@@ -354,19 +354,19 @@
 
         <!-- file / node list -->
         <aside class="filetree" aria-label="Vault files">
-          <div class="vault">Vault · magnetosensitivity</div>
-          <div class="f"><span class="swatch" style="background:var(--question-ink)"></span>Q · Does MagLOV2 sense fields?</div>
-          <div class="f"><span class="swatch" style="background:var(--claim-ink)"></span>C · Radical-pair model</div>
+          <div class="vault">Vault · field-sensitivity</div>
+          <div class="f"><span class="swatch" style="background:var(--question-ink)"></span>Q · Does MFX-2 sense fields?</div>
+          <div class="f"><span class="swatch" style="background:var(--claim-ink)"></span>C · Spin-pair model</div>
           <div class="f sel"><span class="swatch" style="background:var(--evidence-ink)"></span>E · MFE sign flips with field</div>
-          <div class="f indent"><span class="swatch" style="background:var(--study-ink)"></span>S · Bacterioscope ×5 fields</div>
-          <div class="f indent"><span class="swatch" style="background:var(--protocol-ink)"></span>P · MagLOV2 + applied field</div>
+          <div class="f indent"><span class="swatch" style="background:var(--study-ink)"></span>S · FieldScope ×5 fields</div>
+          <div class="f indent"><span class="swatch" style="background:var(--protocol-ink)"></span>P · MFX-2 + applied field</div>
           <div class="f dim"><span class="swatch" style="background:var(--private)"></span>Working note (private)</div>
         </aside>
 
         <!-- editor surface, dimmed under the modal -->
         <main class="editor">
           <div class="doc-h">MFE sign flips from positive to negative with field</div>
-          <div class="doc-meta">EVIDENCE · supports → &ldquo;radical-pair model&rdquo; · is_grounded_in → bacterioscope study</div>
+          <div class="doc-meta">EVIDENCE · supports → &ldquo;spin-pair model&rdquo; · is_grounded_in → fieldscope study</div>
           <div class="doc-line w1"></div>
           <div class="doc-line w3"></div>
           <div class="doc-line w2"></div>
@@ -404,7 +404,7 @@
                       <div class="ttl">
                         <div class="row"><span class="ntype evidence">Evidence</span><span class="auto-pill">selected</span></div>
                         <div class="nm">MFE sign flips from positive to negative with field</div>
-                        <div class="bd">In MagLOV2-expressing <em>E.&nbsp;coli</em>, the sign of the mean magnetic-field effect (MFE) flipped from positive to negative as field strength increased at low fields.</div>
+                        <div class="bd">In MFX-2-bearing <em>E.&nbsp;coli</em>, the sign of the mean magnetic-field effect (MFE) flipped from positive to negative as field strength increased at low fields.</div>
                         <!-- illustrative summary figure -->
                         <div class="evspark">
                           <svg class="spk" width="118" height="58" viewBox="0 0 118 58" aria-label="Illustrative: mean MFE positive at low field, crossing zero, negative by 2.5 mT">
@@ -417,7 +417,7 @@
                             <circle class="pt" cx="108" cy="44" r="2.6"/>
                           </svg>
                           <div class="lg">
-                            <b style="color:var(--evidence-ink)">● mean MFE</b> &middot; 0.5–2.5&nbsp;mT, n&nbsp;=&nbsp;74 colonies/field
+                            <b style="color:var(--evidence-ink)">● mean MFE</b> &middot; 0.5–2.5&nbsp;mT, n&nbsp;=&nbsp;74 replicates/field
                             <span class="cap">illustrative · unpublished — workshop prototype</span>
                           </div>
                         </div>
@@ -430,8 +430,8 @@
                       <input class="cbx" type="checkbox" checked disabled aria-label="Study auto-included">
                       <div class="ttl">
                         <div class="row"><span class="ntype study">Study</span><span class="auto-pill">grounds · auto</span></div>
-                        <div class="nm">Bacterioscope live imaging of MagLOV2 E. coli across 5 field strengths</div>
-                        <div class="bd">0.5–2.5&nbsp;mT, 74 colonies each; per-colony fluorescence under a Twinleaf-calibrated applied field.</div>
+                        <div class="nm">FieldScope live imaging of MFX-2 samples across 5 field strengths</div>
+                        <div class="bd">0.5–2.5&nbsp;mT, 74 replicates each; per-replicate signal under a Twinleaf-calibrated applied field.</div>
                       </div>
                       <span class="pubmark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>public</span>
                     </div>
@@ -441,11 +441,11 @@
                       <input class="cbx" type="checkbox" checked disabled aria-label="Protocol auto-included">
                       <div class="ttl">
                         <div class="row"><span class="ntype protocol">Protocol</span><span class="auto-pill">follows · auto</span></div>
-                        <div class="nm">MagLOV2 expression + applied-field acquisition + per-colony MFE</div>
-                        <div class="bd">Express MagLOV2 in <em>E.&nbsp;coli</em>; acquire on the bacterioscope under applied field; compute MFE per colony.</div>
+                        <div class="nm">MFX-2 loading + applied-field acquisition + per-replicate MFE</div>
+                        <div class="bd">Express MFX-2 in <em>E.&nbsp;coli</em>; acquire on the fieldscope under applied field; compute MFE per replicate.</div>
                         <!-- POINTERS, not payloads (R2) -->
                         <div class="ptr-line">
-                          <span class="pointer"><span class="kind git">git</span><span class="path">quantum-bio/mfe-analysis @ 7c1ae04 · /mfe_fit_analysis/</span></span>
+                          <span class="pointer"><span class="kind git">git</span><span class="path">quantum-sensing/mfe-analysis @ 7c1ae04 · /mfe_fit_analysis/</span></span>
                           <span class="pointer"><span class="kind data">data</span><span class="path">curated mfe_by_field.csv</span></span>
                           <span class="pointer"><span class="kind video">video</span><span class="path">3-min walkthrough</span></span>
                         </div>
@@ -566,10 +566,10 @@
                       <span class="pstate done">added ✓</span>
                     </div>
                     <div class="prompt">
-                      <span class="picon dish"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 9v11"/></svg></span>
+                      <span class="picon sample"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 9v11"/></svg></span>
                       <div class="ptxt">
-                        <div class="pt">What&rsquo;s in the dish &mdash; methods table</div>
-                        <div class="ps">Organism · reporter · fields · colonies · modality.</div>
+                        <div class="pt">What&rsquo;s in the sample &mdash; methods table</div>
+                        <div class="ps">System · reporter · fields · replicates · modality.</div>
                       </div>
                       <span class="pstate done">added ✓</span>
                     </div>
@@ -622,7 +622,7 @@
                 <div class="body">
                   <div class="hd">Published · public URL ready</div>
                   <div class="urlrow">
-                    <span class="url" id="pubUrl">mira.science/n/maglov2-mfe-7c1ae04</span>
+                    <span class="url" id="pubUrl">mira.science/n/mfx-2-mfe-7c1ae04</span>
                     <button class="copy" id="copyBtn" type="button">
                       <svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
                       copy link

@@ -1,6 +1,6 @@
 # Grounding pack — 🥉 Low shared context: push result to a public repository or database
 
-> **Note:** this pack grounds the **public extreme** (QBI → the world). The repo's **central** use case —
+> **Note:** this pack grounds the **public extreme** (QSI → the world). The repo's **central** use case —
 > the **Sean → Kate dashboard** — is grounded in [`_grounding-dashboard.md`](./_grounding-dashboard.md).
 
 > The **public extreme** of this repo's spine, at the *lowest* rung of the shared-context ladder.
@@ -11,7 +11,7 @@
 > **Sources** (do not contradict): the Roam dg-team graph — the bronze use-case node
 > `🥉Low shared context: push result to a public repository or database` (block `pOEtpyGbH`,
 > embedded under `[[ISS]] - Document initial inter-graph use cases`, uid `FOQKen3Dd`), the
-> `UserPilot/Quantum biology institute` pilot page, `[[Inter-graph Use Cases]] to design MVP around`
+> `UserPilot/Quantum sensing institute` pilot page, `[[Inter-graph Use Cases]] to design MVP around`
 > (uid `qYphLOmYp`), `Initiative/Inter-graph functionality` (uid `vE2hKuUq0`), `[[FLO]] - Push node
 > to shared database` (uid `E8_V-gWIt`) — plus the canonical schema (`../../schema/mira.yaml`), the
 > MyST↔DG interop spec (`../../myst-dg-interop/context/discourse-graphs-myst-spec.md`), and two canvas
@@ -24,7 +24,7 @@
 ## 0. One-line story (the variant)
 
 A data **producer** (a researcher in their personal Obsidian discourse graph — concretely Brian &
-Morgan at the **Quantum Biology Institute**) wants to **publish a result to the open world**: the
+Morgan at the **Quantum Sensing Institute**) wants to **publish a result to the open world**: the
 `Evidence` (claim + key figure) with *just enough lineage* — the analysis that produced it, the lab-
 notebook entry that describes it, and a pointer to the data — as a small, **independently
 addressable** bundle that lands in a **public repository or database** (a Jupyter Book
@@ -69,12 +69,12 @@ swaps the recipient for *the public*. The canonical pilot makes it concrete:
 
 | Role | Who | Tool | In the story |
 |---|---|---|---|
-| **Producer (PI/lab)** | **Morgan** (Quantum Biology Institute) | Obsidian + DG plugin → Jupyter Book | Owns the result; wants it published as a FAIR micropublication; "would love the pub to be **interactive**, perhaps like distill/idyll" (`W13C7qjJ7`). |
-| **Producer (bench)** | **Brian** (QBI) | Obsidian + DG plugin | Actually authored the evidence bundle; will make the next one for figure 3 (`zCdAid-Iw`). |
+| **Producer (PI/lab)** | **Morgan** (Quantum Sensing Institute) | Obsidian + DG plugin → Jupyter Book | Owns the result; wants it published as a FAIR micropublication; "would love the pub to be **interactive**, perhaps like distill/idyll" (`W13C7qjJ7`). |
+| **Producer (bench)** | **Brian** (QSI) | Obsidian + DG plugin | Actually authored the evidence bundle; will make the next one for figure 3 (`zCdAid-Iw`). |
 | **Reader — has no DG app** | a reviewer, a clinician, a prospective collaborator, or **Kate before she installs anything** | a web browser | Lands on the published figure; wants to drill from figure → code → notebook → data, "in one space, in one spot" (`XSOMnSUyq`). |
 | **Reader — future self / citing author** | any researcher | their own notebook (MyST/Obsidian/Roam) | "I want to **link/cite specific results** in my own notebooks" (`TAXQ_j36-`); wants the version they cited *frozen*. |
 
-> **Naming note** (per the inter-lab convention): Brian & Morgan are QBI *scientists* and are
+> **Naming note** (per the inter-lab convention): Brian & Morgan are QSI *scientists* and are
 > first-class actors. The facilitation/infrastructure people around the pilot — Joel (DG team),
 > Marc-Antoine (schema), Elli (connector), and the user (Matt) — are **roles/components, not
 > user-story actors**.
@@ -83,20 +83,19 @@ The **pivotal insight is the same** as the inter-lab story but aimed at stranger
 *the big idea up front* and *traversal on demand* — except here we cannot assume the reader knows the
 producer, so each layer must be self-explanatory.
 
-### 2.2 The worked example (the bronze analog of Sean's stress-granule)
+### 2.2 The worked example (the bronze analog of Sean's cluster)
 
-> Real canonical test case from the QBI pilot. **Magnetosensitivity of microbial life** — part of
-> "multi-omics of magnetosensitivity in microbial model organisms," led by Michael Montague (J. Craig
-> Venter Institute); QBI public roadmap at quantumbiology.eco. Mark figures *illustrative ·
+> Real canonical test case from the QSI pilot. **Field-sensitivity of model systems** — part of
+> "multi-parameter study of field-sensitivity in model systems," led by Michael Montague (a partner institute); QSI public roadmap at quantumsensing.eco. Mark figures *illustrative ·
 > unpublished — workshop prototype*.
 
-- **Claim / model** — the *radical-pair quantum model* of magnetosensitivity (multiple EVDs support it).
+- **Claim / model** — the *spin-pair quantum model* of field-sensitivity (multiple EVDs support it).
 - **Evidence (EVD)** — *"The sign of the mean calculated magnetic field effect (MFE) for
-  **MagLOV2-expressing E. coli** flipped from positive to negative as magnetic field strength
+  **MFX-2-bearing samples** flipped from positive to negative as magnetic field strength
   increased at low fields."* (`fY8iScuZG`)
 - **Key figure / data artifact** — mean MFE at 0.5, 1.0, 1.5, 2.0, 2.5 mT (1 experiment per
-  condition, **74 colonies each**; SEM with fit error, cycle and biological variation propagated)
-  (`D8z_73L0N`); plus a representative single-colony trace, positive MFE at 1.0 mT vs negative at
+  condition, **74 replicates each**; SEM with fit error, cycle and scientific variation propagated)
+  (`D8z_73L0N`); plus a representative single-replicate trace, positive MFE at 1.0 mT vs negative at
   2.5 mT (`5F-5TSQfb`).
 - **"Experiment" = 5 imaging sessions on 5 days at 5 field strengths** (`cDBsiE_BH`) — note the
   unit-of-experiment subtlety.
@@ -137,7 +136,7 @@ emerge across bundles** (the "MFE sign flips" claim isn't inside any one EVD; it
 + spec) → **human edits** → **publication compiles** (a Jupyter Book that *points to / contains* the
 still-independently-addressable bundles). Joel's framing: the publication is "**a rendered view of
 structured data** — the evidence bundles ARE the publication, the narrative is just one rendering"
-(`3HQWydFb3`); Morgan: make it interactive (distill/idyll). In the QBI pilot the write-up was drafted
+(`3HQWydFb3`); Morgan: make it interactive (distill/idyll). In the QSI pilot the write-up was drafted
 in **Overleaf with Claude** from Clarice's template (`maDyM5aXY`).
 
 ### 2.5 The two destination flavors (both are "public repository or database")
@@ -149,7 +148,7 @@ in **Overleaf with Claude** from Clarice's template (`maDyM5aXY`).
   rendered as HTML is ok for v0", v1 adds the composite/bundle (`Initiative/Inter-graph functionality`).
 - **(b) External public repos / publishing.** Obsidian → **Jupyter Book** micropublication / **desci
   node** object / **nanopub** site (`[[ART]] - Cosmik`, `[[ART]] - experiment.com`), optionally a
-  **PREreview** request (`[[FLO]] - Push node to shared database`). The QBI pilot is flavor (b).
+  **PREreview** request (`[[FLO]] - Push node to shared database`). The QSI pilot is flavor (b).
 
 ---
 
@@ -269,7 +268,7 @@ What the systems, formats, schema, and infrastructure impose or block:
 | **Bundle vocabulary** | Evidence + Study + Protocol (`grounds`, `follows`) | EVD + ANA + ELN + Data (`produces`, `describes`, `interpretedFrom`) |
 | **Trust basis** | the relationship + provenance | visible provenance + reproducibility (no relationship) |
 | **Reverse current** | first-class `Request` back | weak/absent; flow is one-directional |
-| **Worked example** | HeLa stress-granule (G3BP1/PABP1) | MagLOV2 magnetic field effect (QBI) |
+| **Worked example** | sample cluster (Component A/Component B) | MFX-2 magnetic field effect (QSI) |
 | **Pivotal new mechanic** | cross-graph make-edge + permissions | cross-*system-boundary* link resolution + addressable bundle |
 
 ---
@@ -280,7 +279,7 @@ What the systems, formats, schema, and infrastructure impose or block:
   database"), under `[[ISS]] - Document initial inter-graph use cases` (`FOQKen3Dd`; the TODO
   pointer is `vnuXmM8D2`). Reader-ladder tables `PwzU8PLGb`/`FuNnInMAP`; story beats `f66QSB2K7`,
   `3x26_Z7fH`, `aktn-uDCU`, `TAXQ_j36-`; narrative workflow `MwqKrxxoq`; "specs not papers" `TlIem9BKI`.
-- **Pilot**: `UserPilot/Quantum biology institute` — evidence-bundle win `Jik1z-xgT`; FAIR-ification
+- **Pilot**: `UserPilot/Quantum sensing institute` — evidence-bundle win `Jik1z-xgT`; FAIR-ification
   plan `Yq30MWqRi`; observation `fY8iScuZG`; figure `D8z_73L0N`/`5F-5TSQfb`; experiment-unit `cDBsiE_BH`;
   write-up `maDyM5aXY`; publish `XJqd4huAy` (`ys7KXitoe`, `fMN0se_Vq`, `edsyvZqfn`); resources `8UDDPcGE_`.
 - **Tiers**: `[[Inter-graph Use Cases]] to design MVP around` (`qYphLOmYp`) — `PP1mMVO09`, `WoZqynjBQ`,

@@ -56,12 +56,12 @@ table). The verbatim content already exists in `discourse-graph/*.md` and must b
 
 | Node | Verbatim source (`discourse-graph/`) | What must be reachable |
 |---|---|---|
-| Evidence / Result | `RES - Stress Granules Change Composition Over Time.md` | the three **Key Points** — negative→positive correlation; the two-droplets-vs-one-sub-compartmented-droplet ambiguity; the significant early difference between the two stresses |
-| Study / Experiment | `EXP - SIM Imaging Stress Granules at Different Times during Formation.md` | the dated **Progress & Notes** (2025-08-23 Montreal cells / Khalid maintaining culture; 2025-10-14 pipeline + the two segmentation design choices) and the two **Hypotheses** |
-| Protocol ×3 | `PRO-High resolution stress granule formation imaging (Lattice SIM).md`, `PRO-Stress Granule Segmentation and Composition Mesasurement.md`, `PRO-Hela Cell Culture.md` | the **numbered steps** and the **Imaging / Processing parameter tables**; the culture protocol's honest "TODO: get growth info from Khalid" stub |
+| Evidence / Result | `RES - Clusters Change Composition Over Time.md` | the three **Key Points** — negative→positive correlation; the two-clusters-vs-one-sub-compartmented-cluster ambiguity; the significant early difference between the two perturbations |
+| Study / Experiment | `EXP - HRI Imaging Clusters at Different Times during Formation.md` | the dated **Progress & Notes** (2025-08-23 Montreal samples / Khalid maintaining preparation; 2025-10-14 pipeline + the two segmentation design choices) and the two **Hypotheses** |
+| Protocol ×3 | `PRO-High resolution cluster formation imaging (high-resolution imaging).md`, `PRO-Cluster Segmentation and Composition Mesasurement.md`, `PRO-sample Preparation.md` | the **numbered steps** and the **Imaging / Processing parameter tables**; the preparation protocol's honest "TODO: get growth info from Khalid" stub |
 
-Anonymization preserved: the sources already redact to `PROTEIN 1` / `PROTEIN 2`; keep that, introduce no real
-protein names. Inter-lab provenance (cells via the Montreal exchange; Khalid maintains the culture) is real and
+Anonymization preserved: the sources already redact to `Component 1` / `Component 2`; keep that, introduce no real
+component names. Inter-lab provenance (samples via the Montreal exchange; Khalid maintains the preparation) is real and
 already public.
 
 ## 4 · Acceptance criteria
@@ -71,7 +71,7 @@ already public.
 3. 08: each of Evidence, Study, Protocol exposes its **verbatim** node text on demand — the segmentation
    reasoning, the dated lab-notebook notes, the two hypotheses, and the imaging/processing parameter tables all
    appear verbatim.
-4. Protein redaction preserved; no real protein names introduced.
+4. Component redaction preserved; no real component names introduced.
 5. Summary-first glance path intact (verbatim is opt-in, not forced open).
 
 ## 5 · Provenance

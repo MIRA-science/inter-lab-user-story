@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stress-granule formation — consortium &amp; recruiting · dashboard.mira.science/vogel-kate</title>
+<title>Cluster formation — consortium &amp; recruiting · dashboard.mira.science/vogel-kate</title>
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="components.css">
 <style>
@@ -160,13 +160,13 @@
   .collab .lab-id .nm small { font-size:10px; color: var(--faint); }
   .collab .mtx { display:flex; gap:5px; flex:none; }
   /* a tiny per-project visibility cue: filled = shared to this surface */
-  .collab .cell { width:13px; height:13px; border-radius:3px; border:1px solid var(--line); background: var(--surface);
+  .collab .gcell { width:13px; height:13px; border-radius:3px; border:1px solid var(--line); background: var(--surface);
     display:flex; align-items:center; justify-content:center; }
-  .collab .cell.on  { background: var(--request-wash); border-color: var(--request-edge); }
-  .collab .cell.on.world { background: var(--claim-wash); border-color: var(--claim-edge); }
-  .collab .cell.on::after { content:''; width:5px; height:5px; border-radius:1px; background: var(--request-ink); }
-  .collab .cell.on.world::after { background: var(--claim-ink); }
-  .collab .cell.off::after { content:'–'; font-family: var(--font-mono); font-size:9px; color: var(--faint); }
+  .collab .gcell.on  { background: var(--request-wash); border-color: var(--request-edge); }
+  .collab .gcell.on.world { background: var(--claim-wash); border-color: var(--claim-edge); }
+  .collab .gcell.on::after { content:''; width:5px; height:5px; border-radius:1px; background: var(--request-ink); }
+  .collab .gcell.on.world::after { background: var(--claim-ink); }
+  .collab .gcell.off::after { content:'–'; font-family: var(--font-mono); font-size:9px; color: var(--faint); }
   .mtx-key { display:flex; align-items:center; gap:12px; margin-top:11px; padding-top:11px; border-top:1px dashed var(--line);
     font-size:10px; color: var(--faint); font-family: var(--font-mono); flex-wrap:wrap; }
   .mtx-key span { display:inline-flex; align-items:center; gap:5px; }
@@ -267,7 +267,7 @@
         </svg>
         <div>
           <div class="name"><b>MIRA</b> · consortium board</div>
-          <div class="proj">Stress-granule formation · Vogel × Kate consortium</div>
+          <div class="proj">Cluster formation · Vogel × Kate consortium</div>
         </div>
       </div>
       <div class="lead">
@@ -376,7 +376,7 @@
           <div class="reveal d4" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
             <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);">Questions:</span>
             <span class="ntype question" style="font-size:10px;">Condense together or separately?</span>
-            <span class="ntype question" style="font-size:10px;">Early granules: merging or sub-compartments?</span>
+            <span class="ntype question" style="font-size:10px;">Early clusters: merging or sub-compartments?</span>
           </div>
           <p class="preset-blurb reveal d4">For a <strong>funder</strong> checking momentum: ongoing <span style="color:var(--study-ink);font-weight:600;">Studies</span> from every lab, with whose bench they sit on (R8). Studies roll up under the Question they address; click a study to open its Evidence card. The flagship result graduates to the <a href="07-shared-dashboard.html">Results</a> view.</p>
 
@@ -390,7 +390,7 @@
                   <span class="ntype study">Study</span>
                   <span class="kcard__grip" aria-hidden="true" title="Drag to reorder priority"><svg viewBox="0 0 12 16" width="12" height="16" aria-hidden="true"><circle cx="3" cy="3" r="1.3" fill="currentColor"/><circle cx="9" cy="3" r="1.3" fill="currentColor"/><circle cx="3" cy="8" r="1.3" fill="currentColor"/><circle cx="9" cy="8" r="1.3" fill="currentColor"/><circle cx="3" cy="13" r="1.3" fill="currentColor"/><circle cx="9" cy="13" r="1.3" fill="currentColor"/></svg></span>
                 </div>
-                <div class="kt">Architecture test of early granules (FRAP)<span class="con-tag"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span></div>
+                <div class="kt">Architecture test of early clusters (FRAP)<span class="con-tag"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span></div>
                 <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel Lab</span><span class="grow"></span><span class="vis consortium" title="consortium-only"></span></div>
                 <div class="kbar"><i style="width:12%"></i></div>
               </article>
@@ -399,7 +399,7 @@
                   <span class="ntype study">Study</span>
                   <span class="kcard__grip" aria-hidden="true" title="Drag to reorder priority"><svg viewBox="0 0 12 16" width="12" height="16" aria-hidden="true"><circle cx="3" cy="3" r="1.3" fill="currentColor"/><circle cx="9" cy="3" r="1.3" fill="currentColor"/><circle cx="3" cy="8" r="1.3" fill="currentColor"/><circle cx="9" cy="8" r="1.3" fill="currentColor"/><circle cx="3" cy="13" r="1.3" fill="currentColor"/><circle cx="9" cy="13" r="1.3" fill="currentColor"/></svg></span>
                 </div>
-                <div class="kt">Cross-cell-line replication (U2OS)<span class="con-tag"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span></div>
+                <div class="kt">Cross-sample-line replication (U2OS)<span class="con-tag"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span></div>
                 <div class="kmeta"><span class="avatar lab">R</span><span>Reyes Lab</span><span class="grow"></span><span class="vis consortium"></span></div>
                 <div class="kbar"><i style="width:8%"></i></div>
               </article>
@@ -462,7 +462,7 @@
                     </svg>
                   </span>
                 </div>
-                <div class="kt">Heat-shock vs. oxidative stress panel<span class="con-tag"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span></div>
+                <div class="kt">Heat-shock vs. oxidative perturbation panel<span class="con-tag"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>consortium</span></div>
                 <div class="kmeta"><span class="avatar lab" style="background:linear-gradient(135deg,#c2861a,#d9573f)">O</span><span>Okafor Lab</span><span class="grow"></span><span class="vis consortium"></span></div>
                 <div class="kbar"><i style="width:44%"></i></div>
               </article>
@@ -471,7 +471,7 @@
                   <span class="ntype candidate">Candidate</span>
                   <span class="kcard__grip" aria-hidden="true" title="Drag to reorder priority"><svg viewBox="0 0 12 16" width="12" height="16" aria-hidden="true"><circle cx="3" cy="3" r="1.3" fill="currentColor"/><circle cx="9" cy="3" r="1.3" fill="currentColor"/><circle cx="3" cy="8" r="1.3" fill="currentColor"/><circle cx="9" cy="8" r="1.3" fill="currentColor"/><circle cx="3" cy="13" r="1.3" fill="currentColor"/><circle cx="9" cy="13" r="1.3" fill="currentColor"/></svg></span>
                 </div>
-                <div class="kt">Compare a third stress type (idea — not yet formalized)</div>
+                <div class="kt">Compare a third perturbation type (idea — not yet formalized)</div>
                 <div class="kmeta"><span class="avatar grad">M</span><span>Kate's student</span><span class="grow"></span><span class="vis world"></span></div>
               </article>
             </div>
@@ -484,7 +484,7 @@
                   <span class="ntype study">Study</span>
                   <span class="kcard__grip" aria-hidden="true" title="Drag to reorder priority"><svg viewBox="0 0 12 16" width="12" height="16" aria-hidden="true"><circle cx="3" cy="3" r="1.3" fill="currentColor"/><circle cx="9" cy="3" r="1.3" fill="currentColor"/><circle cx="3" cy="8" r="1.3" fill="currentColor"/><circle cx="9" cy="8" r="1.3" fill="currentColor"/><circle cx="3" cy="13" r="1.3" fill="currentColor"/><circle cx="9" cy="13" r="1.3" fill="currentColor"/></svg></span>
                 </div>
-                <a href="07-shared-dashboard.html" class="kt" style="display:block;color:inherit;text-decoration:none;" title="Open Evidence card for this study">Lattice-SIM imaging of composition over time</a>
+                <a href="07-shared-dashboard.html" class="kt" style="display:block;color:inherit;text-decoration:none;" title="Open Evidence card for this study">high-resolution imaging of composition over time</a>
                 <div class="kmeta"><span class="avatar sean">S</span><span>Sean · Vogel Lab</span><span class="grow"></span><span class="pin-mini"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>3</span><span class="vis world"></span></div>
                 <a href="07-shared-dashboard.html" style="display:block;text-decoration:none;" title="Open Evidence card for this study"><div class="kbar"><i style="width:86%"></i></div></a>
               </article>
@@ -514,7 +514,7 @@
 
             <article class="rcard request">
               <div class="row" style="gap:8px;"><span class="ntype request">Request</span><span class="request open" style="font-size:11px;padding:4px 9px;">open</span></div>
-              <div class="rt">Looking for a lab to test early-granule architecture in a second cell line</div>
+              <div class="rt">Looking for a lab to test early-cluster architecture in a second sample line</div>
               <div class="rb">Follow-up to the composition-over-time result. <code>request_for</code> a `Study`; segmentation protocol &amp; curated CSV provided — bring your own imaging.</div>
               <div class="rfoot">
                 <span class="who"><span class="avatar kate">K</span> Kate · consortium lead</span>
@@ -527,7 +527,7 @@
 
             <article class="rcard question">
               <span class="ntype question">Question</span>
-              <div class="rt">When granules form, do the two proteins condense together, or separately and then mix?</div>
+              <div class="rt">When clusters form, do the two components condense together, or separately and then mix?</div>
               <div class="rb">The consortium's anchoring question. New students: this is the thread to pull — see the Vogel result and the open studies behind it.</div>
               <div class="rfoot">
                 <span class="who"><span class="avatar kate">K</span> Kate's lab</span>
@@ -537,8 +537,8 @@
 
             <article class="rcard request">
               <div class="row" style="gap:8px;"><span class="ntype request">Request</span><span class="request open" style="font-size:11px;padding:4px 9px;">open · recruiting</span></div>
-              <div class="rt">Seeking a graduate student for quantitative live-cell microscopy</div>
-              <div class="rb">Join the Vogel × Kate consortium. You'd build on the composition-over-time work — imaging, segmentation, and per-granule analysis. <code>request_target</code> the project umbrella.</div>
+              <div class="rt">Seeking a graduate student for quantitative time-lapse imaging</div>
+              <div class="rb">Join the Vogel × Kate consortium. You'd build on the composition-over-time work — imaging, segmentation, and per-cluster analysis. <code>request_target</code> the project umbrella.</div>
               <div class="rfoot">
                 <span class="who"><span class="avatar sean">S</span> Sean · Vogel Lab</span>
                 <button class="recruit-btn" type="button" onclick="this.textContent='✓ Interest noted';this.disabled=true;this.style.opacity=.7;">
@@ -550,7 +550,7 @@
 
             <article class="rcard question">
               <span class="ntype question">Question</span>
-              <div class="rt">Are early granules two merging droplets, or one droplet with sub-compartments?</div>
+              <div class="rt">Are early clusters two merging clusters, or one cluster with sub-compartments?</div>
               <div class="rb">Open across the consortium. An obvious follow-up study — claim the linked open Request to take it on.</div>
               <div class="rfoot">
                 <span class="who"><span class="avatar sean">S</span> Sean · Vogel Lab</span>
@@ -578,23 +578,23 @@
           <ul class="collab">
             <li>
               <span class="lab-id"><span class="avatar sean">S</span><span class="nm"><b>Sean</b><small>Vogel Lab · producer</small></span></span>
-              <span class="mtx"><span class="cell on" title="shared to consortium"></span><span class="cell on world" title="shared publicly"></span></span>
+              <span class="mtx"><span class="gcell on" title="shared to consortium"></span><span class="gcell on world" title="shared publicly"></span></span>
             </li>
             <li>
-              <span class="lab-id"><span class="avatar kate">K</span><span class="nm"><b>Kate's lab</b><small>lead · stress granules</small></span></span>
-              <span class="mtx"><span class="cell on"></span><span class="cell on world"></span></span>
+              <span class="lab-id"><span class="avatar kate">K</span><span class="nm"><b>Kate's lab</b><small>lead · clusters</small></span></span>
+              <span class="mtx"><span class="gcell on"></span><span class="gcell on world"></span></span>
             </li>
             <li>
-              <span class="lab-id"><span class="avatar lab">R</span><span class="nm"><b>Reyes Lab</b><small>cell-line replication</small></span></span>
-              <span class="mtx"><span class="cell on"></span><span class="cell off" title="not public yet"></span></span>
+              <span class="lab-id"><span class="avatar lab">R</span><span class="nm"><b>Reyes Lab</b><small>sample-line replication</small></span></span>
+              <span class="mtx"><span class="gcell on"></span><span class="gcell off" title="not public yet"></span></span>
             </li>
             <li>
-              <span class="lab-id"><span class="avatar lab" style="background:linear-gradient(135deg,#c2861a,#d9573f)">O</span><span class="nm"><b>Okafor Lab</b><small>stress-panel imaging</small></span></span>
-              <span class="mtx"><span class="cell on"></span><span class="cell off"></span></span>
+              <span class="lab-id"><span class="avatar lab" style="background:linear-gradient(135deg,#c2861a,#d9573f)">O</span><span class="nm"><b>Okafor Lab</b><small>perturbation-panel imaging</small></span></span>
+              <span class="mtx"><span class="gcell on"></span><span class="gcell off"></span></span>
             </li>
             <li>
               <span class="lab-id"><span class="avatar lab" style="background:linear-gradient(135deg,#1b9a92,#3877cf)">T</span><span class="nm"><b>Tanaka Lab</b><small>segmentation benchmark</small></span></span>
-              <span class="mtx"><span class="cell on"></span><span class="cell off"></span></span>
+              <span class="mtx"><span class="gcell on"></span><span class="gcell off"></span></span>
             </li>
           </ul>
           <div class="mtx-key">
@@ -612,14 +612,14 @@
             <li>
               <span class="ic-dot ev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 14 3-4 3 2 4-6"/></svg></span>
               <div class="ftext">
-                <b class="by">Stress granules change composition over time</b> — unpublished, now searchable on the board <a href="07-shared-dashboard.html" style="font-size:11px;">open →</a>
+                <b class="by">Clusters change composition over time</b> — unpublished, now searchable on the board <a href="07-shared-dashboard.html" style="font-size:11px;">open →</a>
                 <span class="n">Sean · Vogel Lab · consortium · illustrative · unpublished — workshop prototype</span>
               </div>
             </li>
             <li>
               <span class="ic-dot ev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 14 3-4 3 2 4-6"/></svg></span>
               <div class="ftext">
-                <b class="by">Early granules look like two adjacent condensates</b> — a single unpublished session, now findable
+                <b class="by">Early clusters look like two adjacent aggregates</b> — a single unpublished session, now findable
                 <span class="n">Sean · Vogel Lab · consortium · was: a folder on the 25 TB array</span>
               </div>
             </li>
@@ -650,8 +650,8 @@
             <h4 style="margin:0;">In plain language</h4>
             <span class="tagp">for any reader</span>
           </div>
-          <p class="ptext plainv">When cells are stressed, they bundle certain proteins into little droplets. This consortium found that two of those proteins <b>start out kept apart</b> and then <b>mix together</b> as a droplet matures. The board collects that finding, the experiments behind it, and what's still open.</p>
-          <p class="ptext tech">Evidence (HeLa, two-channel Lattice SIM): the Pearson correlation between Protein 1 and Protein 2 climbs from negative to positive over ~10–15 min after stress, and differs significantly between arsenite and osmotic in the first 10–15 min. Grounds → Study; follows → segmentation Protocol. Illustrative · unpublished — workshop prototype.</p>
+          <p class="ptext plainv">When samples are perturbed, they bundle certain components into little clusters. This consortium found that two of those components <b>start out kept apart</b> and then <b>mix together</b> as a cluster matures. The board collects that finding, the experiments behind it, and what's still open.</p>
+          <p class="ptext tech">Evidence (sample, two-channel high-resolution imaging): the Pearson correlation between Component 1 and Component 2 climbs from negative to positive over ~10–15 min after perturbation, and differs significantly between perturbant and osmotic in the first 10–15 min. Grounds → Study; follows → segmentation Protocol. Illustrative · unpublished — workshop prototype.</p>
           <button class="ptoggle" type="button" onclick="document.getElementById('plainCard').classList.toggle('show-tech'); this.querySelector('.lbl').textContent = document.getElementById('plainCard').classList.contains('show-tech') ? 'show plain summary' : 'show the technical version';">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
             <span class="lbl">show the technical version</span>

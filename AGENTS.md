@@ -9,7 +9,7 @@
 >   website, or **password-protected** for a consortium. This tier carries a **reverse current**: Kate's
 >   lab can issue a **`Request`** back.
 > - **The public extreme — Brian → the world.** Take the same machinery fully public: **Brian** (Quantum
->   Biology Institute) publishes a MagLOV2 result to a **public repository or database**, addressable at
+>   Science Institute) publishes a MFX-2 result to a **public repository or database**, addressable at
 >   a **URL**, for a stranger with **no relationship and no shared tooling**. One direction only.
 >
 > Both push to a **shared web interface** readable without a DG app; both obey the same R1–R13 rules and
@@ -17,7 +17,7 @@
 > **whether a `Request` flows back**.
 >
 > **Status:** Draft v0.1 · **Origin:** the Discourse Graphs team's inter-graph use-case work, the
-> **Vogel × Kate** lab-collaboration sessions (Jun 2026), and the **Quantum Biology Institute** pilot.
+> **Vogel × Kate** lab-collaboration sessions (Jun 2026), and the **Quantum Sensing Institute** pilot.
 >
 > **Read this before proposing changes.** Rules in [§5](#5-rules--constraints-normative) are
 > **normative** (MUST / SHOULD / MUST NOT). Items in [§10](#10-open-questions--not-decided) are
@@ -39,7 +39,7 @@
     [`artifacts/_grounding-dashboard.md`](./artifacts/_grounding-dashboard.md) — the context pack;
     [`artifacts/ux-user-story-dashboard.md`](./artifacts/ux-user-story-dashboard.md) — the narrative;
     mockups [`06`–`09`](./artifacts/mockups/).
-  - **Public extreme (QBI):** [`artifacts/_grounding.md`](./artifacts/_grounding.md);
+  - **Public extreme (QSI):** [`artifacts/_grounding.md`](./artifacts/_grounding.md);
     [`artifacts/ux-user-story.md`](./artifacts/ux-user-story.md); mockups [`01`–`05`](./artifacts/mockups/).
   - [`./low-context-user-story.png`](./low-context-user-story.png) — the user-story canvas
     (**Sean's notebook → Kate's lab → a shared web interface**);
@@ -51,9 +51,9 @@
 
 ## 1. TL;DR — the user stories
 
-> **Central — Sean → Kate's dashboard.** *Sean, a PhD student in the **Vogel Lab**, has a stress-granule
-> result as markdown discourse-graph nodes in Obsidian: in stressed HeLa cells, **G3BP1 is recruited to
-> forming granules before PABP1**. He wants **Kate's lab** to see it, trust it, and dig into it without
+> **Central — Sean → Kate's dashboard.** *Sean, a PhD student in the **Vogel Lab**, has a cluster
+> result as markdown discourse-graph nodes in Obsidian: in perturbed samples, **Component A is recruited to
+> forming clusters before Component B**. He wants **Kate's lab** to see it, trust it, and dig into it without
 > installing anything and without a Zoom call — and **without** handing over his 80 GB of raw images or
 > his private notes. **As a producer, Sean pushes a selected subgraph — the `Evidence` plus the
 > `Study`/`Protocol` behind it, carrying pointers — to a read-only shared dashboard**, public or
@@ -61,18 +61,18 @@
 > traverses to the segmentation threshold and pulls the CSV; either can send a `Request` back** for a
 > follow-up. Two currents: results out, requests back.*
 
-> **Public extreme — Brian → the world.** *Brian (with PI **Morgan**) at the **Quantum Biology
-> Institute** publishes a MagLOV2 magnetic-field-effect result — the sign of the effect flips as the
+> **Public extreme — Brian → the world.** *Brian (with PI **Morgan**) at the **Quantum Sensing
+> Institute** publishes a MFX-2 magnetic-field-effect result — the sign of the effect flips as the
 > field strengthens — to a **public repository or database** at a **URL**, so **anyone**, with no
 > relationship and often no DG app, can read it cold, follow the pointers, request what's gated, and
 > **cite the exact version**. One direction: producer → the public.*
 
 What separates the two tiers:
 
-1. **Openness.** The dashboard is **public OR password-protected (consortium)**; the QBI case is fully
+1. **Openness.** The dashboard is **public OR password-protected (consortium)**; the QSI case is fully
    public. Both are readable **without a DG app**.
 2. **The reverse current.** At the **dashboard tier, `Request` is first-class** ([R13](#5-rules--constraints-normative)) — Kate's lab requests follow-ups. The public tier is **one-directional**.
-3. **Trust.** The dashboard reader is a **known collaborator** (relationship + provenance); the QBI
+3. **Trust.** The dashboard reader is a **known collaborator** (relationship + provenance); the QSI
    reader is a **stranger** (provenance + reproducibility alone). Either way, **every node must stand on
    its own**.
 
@@ -106,7 +106,7 @@ What separates the two tiers:
   authoring stays in the vault.
 - **Expanding the node grammar** to `Analysis` / `ELN` / `Data` types — keep canonical `Evidence` +
   `Study` + `Protocol`; the richer reader-ladder mapping is **deferred** ([§10](#10-open-questions--not-decided)).
-- **Non-text assets as first-class schema fields** (CSV / image / DNA) — a known **gap**, deferred.
+- **Non-text assets as first-class schema fields** (CSV / image / binary) — a known **gap**, deferred.
 - **Hosting or transferring raw data.** Large stacks live on a lab array / institute drive; we only
   **reference** them, and the reference may be access-gated.
 - **Conflict resolution / graph merge** semantics. Design to *allow* it later; do not build it now.
@@ -123,7 +123,7 @@ as people.)
 ### Central — the Sean → Kate dashboard
 | Actor | Lab / role | Tool | In the story |
 |---|---|---|---|
-| **Sean** | Vogel Lab (bench, PhD) | Obsidian + DG plugin; 25 TB array | **Producer.** Authors the stress-granule graph; **selects the subgraph to share**; sets per-node visibility; keeps personal notes private. |
+| **Sean** | Vogel Lab (bench, PhD) | Obsidian + DG plugin; 25 TB array | **Producer.** Authors the cluster graph; **selects the subgraph to share**; sets per-node visibility; keeps personal notes private. |
 | **Kate** | Collaborating lab (PI; consortium lead) | a web browser | **Consumer (PI).** **Glances and trusts**; runs **many collaborators across projects**; wants everything **in one place, searchable, for years**. |
 | **A grad student in Kate's lab** | Kate's lab | the dashboard | **Consumer (reproducer).** **Traverses to the segmentation threshold**; follows pointers; **requests access / a follow-up**. |
 | **A public / funder visitor** | a recruit, a funder, a website visitor | the public dashboard | Sees an **audience preset** (questions/requests for recruiting; experiments-in-progress for a funder); needs a *plain-language* summary. |
@@ -131,8 +131,8 @@ as people.)
 ### Public extreme — Brian → the world
 | Actor | Lab / role | Tool | In the story |
 |---|---|---|---|
-| **Brian** | Quantum Biology Institute (bench) | Obsidian + DG plugin | **Producer.** Authors the MagLOV2 result and assembles the bundle. |
-| **Morgan** | QBI (PI) | Obsidian / web | **Producer (PI).** Owns the decision to publish; wants it FAIR and interactive. |
+| **Brian** | Quantum Sensing Institute (bench) | Obsidian + DG plugin | **Producer.** Authors the MFX-2 result and assembles the bundle. |
+| **Morgan** | QSI (PI) | Obsidian / web | **Producer (PI).** Owns the decision to publish; wants it FAIR and interactive. |
 | **A reader with NO DG app** | a reviewer, a clinician, anyone | a web browser | **Consumer.** Lands on the URL; reads cold; drills figure → analysis → data; requests what's gated. |
 | **A citing / future-self reader** | any researcher | their own notebook | **Consumer.** Wants to **cite a specific result** and keep the **cited version frozen**. |
 
@@ -156,11 +156,11 @@ inter-lab story** — the destination changes, the grammar does not.
 | **Evidence** | A specific empirical observation from one application of a method. | **Single type** — the shareable unit's hub. Key figure + observation + pointers. |
 | **Study** | The research activity that produced the data artifact. | `prov:Activity`; the producers call it the **"experiment"**; carries artifacts **by reference**. |
 | **Protocol** | The method the Study follows. | `prov:Activity`. **The segmentation threshold lives here.** |
-| **Request** | A request for an experiment/analysis. | **First-class at the dashboard tier** ([R13](#5-rules--constraints-normative)); peripheral in the QBI case. |
+| **Request** | A request for an experiment/analysis. | **First-class at the dashboard tier** ([R13](#5-rules--constraints-normative)); peripheral in the QSI case. |
 
 > A **candidate** node (provisional/informal, pre-formalization) may be **shared as-is**; others can
 > formalize it or view it. Whether the author must approve a formalization is **open** ([§10](#10-open-questions--not-decided)).
-> The reader-ladder types the QBI pilot used (`Analysis` / `ELN` / `Data`) are **deferred** ([§2](#2-scope)).
+> The reader-ladder types the QSI pilot used (`Analysis` / `ELN` / `Data`) are **deferred** ([§2](#2-scope)).
 
 ### 4.2 Edge types
 ```
@@ -179,7 +179,7 @@ Request   --request_for / request_target--> Study / Analysis   # the reverse cur
   - **A web page / dashboard with a URL** for the shared subset — the dashboard offers **Graph / Kanban /
     Table** views and **audience presets** (markdown → HTML acceptable for v0; v1 adds the composite view).
   - **A JSON record** packaged for **KOI** (URIs as **RID** or URL).
-  - **RDF** for nanopublication / linked-open-data; **ATProto lexicon** where applicable (the QBI tier).
+  - **RDF** for nanopublication / linked-open-data; **ATProto lexicon** where applicable (the QSI tier).
 - **Extract graph elements *from* pages; don't compose narrative pages *from* the graph.** DG data is
   already structured (minimal transform); long-form docs from other tools must be chopped into nodes first.
 - The transport must be **schema-agnostic** ([§5 R10](#5-rules--constraints-normative)).
@@ -258,7 +258,7 @@ The collaboration primitive differs by tier (compare the inter-lab story's `Requ
 6. **Request back** — Kate's lab **claims** or **sends a `Request`** for a follow-up; Sean is notified
    ([R13](#5-rules--constraints-normative)).
 
-### 6b. Publish-to-the-world (the extreme — Brian → QBI public)
+### 6b. Publish-to-the-world (the extreme — Brian → QSI public)
 1–2. Author and **select the bundle** as above. 3. **Set public / gated.** 4. **Add context &
 format-in-schema** (summary, methods table, walkthrough). 5. **Publish to destination(s)** — KOI mediates
 to a public web rendering, a **Jupyter Book** micropublication, and/or a **desci/nanopub** record.
@@ -274,7 +274,7 @@ Goal: make preparing a bundle feel **frictionless** so it rides the producer's n
 (per [R11](#5-rules--constraints-normative), intent-preserving):
 
 - A **"document/pub" container that behaves like a README** — one linkable thing pointing to a whole
-  package of analysis + data files (the QBI pilot's emergent pattern).
+  package of analysis + data files (the QSI pilot's emergent pattern).
 - **Candidate nodes** as the baby step: start informal, share as-is, formalize later; **AI may propose
   candidate nodes and edges** (e.g. by crawling a repo / Snakemake / Nextflow) — but a human keeps intent.
 - On share/publish, **prompt** for a summary / methods table / **video walkthrough** and offer to
@@ -313,10 +313,10 @@ Disambiguate the layers (do not "tape them together"):
 
 ## 9. Prototype scope & acceptance criteria
 
-**Canonical test cases.** (1) **Sean → Kate (central):** the Vogel-lab stress-granule result —
-*G3BP1 is recruited to forming granules before PABP1* — live two-channel imaging of stressed HeLa cells;
-analysis + curated CSV on hand; **raw NDTiff stacks ≈ 80 GB on a 25 TB array**. (2) **QBI (extreme):** the
-MagLOV2 magnetic-field-effect sign-flip. Both are **real** and **unpublished** (usable for prototyping,
+**Canonical test cases.** (1) **Sean → Kate (central):** the Vogel-lab cluster result —
+*Component A is recruited to forming clusters before Component B* — live two-channel imaging of perturbed samples;
+analysis + curated CSV on hand; **raw NDTiff stacks ≈ 80 GB on a 25 TB array**. (2) **QSI (extreme):** the
+MFX-2 magnetic-field-effect sign-flip. Both are **real** and **unpublished** (usable for prototyping,
 not redistribution; mockup figures labelled *illustrative · unpublished — workshop prototype*).
 
 **v1 is done when** (dashboard track — see also [`ux-user-story-dashboard.md` §6](./artifacts/ux-user-story-dashboard.md)):
@@ -334,7 +334,7 @@ not redistribution; mockup figures labelled *illustrative · unpublished — wor
 6. **Public/consortium path** — the same dashboard runs **password-protected** for the consortium and
    **public** as a lab website, with **audience presets**.
 
-**And (QBI / public track):** publish a bundle to a **public repo/DB with a URL**, readable cold; raw data
+**And (QSI / public track):** publish a bundle to a **public repo/DB with a URL**, readable cold; raw data
 **gated**; **cite the frozen version**; **compile** several bundles into one micropublication while each
 stays independently addressable. (See [`ux-user-story.md` §6](./artifacts/ux-user-story.md).)
 
@@ -348,13 +348,13 @@ stays independently addressable. (See [`ux-user-story.md` §6](./artifacts/ux-us
 
 - **Candidate-node formalization flow.** When someone else formalizes your shared **candidate** node, do
   you approve / get notified? (Open.)
-- **Non-text assets in the schema.** How CSVs / images / DNA files become **referenceable schema fields**
+- **Non-text assets in the schema.** How CSVs / images / binary files become **referenceable schema fields**
   rather than embedded content (a flagged **gap**).
 - **Accounts & gating atop weak KOI.** How password-protected consortium views and per-resource
   request-access are enforced given KOI's weak native permissions.
 - **Preset-view set.** Which audience presets ship (results / experiments-in-progress / questions-&-requests),
   and whether they're true presets or saved layouts.
-- **Reader-ladder ↔ schema mapping.** How the QBI pilot's `EVD → Analysis → ELN → Data` maps onto
+- **Reader-ladder ↔ schema mapping.** How the QSI pilot's `EVD → Analysis → ELN → Data` maps onto
   canonical `Evidence`/`Study`/`Protocol` (and what is lost on publish). **Deferred for v1.**
 - **Dataset archiving.** *How/whether* to archive & share the curated/raw data — **unresolved by the
   pilot itself**. What does the data pointer resolve to, and who gates it?
@@ -375,7 +375,7 @@ stays independently addressable. (See [`ux-user-story.md` §6](./artifacts/ux-us
 ## 11. References
 
 - Context packs: [`artifacts/_grounding-dashboard.md`](./artifacts/_grounding-dashboard.md) (Sean → Kate,
-  central) and [`artifacts/_grounding.md`](./artifacts/_grounding.md) (QBI). Narratives:
+  central) and [`artifacts/_grounding.md`](./artifacts/_grounding.md) (QSI). Narratives:
   [`artifacts/ux-user-story-dashboard.md`](./artifacts/ux-user-story-dashboard.md),
   [`artifacts/ux-user-story.md`](./artifacts/ux-user-story.md). Visual brief:
   [`artifacts/_design-brief.md`](./artifacts/_design-brief.md).
@@ -383,7 +383,7 @@ stays independently addressable. (See [`ux-user-story.md` §6](./artifacts/ux-us
   [`.gitignore`](./.gitignore)): **"Collaboration between labs experiment"** (Jun 8, 2026 — Sean demos),
   **"User story clarification session"** & **"Dashboard collaboration ideas"** (Jun 9, 2026).
 - Roam (dg-team): `[[ISS]] - Document initial inter-graph use cases`; the bronze node
-  `🥉Low shared context: push result to a public repository or database`; `UserPilot/Quantum biology
+  `🥉Low shared context: push result to a public repository or database`; `UserPilot/Quantum sensing
   institute`; `Initiative/Inter-graph functionality` ("each DG node displayable as a web page with a
   URL"; "markdown rendered as HTML is ok for v0"); `[[FLO]] - Push node to shared database`.
 - Canvas: [`./low-context-user-story.png`](./low-context-user-story.png) (Sean's notebook → Kate's lab →
@@ -391,8 +391,8 @@ stays independently addressable. (See [`ux-user-story.md` §6](./artifacts/ux-us
   [`../schema/`](../schema/) (`mira.yaml`).
 - Schema source repo: <https://github.com/MIRA-science/schema>. KOI: <https://github.com/BlockScience/koi>.
 - MIRA: <https://www.mira.science> · Discourse Graphs: <https://discoursegraphs.com> ·
-  Quantum Biology Institute: <https://www.quantumbiology.eco>.
+  Quantum Sensing Institute: <https://www.quantumsensing.eco>.
 
 ---
 
-*MIRA × Discourse Graphs · push results to a shared web interface · Sean → Kate dashboard (central) + QBI → world · draft v0.1*
+*MIRA × Discourse Graphs · push results to a shared web interface · Sean → Kate dashboard (central) + QSI → world · draft v0.1*

@@ -7,7 +7,7 @@
 > breakpoints, animations, edge cases, and accessibility notes — and it was **checked screen-by-screen
 > against the built HTML/CSS** so it matches what is actually rendered today (not just the prose).
 >
-> **Scope:** screens **06–11** (the central Sean → Kate dashboard). The public/QBI track (01–05) is not
+> **Scope:** screens **06–11** (the central Sean → Kate dashboard). The public/QSI track (01–05) is not
 > covered here. **Sources of truth, in order:** the **mockup HTML/CSS** (exact values) → this handoff →
 > [`ux-spec.md`](./ux-spec.md) (intent) → [`AGENTS.md`](../AGENTS.md) (the normative R1–R13). Where this
 > doc and the CSS disagree, the CSS wins — every value below was read from
@@ -74,7 +74,7 @@ with a `max-width:820px` override (not a min-width cascade); the phone frame is 
 see [§4](#4-consistency-report--spec-vs-built) for the sub-44px tap-target fixes.
 
 ### 1.3 Shared components (the kit — [`components.css`](./mockups/components.css))
-Props are expressed as **modifier classes** (static HTML, no JS framework).
+Props are borne as **modifier classes** (static HTML, no JS framework).
 
 | Component | Variants / states | Key spec | Notes |
 |---|---|---|---|
@@ -89,7 +89,7 @@ Props are expressed as **modifier classes** (static HTML, no JS framework).
 | `.preset` | `.active` (brand-tint, solid border) | dashed pill, pad `6px 12px`/12px | audience filter |
 | `.request` | `.open` (dashed) | request-tint pill, pad `6px 12px` | reverse current |
 | `.toast` | — | `border-left:4px --brand`, `--shadow-2` | convert/notify |
-| `.avatar` | `.sean/.kate/.grad/.vogel/.lab` (+ QBI set) | 28px disc, fixed gradient per person | one colour/person |
+| `.avatar` | `.sean/.kate/.grad/.vogel/.lab` (+ QSI set) | 28px disc, fixed gradient per person | one colour/person |
 | scaffolding | `.panel(.pad=20px)` · `.divider` · `.tag` · `.frame-caption`+`.eyebrow` · `.screen`(radius `--r-xl`, `--shadow-3`, `overflow:hidden`) · `.winbar`(addr pill) · `.kbd` · `.steps` | — | |
 
 **Dashboard-specific atoms** (also in `components.css`): `.kcard__grip`, `.kcol--drop`, `.kcol__ghost`,
@@ -132,7 +132,7 @@ for all disclosures (keyboard-operable, JS-free); AA contrast on text tokens (§
 
 ### 06 · Share a selected subgraph — [`06-share-to-dashboard.html`](./mockups/06-share-to-dashboard.html)
 **Overview.** Producer (Sean) in **Obsidian (dark, `.theme-obsidian`)** shares a selected subgraph to the
-dashboard. Outer light `.winbar` (addr `Obsidian — Vogel Lab vault — SG composition over time.md`) wraps
+dashboard. Outer light `.winbar` (addr `Obsidian — Vogel Lab vault — cluster composition over time.md`) wraps
 the dark shell; the floating share **modal resets to light tokens**.
 
 **Layout.** `.obsidian-shell` = flex: `.ribbon` 48px · `.filetree` 234px · `.editor` flex-1 (`min-width:0`,
@@ -178,9 +178,9 @@ ecard (overflow guard). **Breakpoints:** `900px` → 1-col, inspector `order:-1`
 | **Kanban** (`.kcard`) | Columns **Questions · Experiments · Results**. 7 cards (q1, q2, s1, s2, cand, e1, e2). `border-left:3px` by type; `.sel` = `outline:2px --brand`. Default selected = **e1** (composition Evidence). `.kcol__ghost` "drop here to mark as a result". |
 | **Subgraph highlight** | Hover/**focus any card** → `.kanban.subgraph-on` dims all (`opacity .3; saturate .55`), `.subhit` re-lights matches (`mouseenter/focus`→`highlight(sub)`, `mouseleave/blur`→`clearHi`). Map: {q1,s1,cand,e1} share `q1`; {q2,s2,e2} share `q2`. Per-question "N linked" `.sublink`. |
 | **Click-to-inspect** | `selectCard(card)` reads `data-node`, toggles `.sel`+`aria-current`, and shows the matching `.insp-panel` (`hidden` on the rest). **Seven per-node panels:** e1·e2·q1·q2·s1·s2·cand — **each reuses `.ecard`** (no new card style). Ignores clicks on `<a>`; Enter/Space supported. |
-| **Inspector Evidence card** (`.ecard`) | Plot (Pearson-r SVG, arsenite=evidence-ink, osmotic=study-ink, `≈10–15 min` marker) → summary → caveats → **method `<details>` labelled "How it was done — study & protocol"** (`.ctx-table`, the **SUM-segmentation** note, 4 pointer chips, "Read the full study & protocol →" → 08) → studyfoot "Open full study details →". **No Endorse / no `.trust` block.** `.req-note` "1 open Request from Kate's lab". |
+| **Inspector Evidence card** (`.ecard`) | Plot (Pearson-r SVG, perturbant=evidence-ink, osmotic=study-ink, `≈10–15 min` marker) → summary → caveats → **method `<details>` labelled "How it was done — study & protocol"** (`.ctx-table`, the **SUM-segmentation** note, 4 pointer chips, "Read the full study & protocol →" → 08) → studyfoot "Open full study details →". **No Endorse / no `.trust` block.** `.req-note` "1 open Request from Kate's lab". |
 | **Request composer** (`.reqpanel`/`.rq-*`, **beneath the kanban**) | `request_for` segmented [**Study** active · Protocol detail · Raw data] + target chip + textarea (`aria-label`) + **Send → `sendReq07()`** swaps to an on-node confirmation (*"request_for {kind} … on the node now, with your name — no email"*). Hidden in Graph view. |
-| **Related-work feed** (`.relfeed`, right rail) | 3 items; each `.relfeed__why` **states the match reason** (`⟡ shared: readout=co-localization · cell line=HeLa`, etc.). |
+| **Related-work feed** (`.relfeed`, right rail) | 3 items; each `.relfeed__why` **states the match reason** (`⟡ shared: readout=co-localization · sample line=sample`, etc.). |
 | **a11y popover** (`.a11y-pop`) | Serif `.switch` (`aria-pressed`, `body.pref-serif`) + Spacing `radiogroup` (Compact/Default/Spacious → `body.pref-spacious`). Persists. |
 
 **Edge/state.** Masthead `.share-level.consortium` "Consortium · 6 labs" + lock; `.ro-pill` read-only;
@@ -194,7 +194,7 @@ header/CSS comments and vestigial `data-q` attrs — cosmetic.) See [§4](#4-con
 
 ### 08 · Traverse & request back — [`08-traverse-and-request.html`](./mockups/08-traverse-and-request.html)
 **Overview.** A grad student follows the lineage to the method, then sends a Request. Light + `.winbar`
-(addr `mira.science/n/sg-composition-019ea6d6`). **Architectural note:** this screen does **not** use
+(addr `mira.science/n/cluster-composition-019ea6d6`). **Architectural note:** this screen does **not** use
 `.ecard` — the lineage is **three separate `.node` cards in a `.chain`**, each with a per-node
 `<details class="verbatim">`.
 
@@ -207,12 +207,12 @@ header/CSS comments and vestigial `data-q` attrs — cosmetic.) See [§4](#4-con
 | **Figure** (`.figure`) | `.plotwrap` = `minmax(0,1.35fr) minmax(0,1fr)` (plot ~57% / `.ctx` table ~43%). `.illus` pill. Curves draw via `.pdraw` (`1.3s`, delay `.4s`). |
 | **Framing prompt** (`.ask`) | brand-tint wash; "REPRODUCER" + the question; a down-chevron cue (note: `@keyframes nudge` is **defined but not applied** — dead). |
 | **Lineage chain** (`.chain` + `.edge-rail`) | `.node.evidence` ("you are here") → `.edge.grounds` ("grounds ↑", Study→Evidence) → `.node.study` → `.edge.follows` ("follows ↓") → **`.node.protocol.payoff`**. Edge SVGs self-draw (`drawline 1s`, staggered `.d-a .55s`/`.d-b 1.15s`). |
-| **The payoff** (`.threshold-detail`, **one protocol-wash**) | `border-left:3px --protocol-ink`, no full border. Title "HeLa culture → stress → Lattice-SIM → **segment on per-pixel SUM** → composition over time"; table row **"Segment on → per-pixel SUM of both"**, "just above background" (no "threshold = 0.18"). |
-| **Pointers** | `git` (`segment_stress_granules.ijm`), `data` (`granule_composition_by_time.csv`), **`.pointer.gated` local** ("NDTiff ≈ 80 GB · Elyra 7 · **request access**"); **video** rendered as the player panel, not a chip. |
+| **The payoff** (`.threshold-detail`, **one protocol-wash**) | `border-left:3px --protocol-ink`, no full border. Title "sample preparation → perturbation → high-resolution imaging → **segment on per-pixel SUM** → composition over time"; table row **"Segment on → per-pixel SUM of both"**, "just above background" (no "threshold = 0.18"). |
+| **Pointers** | `git` (`segment_clusters.ijm`), `data` (`cluster_composition_by_time.csv`), **`.pointer.gated` local** ("NDTiff ≈ 80 GB · Elyra 7 · **request access**"); **video** rendered as the player panel, not a chip. |
 | **Video walkthrough** (`.video`) | dark poster, 56px round `.play` (`aria-label="Play 2-minute walkthrough"`), magenta `.vidtype` pill. *(Note: JS adds `.played` but there is no `.played` CSS rule — visual no-op; add the rule if a played state is intended.)* |
 | **Discussion** (`.thread`, `role="log"`) | 3 comments (Kate↔Sean on why SUM-segment); composer disabled ("Viewing only — sign in to comment"). **Convert** button (`#convReq`, `aria-label`) → **`convertToRequest(this)`**. |
 | **Request-back card** (`.req-card`, right rail) | `border-left:3px --request-ink`; `.req-edge` typed `request_for · request_target ↓` → proposed new Study "Finer early time-course (<5 min)"; prefilled body; **Send → reveals `#reqSent`**. `.currents` legend (results out / requests back). |
-| **Per-node grounding openers** (`.verbatim` `<details>`) | **Plain human labels** (not "Read verbatim"): Evidence → **"Sean's notes"**, Study → **"Experiment notes"**, Protocol → **"The full protocol"** — each a two-line `<summary>` (`.vlabel`: `b` Fraunces 13.5px + `span` 11.5px muted descriptor) with a `.vicon` doc icon (17px) + `.vchev`. **Restyled to the inset idiom:** `border:0; border-left:3px --line-2; --r-sm; --surface-2` (no dashed border; quieter than the colour-washed payoff). Content per node: Evidence **3 Key Points**; Study **dated Progress & Notes** (2025-08-23, 2025-10-14) + **2 Hypotheses**; Protocol **numbered steps + 2 parameter tables** + "TODO: get growth info from Khalid". `.vsrc` footer keeps "Verbatim · … · protein names redacted". |
+| **Per-node grounding openers** (`.verbatim` `<details>`) | **Plain human labels** (not "Read verbatim"): Evidence → **"Sean's notes"**, Study → **"Experiment notes"**, Protocol → **"The full protocol"** — each a two-line `<summary>` (`.vlabel`: `b` Fraunces 13.5px + `span` 11.5px muted descriptor) with a `.vicon` doc icon (17px) + `.vchev`. **Restyled to the inset idiom:** `border:0; border-left:3px --line-2; --r-sm; --surface-2` (no dashed border; quieter than the colour-washed payoff). Content per node: Evidence **3 Key Points**; Study **dated Progress & Notes** (2025-08-23, 2025-10-14) + **2 Hypotheses**; Protocol **numbered steps + 2 parameter tables** + "TODO: get growth info from Khalid". `.vsrc` footer keeps "Verbatim · … · component names redacted". |
 
 **Canonical convert handler (reuse this everywhere).** `convertToRequest(btn)` is a real **`<script>`
 function** (not an inline `onclick` with nested quotes): hides the button, inserts a `.promoted-chip`
@@ -240,7 +240,7 @@ discoverable · In plain language). **Breakpoints:** `920px` → 1-col, rail `or
 | **Funder kanban** | Columns **Planned · Running · In analysis** *(note: column is "In analysis"; individual cards may append "· in progress" via `.inprog`)*. **Per-study progress meter** `.kbar` (4px, study-ink fill; widths 12/8/58/44/86/72%). |
 | **Grab handles** (`.kcard__grip`) | **On all 8 cards**, **persistently visible** — screen-local override `opacity:.4` (hover/focus `.75`), intentionally overriding the base `opacity:0`. *(Recruiting `.rcard`s correctly have none — read-only gallery.)* **⚠ keep this override** on any CSS consolidation, or grips vanish at rest. |
 | **Meeting-anchored mechanics** | `.agenda-tag` **"For next sync · Jun 16"** (calm); owner-set `.due-chip.overdue` **"next step by Jun 6 · 5d over"** (muted, *not* red; title credits Sean); `.follow-btn` toggling Follow↔Following (title: "he granted this"). **No `.nudge-btn`, no `.stale-flag` alarm.** |
-| **Collaborators rail** (`.collab`) | per-lab visibility mini-matrix `.mtx` (consortium / public cells). |
+| **Collaborators rail** (`.collab`) | per-lab visibility mini-matrix `.mtx` (consortium / public samples). |
 | **Now discoverable** (`.feed`) | orphaned one-off results made searchable; "pointers, not payloads — no raw data on the board". |
 | **In plain language** (`.plain`) | plain↔technical toggle (`.ptoggle`); colorblind/legibility note. |
 
@@ -259,7 +259,7 @@ PI receives-never-initiates). ⚠ A11y: toggle lacks roving tabindex/arrow keys;
 | State | What's shown |
 |---|---|
 | **(a) Collapsed** (PI glance) | top → plot → summary → caveats → byline → **method `<details>` closed** → studyfoot. Method summary label: **"Method & context"**. |
-| **(b) Method-open** (reproducer) | `<details open>`: Question line + `.ctx-table` (Cell line/Stress/Channels `Protein 1–GFP · Protein 2–mKate`/Imaging/Readout) + highlighted **`tr.threshold-row` "Segmentation = on per-pixel SUM · load-bearing"** (pulses once via `pulse-row`) + 4 pointer chips. |
+| **(b) Method-open** (reproducer) | `<details open>`: Question line + `.ctx-table` (Sample line/Perturbation/Channels `Component 1–Label-G · Component 2–Label-K`/Imaging/Readout) + highlighted **`tr.threshold-row` "Segmentation = on per-pixel SUM · load-bearing"** (pulses once via `pulse-row`) + 4 pointer chips. |
 | **(c) Candidate** (no result) | `.node.candidate` (dashed/faint); **`.no-result-ph` "No result posted yet"**; muted summary; `.trouble-note` (troubleshooting preserved); **"Convert to evidence"** button (`.convert-btn.to-evidence.convert-pulse`); no method/studyfoot. |
 | **(d) With-thread** | `.ecard` (abbreviated plot, method collapsed) + a **separate `.thread`** (3 comments + disabled composer + **"Convert to request"**). |
 
@@ -329,8 +329,8 @@ plot (`role="img"`, alt = the finding) → summary → caveats → method `<summ
 
 ## 4. Consistency report — spec vs. built
 Verdict: **the mockups are consistent with [`ux-spec.md`](./ux-spec.md) on every load-bearing
-current-truth fact** — composition-over-time science (no G3BP1/PABP1/recruitment/assembly-order; proteins
-redacted to Protein 1/2), **no Endorse**, **no PI nudge** (agenda/due/follow instead), **Graph · Kanban**
+current-truth fact** — composition-over-time science (no Component A/Component B/recruitment/assembly-order; components
+redacted to Component 1/2), **no Endorse**, **no PI nudge** (agenda/due/follow instead), **Graph · Kanban**
 (no Table tab), **per-pixel SUM** payoff, multi-select share + withheld-not-leaked, grips on every kanban
 card, the rendered card-anatomy strip removed, and no nudge-justification copy. The residues below are
 **polish, not load-bearing** — none changes behavior, but fix them so the mockups and spec agree verbatim.

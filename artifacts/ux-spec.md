@@ -1,6 +1,6 @@
 # UX Specification — push results to a shared web interface (consolidated, current)
 
-### MIRA × Discourse Graphs · the Sean → Kate **dashboard** (central) + QBI → **world** (public) · **current as of 2026-06-15**
+### MIRA × Discourse Graphs · the Sean → Kate **dashboard** (central) + QSI → **world** (public) · **current as of 2026-06-15**
 
 > **What this is.** The **single, current UX specification** for the eleven mockups in
 > [`mockups/`](./mockups/). It folds the user stories (v0.1), the design brief, and the four dated
@@ -36,10 +36,10 @@
   the UX-level design principles distilled from the sessions are in [§5](#5-ux-principles-normative-for-design).
 - **Provenance / context** (verified session quotes) lives in
   [`_grounding-dashboard.md`](./_grounding-dashboard.md) (central) and [`_grounding.md`](./_grounding.md)
-  (QBI); the *rationale* for the no-nudge reversal is in
+  (QSI); the *rationale* for the no-nudge reversal is in
   [`ux-research-synthesis-2026-06-11-trainee.md`](./ux-research-synthesis-2026-06-11-trainee.md).
 - **Status:** the **dashboard track (06–11)** is current through **v0.4 + the glance-and-trust
-  correction**, all dated 2026-06-15. The **public track (01–05, QBI)** has been **stable since v0.1**.
+  correction**, all dated 2026-06-15. The **public track (01–05, QSI)** has been **stable since v0.1**.
 
 ### What this supersedes
 This file is the canonical UX spec. It **supersedes for day-to-day work**:
@@ -59,7 +59,7 @@ Those files remain in the repo as the dated decision record; their substance is 
 collaborators read **in a browser, with no discourse-graph tooling** — readable cold, trustworthy via
 visible provenance, addressable at a URL.
 
-| | **Central — Sean → Kate dashboard** (★ primary) | **Public extreme — QBI → world** |
+| | **Central — Sean → Kate dashboard** (★ primary) | **Public extreme — QSI → world** |
 |---|---|---|
 | Reader | a **known collaborator** (PI + her lab) | a **stranger** (reviewer, funder, future self) |
 | Surface | a **read-only shared dashboard**, local→hosted ([§5](#5-ux-principles-normative-for-design)) | a **public repo / database** at a URL |
@@ -87,38 +87,38 @@ Request  --request_for / request_target--> Study/Analysis   # the reverse curren
 
 ## 2. The worked example (the science) — **current**
 
-> ⚠️ **The science spine changed in v0.4.** Earlier docs use a **G3BP1-before-PABP1 "recruitment /
+> ⚠️ **The science spine changed in v0.4.** Earlier docs use a **Component A-before-Component B "recruitment /
 > assembly-order"** placeholder. **That is retired.** Every dashboard screen (06–11) is now built on the
 > lab's **real prepared discourse-graph nodes** in [`../discourse-graph/`](../discourse-graph/). If you
-> see "recruitment order", "assembly order", "G3BP1", or "PABP1" anywhere in the mockups, it is a
+> see "recruitment order", "assembly order", "Component A", or "Component B" anywhere in the mockups, it is a
 > regression — fix it.
 
-### 2.1 Central worked example — stress-granule **composition over time** (Vogel × Kate)
+### 2.1 Central worked example — cluster **composition over time** (Vogel × Kate)
 Real nodes (committed in `ad8cd46`), with the discourse-graph→MIRA type morph **`Experiment → Study`,
 `Result → Evidence`** (matches the JSON-LD: `Experiment ⊑ mira:Study`, `Result ⊑ mira:Evidence`).
 
 | Node | Title | Notes |
 |---|---|---|
-| **Study** (was EXP) | "Live Lattice-SIM imaging of granule formation at staged times" | Protein 1–GFP + Protein 2–mKate in HeLa, ZEISS Elyra 7 |
-| **Evidence** (was RES) | "Stress granules change composition over time" | Pearson r(P1,P2): **negative → positive over ~10–15 min** |
-| **Protocol ×3** | HeLa culture · Lattice-SIM imaging · **Segmentation & composition** | Study `follows` each; Evidence `is_grounded_in` Study |
+| **Study** (was EXP) | "Live high-resolution imaging of cluster formation at staged times" | Component 1–Label-G + Component 2–Label-K in sample, ZEISS Elyra 7 |
+| **Evidence** (was RES) | "Clusters change composition over time" | Pearson r(P1,P2): **negative → positive over ~10–15 min** |
+| **Protocol ×3** | sample preparation · high-resolution imaging · **Segmentation & composition** | Study `follows` each; Evidence `is_grounded_in` Study |
 
 **Generated for illustration** (each marked *illustrative / manufactured / preliminary* in-screen via
 the honesty pill):
 
-- **Q1** (anchor Question) — *"Do the two granule proteins condense together, or separately and then mix?"*
-- **Q2** (follow-up Question) — *"Are early granules two merging droplets, or one droplet with sub-compartments?"* (the Result's real open second key-point)
-- **C1** (Claim) — *"Components first condense separately, then mix as the granule matures."*
-- **S2** (Study) — *"Architecture test of early granules (FRAP)"* — addresses Q2; the "on the agenda / planned" follow-up.
-- **E2** (Evidence, preliminary) — *"Early granules look like two adjacent condensates."*
-- **R1** (Request, Kate → Sean) — *"Push the time-course below 5 min"* — the early arsenite-vs-osmotic divergence.
+- **Q1** (anchor Question) — *"Do the two cluster components condense together, or separately and then mix?"*
+- **Q2** (follow-up Question) — *"Are early clusters two merging clusters, or one cluster with sub-compartments?"* (the Result's real open second key-point)
+- **C1** (Claim) — *"Components first condense separately, then mix as the cluster matures."*
+- **S2** (Study) — *"Architecture test of early clusters (FRAP)"* — addresses Q2; the "on the agenda / planned" follow-up.
+- **E2** (Evidence, preliminary) — *"Early clusters look like two adjacent aggregates."*
+- **R1** (Request, Kate → Sean) — *"Push the time-course below 5 min"* — the early perturbant-vs-osmotic divergence.
 
 **The load-bearing methods payoff** (what the reproducer traverses to, screen 08) is **the segmentation
 choice**, *not* a single threshold: **segment on the per-pixel SUM of both channels** (not one),
-thresholded just above background. That choice defines every granule and therefore every co-localization
+thresholded just above background. That choice defines every cluster and therefore every co-localization
 number.
 
-**The result plot** — **Pearson r vs time**: a zero reference line; two stress conditions (**arsenite**,
+**The result plot** — **Pearson r vs time**: a zero reference line; two perturbation conditions (**perturbant**,
 **osmotic**) both climbing from negative to positive, **diverging in the first ~10–15 min then
 converging.** Colour-blind-safe (coral / blue), inline labels + legend. Rendered at four sizes across
 06 / 07 / 08 / 10.
@@ -129,10 +129,10 @@ download) · `video` → a short walkthrough.
 
 **Provenance byline (R8)** — *Sean · Vogel Lab · shared with Kate's lab.*
 
-**Anonymization (preserve).** The real data redacts the proteins to **`Protein 1` / `Protein 2`** (shown
-*Protein 1–GFP* / *Protein 2–mKate*). **Introduce no real protein names.** Real and already-public, so
-keep them: the methods (Lattice SIM, sodium arsenite, 3D Suite, regionprops) and the **inter-lab
-provenance** (cells via the Montreal exchange; **Khalid maintains the culture**).
+**Anonymization (preserve).** The real data redacts the components to **`Component 1` / `Component 2`** (shown
+*Component 1–Label-G* / *Component 2–Label-K*). **Introduce no real component names.** Real and already-public, so
+keep them: the methods (high-resolution imaging, perturbant, 3D Suite, regionprops) and the **inter-lab
+provenance** (samples via the Montreal exchange; **Khalid maintains the preparation**).
 
 **Verbatim ground truth (R4, screens 07→08).** Cards are *summaries*; the **human-authored node text is
 the ground truth**, surfaced **summary-first / verbatim-on-demand** — a per-node collapsible opened by a
@@ -142,20 +142,20 @@ must be reachable:
 
 | Node | Source (`../discourse-graph/`) | Reachable verbatim |
 |---|---|---|
-| Evidence | `RES - Stress Granules Change Composition Over Time.md` | the three **Key Points** (negative→positive correlation; two-droplets-vs-sub-compartmented ambiguity; the significant early difference between the two stresses) |
-| Study | `EXP - SIM Imaging Stress Granules at Different Times during Formation.md` | the dated **Progress & Notes** (2025-08-23 Montreal cells / Khalid; 2025-10-14 pipeline + the two segmentation design choices) and the two **Hypotheses** |
-| Protocol ×3 | `PRO-*.md` | **numbered steps** + the **Imaging / Processing parameter tables**; the culture protocol's honest "TODO: get growth info from Khalid" stub |
+| Evidence | `RES - Clusters Change Composition Over Time.md` | the three **Key Points** (negative→positive correlation; two-clusters-vs-sub-compartmented ambiguity; the significant early difference between the two perturbations) |
+| Study | `EXP - HRI Imaging Clusters at Different Times during Formation.md` | the dated **Progress & Notes** (2025-08-23 Montreal samples / Khalid; 2025-10-14 pipeline + the two segmentation design choices) and the two **Hypotheses** |
+| Protocol ×3 | `PRO-*.md` | **numbered steps** + the **Imaging / Processing parameter tables**; the preparation protocol's honest "TODO: get growth info from Khalid" stub |
 
-### 2.2 Public worked example — QBI **MagLOV2 magnetic-field effect** (stable, screens 01–05)
+### 2.2 Public worked example — QSI **MFX-2 magnetic-field effect** (stable, screens 01–05)
 Use **verbatim**; caption every plot *"illustrative · unpublished — workshop prototype."*
 
-- **Claim / model** — *the radical-pair quantum model of magnetosensitivity.*
-- **Evidence** — *"In MagLOV2-expressing E. coli, the sign of the mean magnetic-field effect (MFE) flipped from positive to negative as magnetic field strength increased at low fields."*
-- **Key figure** — mean MFE at **0.5 / 1.0 / 1.5 / 2.0 / 2.5 mT** (1 experiment each, **74 colonies each**; SEM with fit + cycle + biological variation propagated): positive at low field, crosses zero, negative by ~2.5 mT.
-- **Study** — *"Bacterioscope live fluorescence imaging of MagLOV2-expressing E. coli colonies across 5 magnetic field strengths."*
-- **Protocol** — *"MagLOV2 expression in E. coli; bacterioscope acquisition under applied field; per-colony MFE calculation."*
-- **Pointers** — `git` → `quantum-bio/mfe-analysis @ 7c1ae04 · /mfe_fit_analysis/` · `data` → `mfe_by_field.csv` · `local` → raw NDTiff (request access) · `video` · `doi`/`koi` once published.
-- **Provenance** — *Brian & Morgan · Quantum Biology Institute · CC-BY.*
+- **Claim / model** — *the spin-pair quantum model of field-sensitivity.*
+- **Evidence** — *"In MFX-2-bearing samples, the sign of the mean magnetic-field effect (MFE) flipped from positive to negative as magnetic field strength increased at low fields."*
+- **Key figure** — mean MFE at **0.5 / 1.0 / 1.5 / 2.0 / 2.5 mT** (1 experiment each, **74 replicates each**; SEM with fit + cycle + scientific variation propagated): positive at low field, crosses zero, negative by ~2.5 mT.
+- **Study** — *"FieldScope live signal imaging of MFX-2-bearing samples replicates across 5 magnetic field strengths."*
+- **Protocol** — *"MFX-2 loading in samples; fieldscope acquisition under applied field; per-replicate MFE calculation."*
+- **Pointers** — `git` → `quantum-sensing/mfe-analysis @ 7c1ae04 · /mfe_fit_analysis/` · `data` → `mfe_by_field.csv` · `local` → raw NDTiff (request access) · `video` · `doi`/`koi` once published.
+- **Provenance** — *Brian & Morgan · Quantum Sensing Institute · CC-BY.*
 
 ---
 
@@ -171,7 +171,7 @@ language legible to *"a 60-year-old-plus professor."* (A real-person persona tra
 attends meetings on a phone/iPad mini — motivates the mobile-first surfaces; a `personas.md` is a
 **deferred doc**, not a mockup.)
 
-**Public (QBI):** **Brian** (bench producer) · **Morgan** (PI; owns the decision to publish; wants it
+**Public (QSI):** **Brian** (bench producer) · **Morgan** (PI; owns the decision to publish; wants it
 FAIR/interactive) · **a reader with no DG app** · **a citing / future-self reader**.
 
 ---
@@ -293,7 +293,7 @@ screen-local CSS. Two chrome modes: **Obsidian dark** (`.theme-obsidian`) for pr
   walkthrough** panel (*"no Zoom call"*); the 80 GB raw stacks read **"request access"** (R5).
 - **Verbatim-on-demand** under each node — a plain-labelled opener (**"Sean's notes" / "Experiment notes"
   / "The full protocol"**, a quiet left-accent inset): the Evidence's 3 Key Points, the Study's dated
-  Progress-&-Notes + 2 Hypotheses, the Protocols' numbered steps + parameter tables — protein redaction
+  Progress-&-Notes + 2 Hypotheses, the Protocols' numbered steps + parameter tables — component redaction
   preserved.
 - The **Request-back card** carries a **request-ink left accent** (same "left-border = node type"
   language); sending is the escalation target of the reverse current (R13).
@@ -341,20 +341,20 @@ nudge.*
   ([§5.2](#5-ux-principles-normative-for-design)), not the screen.
 - *Rules:* R4, R5, R6 + [§5.2](#5-ux-principles-normative-for-design). *Chrome:* light / `.winbar`, mobile-first.
 
-### Public extreme — QBI → world (01–05, stable since v0.1)
+### Public extreme — QSI → world (01–05, stable since v0.1)
 
 | # | File | What it shows now | Rules · chrome |
 |---|---|---|---|
 | **01** | [`01-publish.html`](./mockups/01-publish.html) | Brian selects the `Evidence` bundle and opens **Publish**: pick destination(s) (DG web DB · Jupyter Book · desci/nanopub · PREreview), set each node **public vs. request-access-gated** (start closed; raw stack gated), add summary + methods table + walkthrough + "format-in-schema"; a private note is **withheld without leaking**. | R1, R2, R4, R5, R12 · Obsidian dark |
-| **02** | [`02-evidence-node.html`](./mockups/02-evidence-node.html) | The `Evidence` node read cold: summary MFE figure first, observation, **"what's in the dish"** methods table, **pointer chips** — published · addressable · citable. Summary↔traversal duality. | R2, R3, R4, R8 · light card |
-| **03** | [`03-public-web-view.html`](./mockups/03-public-web-view.html) | **The reference screen.** The result as a public web page at a URL: summary-first, traversable `Claim ← Evidence ← Study → Protocol`, pointer chips, provenance byline (QBI · CC-BY), a **frozen citation**, a **request-access** path to gated raw data, **import-if-you-DG**. | R4, R5, R6, R7, R8, R9 · light / `.winbar` |
-| **04** | [`04-micropublication.html`](./mockups/04-micropublication.html) | Several independently-addressable `Evidence` bundles **compile into one Jupyter Book micropublication**; a `Claim`/model (radical-pair) emerges above them; narrative **AI-drafted, human-edited**; each subfigure links back to its **still-live** bundle. | R7, R11 · public web / book |
+| **02** | [`02-evidence-node.html`](./mockups/02-evidence-node.html) | The `Evidence` node read cold: summary MFE figure first, observation, **"what's in the sample"** methods table, **pointer chips** — published · addressable · citable. Summary↔traversal duality. | R2, R3, R4, R8 · light card |
+| **03** | [`03-public-web-view.html`](./mockups/03-public-web-view.html) | **The reference screen.** The result as a public web page at a URL: summary-first, traversable `Claim ← Evidence ← Study → Protocol`, pointer chips, provenance byline (QSI · CC-BY), a **frozen citation**, a **request-access** path to gated raw data, **import-if-you-DG**. | R4, R5, R6, R7, R8, R9 · light / `.winbar` |
+| **04** | [`04-micropublication.html`](./mockups/04-micropublication.html) | Several independently-addressable `Evidence` bundles **compile into one Jupyter Book micropublication**; a `Claim`/model (spin-pair) emerges above them; narrative **AI-drafted, human-edited**; each subfigure links back to its **still-live** bundle. | R7, R11 · public web / book |
 | **05** | [`05-public-database.html`](./mockups/05-public-database.html) | The published graph as a public dashboard — every node a URL with provenance and a **"cited by N"** signal — plus **citing a specific result with a frozen version pin** and the author seeing **who's using their work**. | R1, R6, R8, R9 · light / `.winbar` |
 
 ---
 
 ## 7. Component specifications
-Reuse the base kit and the QBI / dashboard extension blocks in `components.css`; v0.4 atoms (request
+Reuse the base kit and the QSI / dashboard extension blocks in `components.css`; v0.4 atoms (request
 composer, agenda/due/follow, diff view, subgraph-highlight) currently live as **screen-local CSS**.
 **Don't reinvent the node card** — every result surface is the one `.ecard`.
 
@@ -366,9 +366,9 @@ Result-first, with the method **embedded and progressively disclosed** inside on
 ```
 ┌─ .ecard  (border-left 4px var(--evidence-ink), radius --r-md, pad 16–20px) ─────────┐
 │  [.ntype.evidence]            Sean · Vogel Lab    [illustrative · unpublished]      │ ← provenance, R8
-│  .ecard__plot      Pearson-r-vs-time figure (arsenite + osmotic, neg→pos)           │ ← the result, FIRST
-│  .ecard__summary   one bold sentence: "Stress granules change composition over time"│
-│  .ecard__caveats   2–4 muted bullets (HeLa, acute stress, n caveats)                │
+│  .ecard__plot      Pearson-r-vs-time figure (perturbant + osmotic, neg→pos)           │ ← the result, FIRST
+│  .ecard__summary   one bold sentence: "Clusters change composition over time"│
+│  .ecard__caveats   2–4 muted bullets (sample, acute perturbation, n caveats)                │
 │  ▸ "How it was done — study & protocol"   (collapsed .disclosure — PROMOTED)        │ ← embeds Study+Protocol;
 │       motivating Question · context table · the segmentation choice (per-pixel SUM) │   replaces the old endorse block
 │       pointer chips [git][data][local·request access][video] · the node's notes →  │
@@ -436,10 +436,10 @@ under the promoted node. (Resolved what v0.1 left open.)
 **The PI cannot initiate** — there is no PI-poke affordance anywhere.
 
 ### 7.6 Related-work newsfeed (`.relfeed`)
-A right-rail ambient feed of related work, triggered by **overlapping tags — cell line · protein ·
+A right-rail ambient feed of related work, triggered by **overlapping tags — sample line · component ·
 method** (so people *"know to ask"*). `.relfeed__item` rows; **`.relfeed__why`** match-reason chip
 (`⟡ shared: method=… · strain=…`) — **always states why it matched** ([§5.10](#5-ux-principles-normative-for-design)), never opaque. Ranked by
-overlap-count then recency; per-tag mute; **weight rare tags** (don't let `HeLa` dominate). **Privacy
+overlap-count then recency; per-tag mute; **weight rare tags** (don't let `sample` dominate). **Privacy
 (R5):** surface only nodes the viewer is already scoped into — a match against a private node shows
 nothing. Candidate/troubleshooting items are first-class here.
 
@@ -571,7 +571,7 @@ no Table facade; see [§11](#11-changelog--provenance).)
     and **cannot initiate** one.
 13. **Diff view** — a **"Since last sync"** view lists what changed since a date, stale work **folded**
     beneath, in **calm** styling, on **mobile**; no nudge justification in the rendered text.
-14. **Ambient related-work** — a newsfeed surfaces related nodes by **overlapping cell line / protein /
+14. **Ambient related-work** — a newsfeed surfaces related nodes by **overlapping sample line / component /
     method**, **always stating the match reason**, **never leaking** private nodes.
 15. **Subgraph highlight** — hovering/focusing **any** card dims non-subgraph cards.
 16. **Functional presets** — *Results / Experiments in progress / Questions & requests* relabel the board
@@ -582,10 +582,10 @@ no Table facade; see [§11](#11-changelog--provenance).)
     hierarchy preserved.
 19. **One card pattern** — every result surface is the `.ecard`; ≤2 competing washes per surface; AA
     contrast on every text token.
-20. **Real data** — every screen is composition-over-time; **no** G3BP1/PABP1/"assembly-order" residue;
-    protein redaction preserved; `Experiment→Study` / `Result→Evidence` morph on every badge.
+20. **Real data** — every screen is composition-over-time; **no** Component A/Component B/"assembly-order" residue;
+    component redaction preserved; `Experiment→Study` / `Result→Evidence` morph on every badge.
 
-**Public track — QBI (stable):**
+**Public track — QSI (stable):**
 P1. **Publish** a bundle to a **public repo/DB with a stable URL** (over KOI as JSON-LD). · P2.
 **Read-cold** at the URL as a web page, **following the pointers**. · P3. **Gate** — raw stacks
 request-access-gated; no dangling-reference leak. · P4. **Cite the exact, frozen version**; the producer
@@ -605,10 +605,10 @@ Carry into design; do not implement as settled (superset of [`AGENTS.md §10`](.
 - **`done`/`parked` semantics** — owner-set state so the diff never nags finished work.
 - **Mobile scope for v1** — responsive web now vs. an iOS app (which is what "unlocks" consented
   notifications + TestFlight whitelisting).
-- **Newsfeed match scope & ranking** — which tags, weighting, `HeLa`-style over-matching, privacy
+- **Newsfeed match scope & ranking** — which tags, weighting, `sample`-style over-matching, privacy
   boundary.
 - **Candidate-node formalization** — approval/notification when someone formalizes your shared candidate.
-- **Accounts & gating atop weak KOI**; **non-text assets** (CSV/image/DNA) as referenceable schema fields
+- **Accounts & gating atop weak KOI**; **non-text assets** (CSV/image/binary) as referenceable schema fields
   (also gates the `.ecard` inline plot/CSV); **versioning mechanics & invalidation** (R9 + downstream
   recompute when the segmentation choice changes); **conflict / merge**; **figure-as-addressable-
   artifact**; **dangling references: signal vs. hide**; **reader-ladder ↔ schema mapping** (deferred);
@@ -621,7 +621,7 @@ The dated record, compressed. Each row's detail lives in the dated doc it names 
 
 | Version | Date · source | What changed (current effect) |
 |---|---|---|
-| **v0.1** | initial · the user stories + `_design-brief.md` | The spine, cast, two currents, five moments, the design system, screens 01–09. *(Then used the now-retired G3BP1/PABP1 placeholder science.)* |
+| **v0.1** | initial · the user stories + `_design-brief.md` | The spine, cast, two currents, five moments, the design system, screens 01–09. *(Then used the now-retired Component A/Component B placeholder science.)* |
 | **v0.2** | Jun 10 · Kate's live walkthrough (`ux-spec-update-2026-06-10-dashboard.md`) | **Embedded-method `.ecard`** (result-first); **comment thread + convert-to-request**; **candidate→evidence with history**; **kanban status-drag + PI reorder**; **related-work newsfeed**; **a11y serif/spacing**; **share via right-click + Groups + verify sheet**; **local-server-vs-hosted** reframing. **+ Jun 11 design-review:** fixed the 07 card clipping & the 08 handler-code leak; **AA contrast corrected at the token layer.** *(The v0.2 PI nudge was reversed the next day — see v0.3.)* |
 | **v0.3** | Jun 11 · trainee reaction (`ux-spec-update-2026-06-11-trainee-feedback.md`; rationale in `ux-research-synthesis-2026-06-11-trainee.md`) | **PI nudge REMOVED** → **meeting-anchored agenda** + **self-set deadline** + **opt-in Follow** + the **"Since last sync" diff (new screen 11)**; **real Graph-view spec** (top-to-bottom, creator filter, node→subgraph) + Kanban connection paths; **mobile-first** meeting/glance surfaces; **dyslexia-friendly** a11y. |
 | **v0.4** | Jun 15 · real-data + UI walkthrough (`ux-spec-update-2026-06-15-real-data-and-ui.md`) | **Science spine → composition-over-time** on real nodes (`Experiment→Study`, `Result→Evidence`); **multi-select share** (06); **subgraph highlight on any node** + **click-to-inspect** + **functional presets** (07); **request composer** below the kanban; **grab handle on every card** (09); **de-justified 11** (rationale out of the screen); **Table view REMOVED**; **impeccable distill pass on 08**; **card-anatomy strip removed from 10**; **clickable diff rows on 11**. |
@@ -629,4 +629,4 @@ The dated record, compressed. Each row's detail lives in the dated doc it names 
 
 ---
 
-*MIRA × Discourse Graphs · push results to a shared web interface · Sean → Kate dashboard (central) + QBI → world (public) · **consolidated UX spec, current as of 2026-06-15** · normative rules: [`AGENTS.md`](../AGENTS.md) · coded truth: [`mockups/`](./mockups/)*
+*MIRA × Discourse Graphs · push results to a shared web interface · Sean → Kate dashboard (central) + QSI → world (public) · **consolidated UX spec, current as of 2026-06-15** · normative rules: [`AGENTS.md`](../AGENTS.md) · coded truth: [`mockups/`](./mockups/)*

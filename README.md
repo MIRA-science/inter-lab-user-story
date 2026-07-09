@@ -22,7 +22,7 @@ The eleven screens are **interactive HTML mockups**, hosted on GitHub Pages. Ope
 | **11** | [Meeting prep ↗](https://mira-science.github.io/inter-lab-user-story/11-meeting-prep.html) | a mobile-first "since last sync" diff to prep for the next meeting |
 
 <details>
-<summary><b>Public extreme — QBI → the whole world (01–05)</b></summary>
+<summary><b>Public extreme — QSI → the whole world (01–05)</b></summary>
 
 | | Screen | |
 |--:|---|---|
@@ -40,13 +40,13 @@ The eleven screens are **interactive HTML mockups**, hosted on GitHub Pages. Ope
 
 ## The central use case — Sean → Kate's dashboard
 
-Sean, a PhD student in the **Vogel Lab**, has a result living as markdown discourse-graph nodes in his Obsidian vault: in stressed HeLa cells, two stress-granule proteins are recruited in a fixed order — **G3BP1 climbs before PABP1** as granules assemble. He wants **Kate's lab** — a collaborating PI and her students — to **see it, trust it, and dig into it on their own time.**
+Sean, a PhD student in the **Vogel Lab**, has a result living as markdown discourse-graph nodes in his Obsidian vault: in perturbed samples, two cluster components are recruited in a fixed order — **Component A climbs before Component B** as clusters assemble. He wants **Kate's lab** — a collaborating PI and her students — to **see it, trust it, and dig into it on their own time.**
 
 Not by installing a discourse-graph app, not on a scheduled Zoom call, and **without** shipping his 80 GB of raw images or exposing his private notes. He pushes a **selected subgraph** through KOI to a **read-only shared web dashboard** — **public** for the lab website, or **password-protected** for the consortium. Kate (the PI) **glances at the summary plot and trusts it**; her **grad student traverses back to the segmentation threshold** and pulls the curated CSV; and when they want more, they **send a `Request` back** for a follow-up experiment. *Two currents: results out, requests back.*
 
-## The public extreme — QBI → the whole world
+## The public extreme — QSI → the whole world
 
-Take the same machinery and open it all the way up. Brian, at the **Quantum Biology Institute**, publishes a MagLOV2 magnetic-field-effect result to a **public repository or database** so that **anyone** — a reviewer, a future collaborator, or his own future self, with **no relationship and no shared tooling** — can read it cold at a URL, follow the pointers, **request access** to what's gated, and **cite the exact version**. One direction: producer → the public.
+Take the same machinery and open it all the way up. Brian, at the **Quantum Sensing Institute**, publishes a MFX-2 magnetic-field-effect result to a **public repository or database** so that **anyone** — a reviewer, a future collaborator, or his own future self, with **no relationship and no shared tooling** — can read it cold at a URL, follow the pointers, **request access** to what's gated, and **cite the exact version**. One direction: producer → the public.
 
 **One spine, two worked examples.** Both push a result to a **shared web interface** — trustworthy, addressable at a URL, readable with no DG app — sliding from a *consortium dashboard* (Sean → Kate, gated, with a request-back) to the *fully public* (Brian → world). Same machinery (KOI → MIRA JSON-LD → web rendering), same rules.
 
@@ -55,7 +55,7 @@ Take the same machinery and open it all the way up. Brian, at the **Quantum Biol
 | File | What it is |
 |---|---|
 | [`AGENTS.md`](./AGENTS.md) | **Start here.** The shared brief + spec: scope, actors, data model, twelve normative rules, the two lifecycles (share-to-dashboard + publish), acceptance criteria, and open questions. Written so coding agents in different labs can build interoperable pieces from one source of truth. |
-| [`artifacts/`](./artifacts/) | **The fleshed-out UX.** The **central** [`ux-user-story-dashboard.md`](./artifacts/ux-user-story-dashboard.md) (Sean → Kate) and its context pack [`_grounding-dashboard.md`](./artifacts/_grounding-dashboard.md); the retained [`ux-user-story.md`](./artifacts/ux-user-story.md) (QBI) and [`_grounding.md`](./artifacts/_grounding.md); and **eleven** interactive HTML [`mockups/`](./artifacts/mockups/) ([**view live ↗**](https://mira-science.github.io/inter-lab-user-story/)) — **06–11** the dashboard (central), **01–05** the public extreme. See [`artifacts/README.md`](./artifacts/README.md). |
+| [`artifacts/`](./artifacts/) | **The fleshed-out UX.** The **central** [`ux-user-story-dashboard.md`](./artifacts/ux-user-story-dashboard.md) (Sean → Kate) and its context pack [`_grounding-dashboard.md`](./artifacts/_grounding-dashboard.md); the retained [`ux-user-story.md`](./artifacts/ux-user-story.md) (QSI) and [`_grounding.md`](./artifacts/_grounding.md); and **eleven** interactive HTML [`mockups/`](./artifacts/mockups/) ([**view live ↗**](https://mira-science.github.io/inter-lab-user-story/)) — **06–11** the dashboard (central), **01–05** the public extreme. See [`artifacts/README.md`](./artifacts/README.md). |
 | [`./low-context-user-story.png`](./low-context-user-story.png) | The user-story canvas — **Sean's notebook → Kate's lab → a shared web interface** ("KOI DG nodes to dashboard/kanban"), carrying a `Request for study` node — across location / format / feel / features / schema / tasks. |
 
 ## The shape of the data
@@ -91,8 +91,8 @@ If you're an engineer or a coding agent picking up a piece of this: **read [`AGE
 
 ## Status
 
-Draft v0.1. The **central** use case is the **Sean → Kate dashboard** — pushing a selected subgraph to a read-only shared web interface (public or consortium-gated) with a request-back current, grounded in the Vogel × Kate stress-granule sessions and the user-story canvas. The **retained** public extreme is **QBI MagLOV2 → the world** (Obsidian → public repo/DB; the bronze tier of the shared-context ladder). Both worked examples are real; the data is **unpublished** (mockup figures are labelled *illustrative · unpublished — workshop prototype*).
+Draft v0.1. The **central** use case is the **Sean → Kate dashboard** — pushing a selected subgraph to a read-only shared web interface (public or consortium-gated) with a request-back current, grounded in the Vogel × Kate cluster sessions and the user-story canvas. The **retained** public extreme is **QSI MFX-2 → the world** (Obsidian → public repo/DB; the bronze tier of the shared-context ladder). Both worked examples are real; the data is **unpublished** (mockup figures are labelled *illustrative · unpublished — workshop prototype*).
 
 ---
 
-🔬 [mira.science](https://www.mira.science) · 🧠 [discoursegraphs.com](https://discoursegraphs.com) · 📐 [MIRA-science/schema](https://github.com/MIRA-science/schema) · ⚛️ [quantumbiology.eco](https://www.quantumbiology.eco)
+🔬 [mira.science](https://www.mira.science) · 🧠 [discoursegraphs.com](https://discoursegraphs.com) · 📐 [MIRA-science/schema](https://github.com/MIRA-science/schema) · ⚛️ [quantumsensing.eco](https://www.quantumsensing.eco)

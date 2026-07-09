@@ -4,7 +4,7 @@
 the people who need it on a **shared web surface**, readable with no discourse-graph tooling — from a
 **collaborator's dashboard** (the central case) to the **fully public** web. Built from
 [`../AGENTS.md`](../AGENTS.md) (the spec), the **Vogel × Kate** lab-collaboration sessions, the
-**Quantum Biology Institute** pilot, and the [MIRA schema](https://github.com/MIRA-science/schema).*
+**Quantum Sensing Institute** pilot, and the [MIRA schema](https://github.com/MIRA-science/schema).*
 
 > **Start here.** To **build or maintain the mockups**, read the single current spec
 > **[`ux-spec.md`](./ux-spec.md)** — it folds the user stories, the design brief, and the dated
@@ -23,8 +23,8 @@ the people who need it on a **shared web surface**, readable with no discourse-g
 | **[`dev-handoff-dashboard.md`](./dev-handoff-dashboard.md)** | **Developer handoff for screens 06–11** — exact measurements, tokens, component contracts, states, breakpoints, animations, accessibility, and a spec-vs-built **consistency report**. Generated from `ux-spec.md`, verified against the mockups. |
 | **[`ux-user-story-dashboard.md`](./ux-user-story-dashboard.md)** | *(folded into `ux-spec.md`)* **The central narrative** — Sean → Kate's dashboard: the cast, the **two currents** (results out, requests back), the **five moments** (share → glance-and-trust → traverse → request → consortium), journey maps, the mockup-map, acceptance, open questions. |
 | **[`_grounding-dashboard.md`](./_grounding-dashboard.md)** ★ | **The central context pack** — user story / user constraints / tech constraints, with verified quotes from the three Granola sessions and the user-story canvas. |
-| **[`ux-user-story.md`](./ux-user-story.md)** | The retained **public-extreme** narrative — QBI → the world: the four moments (publish → read-cold → cite → compile). |
-| **[`_grounding.md`](./_grounding.md)** | The retained **public-extreme** context pack (QBI). |
+| **[`ux-user-story.md`](./ux-user-story.md)** | The retained **public-extreme** narrative — QSI → the world: the four moments (publish → read-cold → cite → compile). |
+| **[`_grounding.md`](./_grounding.md)** | The retained **public-extreme** context pack (QSI). |
 | **[`_design-brief.md`](./_design-brief.md)** | The visual brief both mockup sets were built against — the shared design system, both worked examples, the per-screen specs. *(predates v0.4; folded into `ux-spec.md`)* |
 | `ux-spec-update-*.md` · `ux-research-synthesis-*.md` | **The dated decision record** (v0.1 → v0.4 + the glance-trust correction) — how each change was reached. Folded into `ux-spec.md`; kept for provenance. |
 | **[`mockups/`](./mockups/)** | **Eleven** interactive HTML screens + a gallery `index.html` — **[view live ↗](https://mira-science.github.io/inter-lab-user-story/)** — sharing one design system (`tokens.css` + `components.css`). **06–11** the dashboard (central); **01–05** the public extreme. |
@@ -40,7 +40,7 @@ open** the surface is and **whether a `Request` flows back**:
 - **Central — the Sean → Kate dashboard.** Sean (Vogel Lab) pushes a *selected subgraph* to a
   **read-only shared dashboard** — **public or password-protected (consortium)** — that Kate's lab
   navigates in a browser. **Two currents:** results out, and a **`Request`** back.
-- **The public extreme — QBI → the world.** The same machinery taken fully public: no relationship, no
+- **The public extreme — QSI → the world.** The same machinery taken fully public: no relationship, no
   shared tooling, strangers only. **One direction.**
 
 ### The dashboard moments (central)
@@ -54,7 +54,7 @@ open** the surface is and **whether a `Request` flows back**:
 5. **Run it as a consortium** — many collaborators, audience presets, public-vs-gated, orphaned results
    made discoverable. → mockup **09**
 
-### The QBI moments (public extreme)
+### The QSI moments (public extreme)
 **Publish to the public** (→ 01) · **read it cold at a URL** (→ 02, 03) · **cite it, frozen** (→ 05) ·
 **compile bundles into a narrative** (→ 04).
 
@@ -62,12 +62,12 @@ open** the surface is and **whether a `Request` flows back**:
 
 ## Mockups — the Sean → Kate dashboard (central)
 
-The worked example: the Vogel × Kate **stress-granule composition-over-time** result (illustrative,
-unpublished): *stress granules change composition over time — the Pearson correlation of two granule
-proteins climbs from negative to positive over ~10–15 min*, grounded in a live Lattice-SIM imaging
-`Study`, following a culture → stress → imaging → **segmentation** `Protocol`, carrying **pointers** (git /
-curated CSV / gated 80 GB raw stacks / video), never the raw images. *(Proteins redacted to Protein 1 /
-Protein 2.)*
+The worked example: the Vogel × Kate **cluster composition-over-time** result (illustrative,
+unpublished): *clusters change composition over time — the Pearson correlation of two cluster
+components climbs from negative to positive over ~10–15 min*, grounded in a live high-resolution imaging
+`Study`, following a preparation → perturbation → imaging → **segmentation** `Protocol`, carrying **pointers** (git /
+curated CSV / gated 80 GB raw stacks / video), never the raw images. *(Components redacted to Component 1 /
+Component 2.)*
 
 ### Gallery — [`mockups/index.html`](./mockups/index.html) · [**open live ↗**](https://mira-science.github.io/inter-lab-user-story/)
 ![Gallery](./mockups/previews/index.png)
@@ -115,11 +115,11 @@ next meeting, what **changed**, and (folded) what **hasn't** — with self-set d
 
 ---
 
-## Mockups — QBI → the whole world (the public extreme)
+## Mockups — QSI → the whole world (the public extreme)
 
-The worked example: the QBI **MagLOV2 magnetic-field effect** (illustrative, unpublished): *the sign of
+The worked example: the QSI **MFX-2 magnetic-field effect** (illustrative, unpublished): *the sign of
 the mean magnetic-field effect flipped from positive to negative as field strength increased at low
-fields* — a bacterioscope live-imaging `Study`, a MagLOV2-expression + applied-field `Protocol`, carrying
+fields* — a fieldscope live-imaging `Study`, a MFX-2-loading + applied-field `Protocol`, carrying
 pointers, never the raw image stacks.
 
 ### 01 · Publish to the public — [`mockups/01-publish.html`](./mockups/01-publish.html) · [**open live ↗**](https://mira-science.github.io/inter-lab-user-story/01-publish.html)
@@ -128,7 +128,7 @@ sets the raw data **request-access-gated**, and keeps a working note private **w
 ![Publish to the public](./mockups/previews/01-publish.png)
 
 ### 02 · The Evidence node, read cold — [`mockups/02-evidence-node.html`](./mockups/02-evidence-node.html) · [**open live ↗**](https://mira-science.github.io/inter-lab-user-story/02-evidence-node.html)
-*Summary up front for the glancer — figure + "what's in the dish" methods table — then flip to **full
+*Summary up front for the glancer — figure + "what's in the sample" methods table — then flip to **full
 lineage**. One node, two depths (R2, R3, R4, R8).*
 ![The Evidence node](./mockups/previews/02-evidence-node.png)
 
@@ -161,7 +161,7 @@ extension blocks at the bottom of `components.css`:
   "lab-notebook" light theme + a dark `.theme-obsidian` mode, and the type stack: **Fraunces** (display),
   **Hanken Grotesk** (UI), **JetBrains Mono** (pointers / JSON-LD / URLs / DOIs / version hashes).
 - **`mockups/components.css`** — reusable node cards, type badges, pointer chips, typed edges,
-  share-level chips, toasts, avatars, the step rail — **plus** two story extensions: the QBI block
+  share-level chips, toasts, avatars, the step rail — **plus** two story extensions: the QSI block
   (`.avatar.brian`/`.morgan`/`.qbi`/`.world`, `.share-level.world`/`.gated`, `.cite`, `.reuse`) and the
   **dashboard block** (`.avatar.sean`/`.kate`/`.grad`, `.share-level.consortium`, `.node.candidate`,
   `.request`, `.viewswitch`, `.preset`, `.dash-search`).
@@ -187,4 +187,4 @@ PNG previews (Chrome headless, with a virtual-time budget so the load animations
 
 ---
 
-*MIRA × Discourse Graphs · push results to a shared web interface · dashboard (central) + QBI (public) · v0.4 · UX spec consolidated 2026-06-15 — see [`ux-spec.md`](./ux-spec.md)*
+*MIRA × Discourse Graphs · push results to a shared web interface · dashboard (central) + QSI (public) · v0.4 · UX spec consolidated 2026-06-15 — see [`ux-spec.md`](./ux-spec.md)*

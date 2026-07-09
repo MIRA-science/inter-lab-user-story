@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MagLOV2 magnetic-field effect — Evidence node · published · addressable · citable</title>
+<title>MFX-2 magnetic-field effect — Evidence node · published · addressable · citable</title>
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="components.css">
 <style>
@@ -60,17 +60,17 @@
     border-left:2px solid var(--evidence-edge); padding-left:12px; max-width:44ch; line-height:1.5;
   }
 
-  /* ---- "What's in the dish" methods table --------------------------------- */
-  .dish { margin-top:18px; border:1px solid var(--line); border-radius: var(--r-md); overflow:hidden; background: var(--surface); }
-  .dish .dish-head { padding:9px 14px; background: var(--surface-2); border-bottom:1px solid var(--line-2); display:flex; align-items:center; gap:8px; }
-  .dish .dish-head .eyebrow { margin:0; }
-  .dish .dish-head svg { width:13px; height:13px; stroke: var(--evidence-ink); fill:none; stroke-width:2; }
-  .dish table { width:100%; border-collapse:collapse; }
-  .dish td { padding:7px 14px; font-size:12.5px; border-top:1px solid var(--line-2); vertical-align:top; }
-  .dish tr:first-child td { border-top:0; }
-  .dish td.key { width:42%; color: var(--muted); font-weight:600; background: linear-gradient(90deg, rgba(244,242,236,.55), transparent); }
-  .dish td.val { color: var(--ink); font-family: var(--font-mono); font-size:11.5px; }
-  .dish td.val .note { display:block; font-family: var(--font-body); font-size:10.5px; color: var(--faint); margin-top:2px; }
+  /* ---- "What's in the sample" methods table --------------------------------- */
+  .sample { margin-top:18px; border:1px solid var(--line); border-radius: var(--r-md); overflow:hidden; background: var(--surface); }
+  .sample .sample-head { padding:9px 14px; background: var(--surface-2); border-bottom:1px solid var(--line-2); display:flex; align-items:center; gap:8px; }
+  .sample .sample-head .eyebrow { margin:0; }
+  .sample .sample-head svg { width:13px; height:13px; stroke: var(--evidence-ink); fill:none; stroke-width:2; }
+  .sample table { width:100%; border-collapse:collapse; }
+  .sample td { padding:7px 14px; font-size:12.5px; border-top:1px solid var(--line-2); vertical-align:top; }
+  .sample tr:first-child td { border-top:0; }
+  .sample td.key { width:42%; color: var(--muted); font-weight:600; background: linear-gradient(90deg, rgba(244,242,236,.55), transparent); }
+  .sample td.val { color: var(--ink); font-family: var(--font-mono); font-size:11.5px; }
+  .sample td.val .note { display:block; font-family: var(--font-body); font-size:10.5px; color: var(--faint); margin-top:2px; }
 
   /* ---- Figure card (the summary MFE-vs-field plot, echoing screen 03) ------ */
   .figcard { border:1px solid var(--line); border-radius: var(--r-lg); overflow:hidden; background: var(--surface); box-shadow: var(--shadow-1); }
@@ -226,13 +226,13 @@
       <span class="stamp">citable</span>
     </div>
 
-    <h1>The magnetic-field effect in MagLOV2 flips sign as the field strengthens</h1>
+    <h1>The magnetic-field effect in MFX-2 flips sign as the field strengthens</h1>
 
     <div class="id-row">
       <!-- R6 · addressable at a public URL -->
       <span class="url-chip" title="This node resolves at a stable public URL">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
-        <b>mira.science/n/maglov2-mfe-7c1ae04</b>
+        <b>mira.science/n/mfx-2-mfe-7c1ae04</b>
       </span>
       <span class="copyhint">⌘C to copy</span>
 
@@ -257,7 +257,7 @@
       <div class="obs">
         <span class="eyebrow">The observation</span>
         <p class="statement">
-          In MagLOV2-expressing <em>E.&nbsp;coli</em>, <span class="k">the sign of the mean
+          In MFX-2-bearing <em>E.&nbsp;coli</em>, <span class="k">the sign of the mean
           magnetic-field effect (MFE) flipped from positive to negative as magnetic field strength
           increased at low fields</span> — positive near 0.5&nbsp;mT, crossing zero, negative by
           ~2.5&nbsp;mT.
@@ -266,19 +266,19 @@
           One panel, one statement — enough for a busy reviewer to trust the figure and move on.
         </div>
 
-        <!-- "what's in the dish" methods table -->
-        <div class="dish">
-          <div class="dish-head">
+        <!-- "what's in the sample" methods table -->
+        <div class="sample">
+          <div class="sample-head">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v6m0 0a4 4 0 0 1 4 4c0 2-1.5 3-4 8-2.5-5-4-6-4-8a4 4 0 0 1 4-4Z"/></svg>
-            <span class="eyebrow">What's in the dish</span>
+            <span class="eyebrow">What's in the sample</span>
           </div>
           <table>
             <tbody>
-              <tr><td class="key">Organism</td><td class="val">E. coli</td></tr>
-              <tr><td class="key">Reporter</td><td class="val">MagLOV2</td></tr>
+              <tr><td class="key">System</td><td class="val">samples</td></tr>
+              <tr><td class="key">Reporter</td><td class="val">MFX-2</td></tr>
               <tr><td class="key">Field strengths</td><td class="val">0.5–2.5 mT (×5)<span class="note">one experiment per field</span></td></tr>
-              <tr><td class="key">Colonies</td><td class="val">74 per field</td></tr>
-              <tr><td class="key">Modality</td><td class="val">bacterioscope<span class="note">live fluorescence imaging</span></td></tr>
+              <tr><td class="key">Replicates</td><td class="val">74 per field</td></tr>
+              <tr><td class="key">Modality</td><td class="val">fieldscope<span class="note">live signal imaging</span></td></tr>
               <tr><td class="key">Field cal.</td><td class="val">Twinleaf magnetometer</td></tr>
             </tbody>
           </table>
@@ -343,7 +343,7 @@
         </svg>
         <div class="figcaption">
           <div class="legend">
-            <span><i></i> mean MFE ± SEM · n = 74 colonies/field</span>
+            <span><i></i> mean MFE ± SEM · n = 74 replicates/field</span>
           </div>
           <span class="illus">illustrative · unpublished — workshop prototype</span>
         </div>
@@ -353,7 +353,7 @@
     <!-- the Claim/model this Evidence supports — a one-line upstream signal -->
     <div class="supports-up">
       <span class="edge supports">supports ↑</span>
-      <span class="claimline">Claim · model — <b>a radical-pair quantum mechanism underlies MagLOV2 magnetosensitivity</b></span>
+      <span class="claimline">Claim · model — <b>a spin-pair quantum mechanism underlies MFX-2 field-sensitivity</b></span>
     </div>
   </div>
 
@@ -399,12 +399,12 @@
           <span class="tag">you are here</span>
         </div>
         <div class="node-title">MFE sign flipped from positive to negative as field strength increased</div>
-        <div class="node-body">Across 0.5–2.5 mT, the mean magnetic-field effect was positive at low field, crossed zero, and turned negative by ~2.5 mT (1 experiment per field, 74 colonies each) — the curve above.</div>
+        <div class="node-body">Across 0.5–2.5 mT, the mean magnetic-field effect was positive at low field, crossed zero, and turned negative by ~2.5 mT (1 experiment per field, 74 replicates each) — the curve above.</div>
         <div class="ptr-row">
           <!-- R2 · git pointer to the analysis at a frozen commit -->
-          <span class="pointer" title="quantum-bio/mfe-analysis @ 7c1ae04 · /mfe_fit_analysis/">
+          <span class="pointer" title="quantum-sensing/mfe-analysis @ 7c1ae04 · /mfe_fit_analysis/">
             <span class="kind git">git</span>
-            <span class="path">quantum-bio/mfe-analysis @ 7c1ae04 · /mfe_fit_analysis/</span>
+            <span class="path">quantum-sensing/mfe-analysis @ 7c1ae04 · /mfe_fit_analysis/</span>
           </span>
           <!-- R2 · curated dataset pointer — the spreadsheet for THIS figure, not 50 CSVs -->
           <span class="pointer" title="the curated spreadsheet behind this figure">
@@ -431,8 +431,8 @@
           <span class="ntype study">Study</span>
           <span class="tag">is_grounded_in ↑ Evidence</span>
         </div>
-        <div class="node-title">Bacterioscope live imaging of MagLOV2 E. coli across 5 field strengths</div>
-        <div class="node-body">One experiment, five imaging sessions on five days at 0.5, 1.0, 1.5, 2.0 and 2.5 mT; per-colony fluorescence tracked under a Twinleaf-calibrated applied field, with the MFE computed per colony.</div>
+        <div class="node-title">FieldScope live imaging of MFX-2 samples across 5 field strengths</div>
+        <div class="node-body">One experiment, five imaging sessions on five days at 0.5, 1.0, 1.5, 2.0 and 2.5 mT; per-replicate signal tracked under a Twinleaf-calibrated applied field, with the MFE computed per replicate.</div>
         <div class="ptr-row">
           <!-- R2/R5 · the raw stacks live in a third system — request access (gated, public page) -->
           <span class="pointer gated" title="raw NDTiff image stacks on the institute drive — archival TBD">
@@ -442,7 +442,7 @@
           </span>
 
           <!-- a short video walkthrough (pointer, not an upload) -->
-          <div class="video-ptr" title="3-min bacterioscope walkthrough">
+          <div class="video-ptr" title="3-min fieldscope walkthrough">
             <div class="poster" aria-hidden="true">
               <span class="glow"></span>
               <span class="play"></span>
@@ -453,7 +453,7 @@
                 <span class="kind video">video</span>
                 <span class="path">walkthrough.loom</span>
               </span>
-              <div class="vt">A 3-min bacterioscope walkthrough</div>
+              <div class="vt">A 3-min fieldscope walkthrough</div>
               <div class="vs">Loom · pointer only · 2:51</div>
             </div>
           </div>
@@ -471,12 +471,12 @@
         <div class="node-head">
           <span class="ntype protocol">Protocol</span>
         </div>
-        <div class="node-title">MagLOV2 expression + applied-field acquisition + per-colony MFE</div>
-        <div class="node-body">Express MagLOV2 in E. coli; acquire fluorescence on the bacterioscope under an applied field calibrated with a Twinleaf magnetometer; compute the magnetic-field effect per colony and average across the plate.</div>
+        <div class="node-title">MFX-2 loading + applied-field acquisition + per-replicate MFE</div>
+        <div class="node-body">Express MFX-2 in samples; acquire signal on the fieldscope under an applied field calibrated with a Twinleaf magnetometer; compute the magnetic-field effect per replicate and average across the plate.</div>
         <div class="ptr-row">
-          <span class="pointer" title="quantum-bio/mfe-analysis @ 7c1ae04 · /protocols/bacterioscope_mfe.md">
+          <span class="pointer" title="quantum-sensing/mfe-analysis @ 7c1ae04 · /protocols/fieldscope_mfe.md">
             <span class="kind git">git</span>
-            <span class="path">quantum-bio/mfe-analysis @ 7c1ae04 · /protocols/bacterioscope_mfe.md</span>
+            <span class="path">quantum-sensing/mfe-analysis @ 7c1ae04 · /protocols/fieldscope_mfe.md</span>
           </span>
         </div>
       </article>
@@ -488,7 +488,7 @@
   <footer class="card-foot reveal d6">
     <div class="byline">
       <span class="avstack"><span class="avatar brian">B</span><span class="avatar morgan">M</span></span>
-      <span><b>Brian &amp; Morgan</b> · Quantum Biology Institute</span>
+      <span><b>Brian &amp; Morgan</b> · Quantum Sensing Institute</span>
       <span class="dotsep">·</span>
       <span>published 9 Feb 2026</span>
       <span class="dotsep">·</span>

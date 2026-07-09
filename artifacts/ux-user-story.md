@@ -1,14 +1,14 @@
 # A result, standing on its own at a public URL — trustworthy to a stranger
 
 > 🗂️ **Superseded for day-to-day work by [`ux-spec.md`](./ux-spec.md)** — the single current UX spec (this
-> QBI narrative is folded into it as the public track, screens 01–05, which are stable). Retained for
+> QSI narrative is folded into it as the public track, screens 01–05, which are stable). Retained for
 > reference; its embedded design-system mirror (§9) predates the AA token corrections — `ux-spec.md §8` and
 > the CSS are current and win on any disagreement. *(Consolidated 2026-06-15.)*
 
 ### Publishing a result to a public repository or database — MIRA × Discourse Graphs, 🥉 low-shared-context variant, draft v0.1
 
-> **Premise.** Brian, at the Quantum Biology Institute, has a result living as markdown discourse-graph
-> nodes in his Obsidian: in MagLOV2-expressing *E. coli*, the sign of the magnetic-field effect flips
+> **Premise.** Brian, at the Quantum Sensing Institute, has a result living as markdown discourse-graph
+> nodes in his Obsidian: in MFX-2-bearing *samples*, the sign of the magnetic-field effect flips
 > from positive to negative as the field strengthens. He and his PI Morgan want to **put it in front of
 > the world** — not into one trusted colleague's graph, but into a **public repository or database**,
 > at a **URL**, where a reviewer, a prospective collaborator, or his own future self can find it.
@@ -32,7 +32,7 @@ inter-lab story — readers need *different depths* of the same bundle — but h
 who do not know the producer (AGENTS.md §3; _grounding.md §2).
 
 #### Brian — the producer (bench)
-- **Role:** researcher at the **Quantum Biology Institute**. Made the MagLOV2 result and assembled the
+- **Role:** researcher at the **Quantum Sensing Institute**. Made the MFX-2 result and assembled the
   evidence bundle.
 - **Tool:** Obsidian + Discourse Graph plugin, everything local; analysis scripts and a curated dataset
   on hand, raw stacks on an institute drive.
@@ -42,7 +42,7 @@ who do not know the producer (AGENTS.md §3; _grounding.md §2).
   the notebook that `describes` it, snapped together on the canvas (pilot, `Jik1z-xgT`).
 
 #### Morgan — the producer (PI)
-- **Role:** PI at the Quantum Biology Institute; owns the decision to publish.
+- **Role:** PI at the Quantum Sensing Institute; owns the decision to publish.
 - **Tool:** Obsidian / the web.
 - **Wants:** the publication to be **FAIR** and ideally **interactive** — "she'd love the pub to be
   interactive, perhaps like distill/idyll" (_grounding.md §2.1).
@@ -64,7 +64,7 @@ who do not know the producer (AGENTS.md §3; _grounding.md §2).
 - **Wants:** to **link/cite a specific result** and trust that the **version they cited stays frozen**
   — "we've frozen it; it will be this way for as long as GitHub exists" (_grounding.md §3, `TAXQ_j36-`).
 
-> **Naming note.** Brian and Morgan are QBI *scientists* and are first-class actors. The DG-team,
+> **Naming note.** Brian and Morgan are QSI *scientists* and are first-class actors. The DG-team,
 > schema, and connector people around the pilot are **roles/components** ([§8 of AGENTS.md](../AGENTS.md#8-architecture--stack)), not user-story actors.
 
 ---
@@ -102,10 +102,10 @@ When Brian publishes, the question is no longer *"who is on the other end?"* (he
 *"will this stand on its own, and can a stranger trust it?"* The story has four moments, each told as a
 journey and pointed at the mockup that depicts it (AGENTS.md §6; _grounding.md §2).
 
-The worked content throughout: the QBI `Evidence` — *"in MagLOV2-expressing E. coli, the sign of the
+The worked content throughout: the QSI `Evidence` — *"in MFX-2-bearing samples, the sign of the
 mean magnetic-field effect flipped from positive to negative as field strength increased at low
-fields"* — grounded in a bacterioscope live-imaging `Study` across five field strengths, following a
-MagLOV2-expression + applied-field `Protocol` (_grounding.md §2.2).
+fields"* — grounded in a fieldscope live-imaging `Study` across five field strengths, following a
+MFX-2-loading + applied-field `Protocol` (_grounding.md §2.2).
 
 ### Moment A — Publish to the public
 *Brian turns a private bundle into a public, addressable record.*
@@ -120,7 +120,7 @@ MagLOV2-expression + applied-field `Protocol` (_grounding.md §2.2).
    data pointers go public; the **raw image stacks stay request-access-gated** on the institute drive;
    a private working note ("not sure the low-field point is real yet") is **withheld without leaking
    its existence**.
-4. **He adds context and formats in schema** — a one-line summary, the "what's in the dish" methods
+4. **He adds context and formats in schema** — a one-line summary, the "what's in the sample" methods
    table, a short walkthrough — so a stranger can read it the first time (AGENTS.md §7).
 
 ### Moment B — Read it cold, at a URL, with no app
@@ -134,7 +134,7 @@ MagLOV2-expression + applied-field `Protocol` (_grounding.md §2.2).
 2. **The reader reads it cold** (mockup 02 → 03). The page leads with the summary `Evidence` figure —
    the MFE sign-flip — captioned *illustrative · unpublished — workshop prototype*, then the observation
    statement and the methods table.
-3. **They trust it via provenance** (R8). The byline shows *Brian & Morgan · Quantum Biology Institute ·
+3. **They trust it via provenance** (R8). The byline shows *Brian & Morgan · Quantum Sensing Institute ·
    CC-BY* — a stranger can see who stands behind the figure.
 4. **They follow the pointers** (R2). The `git`, `data`, and `video` chips are live links — the analysis
    script, the curated CSV *for this figure* (not 50 CSVs), the walkthrough — while the page never hosts
@@ -161,7 +161,7 @@ MagLOV2-expression + applied-field `Protocol` (_grounding.md §2.2).
 → **mockups/04-micropublication.html**
 
 1. **Publish-as-you-go** (R11). Each `Evidence` bundle is published first, independently.
-2. **A claim emerges above them.** The radical-pair model isn't inside any single bundle — it's a
+2. **A claim emerges above them.** The spin-pair model isn't inside any single bundle — it's a
    `Claim` that several `Evidence` nodes `support` (_grounding.md §2.4).
 3. **Bundle them once the story is clear** — compile into a **Jupyter Book** micropublication; each
    subfigure panel **links back to its still-addressable bundle**.
@@ -181,7 +181,7 @@ MagLOV2-expression + applied-field `Protocol` (_grounding.md §2.2).
 | **Author** | Captures `Question → Claim → Evidence → Study → Protocol` as markdown DG nodes, in his normal workflow. | Frictionless; rides the existing workflow (AGENTS.md §7). |
 | **Select the bundle** | Picks the `Evidence`; the plugin proposes `Evidence` + `Study` + `Protocol` + pointers. | Self-describing subgraph, readable cold (R4). |
 | **Set public / gated** | Spine + analysis/curated-data public; **raw stacks gated**; private note withheld. | Permissions even when public; start closed; no leak (R5). |
-| **Add context** | One-line summary, "what's in the dish" table, short walkthrough; format-in-schema. | Context for a stranger's first read (AGENTS.md §7). |
+| **Add context** | One-line summary, "what's in the sample" table, short walkthrough; format-in-schema. | Context for a stranger's first read (AGENTS.md §7). |
 | **Publish** | Exports as JSON-LD; KOI mediates to the web DB / Jupyter Book / desci. | Pointers not payloads; schema-agnostic transport (R2, R10, R12). |
 | **Get a handle** | Receives a **public URL** (and a citable, version-frozen handle). | Addressability is the deliverable (R6, R9). |
 
@@ -193,7 +193,7 @@ sign-flip) and the one-line observation, reads the provenance byline, and **trus
 traversal needed (mockup 03).
 
 **Branch 2 — the reproducer (a grad student / skeptic).** Follows `grounds` → `Study` → `follows` →
-`Protocol`; reads the field strengths and colony counts; resolves the `git` pointer to the exact
+`Protocol`; reads the field strengths and replicate counts; resolves the `git` pointer to the exact
 analysis commit and opens the curated `mfe_by_field.csv`; **requests access** to the raw stacks only if
 they intend to re-run (mockups 02 → 03).
 
@@ -211,8 +211,8 @@ notebook or manuscript; the producer later sees the **reuse** (mockup 05).
 | Mockup file | What it shows | Rule / insight it embodies |
 |---|---|---|
 | `mockups/01-publish.html` | Brian selecting the `Evidence` bundle in Obsidian and the **Publish** dialog: destination picker, **public vs. request-access-gated** per node, the withheld private note, prompts for summary + methods + walkthrough. | R1 (publish to a public repo/DB); R2 (pointers); R4 (default bundle); R5 (permissions even when public, no leak). |
-| `mockups/02-evidence-node.html` | The `Evidence` node — summary MFE figure first, observation statement, "what's in the dish" methods table, `git / data / local / video` **pointer chips** — framed as **published · addressable · citable**. | R2 (pointers not payloads); R3 (one Evidence type); R4 ("interpretable on its own"); R8 (provenance). |
-| `mockups/03-public-web-view.html` | The result as a **public web page at a URL** for a reader with no DG app — summary-first, traversable `Claim ← Evidence ← Study → Protocol`, pointers, provenance byline (QBI · CC-BY), and sidebar CTAs: **cite (frozen)**, **request access** to the raw data, **import if you run a DG**. *(The reference screen.)* | R4, R5, R6 (URL), R7 (cross-boundary resolution), R8, R9 (freeze). |
+| `mockups/02-evidence-node.html` | The `Evidence` node — summary MFE figure first, observation statement, "what's in the sample" methods table, `git / data / local / video` **pointer chips** — framed as **published · addressable · citable**. | R2 (pointers not payloads); R3 (one Evidence type); R4 ("interpretable on its own"); R8 (provenance). |
+| `mockups/03-public-web-view.html` | The result as a **public web page at a URL** for a reader with no DG app — summary-first, traversable `Claim ← Evidence ← Study → Protocol`, pointers, provenance byline (QSI · CC-BY), and sidebar CTAs: **cite (frozen)**, **request access** to the raw data, **import if you run a DG**. *(The reference screen.)* | R4, R5, R6 (URL), R7 (cross-boundary resolution), R8, R9 (freeze). |
 | `mockups/04-micropublication.html` | Several independently-addressable `Evidence` bundles **compiled into one Jupyter Book micropublication**; a `Claim`/model emerges above them; the narrative is **AI-drafted, human-edited**; each subfigure links back to its live bundle. | R7; R11 ("specs instead of papers"; bundles stay addressable). |
 | `mockups/05-public-database.html` | The **public DG database / dashboard** — a gallery/kanban of published nodes, each with a public URL, provenance, and **"cited by N"** — plus a reader **citing a specific result** with a **frozen version pin**, and the author seeing **who uses their work**. | R1, R6, R8, R9; _grounding.md §10 (see who's using my work). |
 
@@ -220,7 +220,7 @@ notebook or manuscript; the producer later sees the **reuse** (mockup 05).
 
 ## 6. Acceptance — "done when" (from AGENTS.md §9)
 
-For the worked MagLOV2 case:
+For the worked MFX-2 case:
 1. **Publish path.** Brian publishes the bundle (`Evidence` + grounding `Study` + `Protocol`, each with
    a **pointer**) from Obsidian; it travels over KOI as JSON-LD and lands in a **public repo/database
    with a stable URL.**
@@ -264,7 +264,7 @@ Surfaced, **not solved** (AGENTS.md §10; _grounding.md §5):
 ## 9. Design system & usage constraints (for dashboard prototyping)
 
 > **For the collaborator building prototypes.** Everything below is the shared visual language used
-> across all nine mockups (`01`–`05` public/QBI, `06`–`09` Sean → Kate dashboard). **The canonical
+> across all nine mockups (`01`–`05` public/QSI, `06`–`09` Sean → Kate dashboard). **The canonical
 > source of truth is the CSS, not this section** — link and reuse it, don't re-key the values:
 > [`mockups/tokens.css`](./mockups/tokens.css) (palette · fonts · radii · shadows · motion) and
 > [`mockups/components.css`](./mockups/components.css) (every component class). The fullest reference
@@ -382,14 +382,14 @@ looks right (rule IDs map to §2–§3 above and the design brief):
 - **R6 · Addressable at a URL.** Show the `.winbar` address bar / a citable handle; the published
   record is a web page.
 - **R8 · Trust via provenance.** Every result carries a byline — *author · lab · license* (e.g.
-  *Brian & Morgan · Quantum Biology Institute · CC-BY*; *Sean · Vogel Lab · shared with Kate's lab*).
+  *Brian & Morgan · Quantum Sensing Institute · CC-BY*; *Sean · Vogel Lab · shared with Kate's lab*).
 - **R9 · Freeze the cited version.** The `.cite` chip pins the exact version the reader saw, so later
   edits don't silently change what was cited.
 - **Two currents on the dashboard.** Results flow out **and** a `Request` flows back — render the
   reverse current with the indigo `Request` colour + `.request` chip.
 - **Every plot is labelled** *"illustrative · unpublished — workshop prototype."* Never invent
-  contradicting science; use the worked example verbatim from `_design-brief.md` §4 (QBI MagLOV2) or
-  the dashboard worked example (G3BP1 / PABP1 assembly order).
+  contradicting science; use the worked example verbatim from `_design-brief.md` §4 (QSI MFX-2) or
+  the dashboard worked example (Component A / Component B assembly order).
 - **Every screen is captioned** — a `.frame-caption` with an `.eyebrow` (e.g. `MOCKUP 07 · SHARED
   DASHBOARD`), an `<h2>`, and one sentence naming the rule it embodies.
 

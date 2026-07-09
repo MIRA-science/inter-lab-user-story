@@ -4,14 +4,14 @@
 > pushes a *selected subgraph* of his discourse graph to a **read-only shared web interface — a
 > dashboard / kanban** — that a known collaborator and her lab (**Kate**, a PI) can navigate **without
 > running any discourse-graph tooling**. The dashboard can be **public** (a lab website, open
-> recruitment) or **password-protected** (a consortium of 20-plus labs). Unlike the fully-public QBI
+> recruitment) or **password-protected** (a consortium of 20-plus labs). Unlike the fully-public QSI
 > case ([`_grounding.md`](./_grounding.md)), this tier has a **second current**: Kate's lab can issue a
 > **Request** back (for a follow-up experiment or analysis).
 >
 > **Sources** (do not contradict). Three Granola sessions, distilled here (raw transcripts stay local,
 > per [`.gitignore`](../.gitignore)):
 > - **"Collaboration between labs experiment"** — Jun 8, 2026 (the session where Sean *demos* the
->   stress-granule graph live). The worked example comes from here.
+>   cluster graph live). The worked example comes from here.
 > - **"User story clarification session"** — Jun 9, 2026 (interop axes; the KOI **dashboard** track;
 >   share-a-selected-subgraph + permissions; the **Request** type; "extract graph elements, don't
 >   compose narrative pages").
@@ -36,7 +36,7 @@
 
 ## 0. One-line story
 
-Sean has a stress-granule result living as markdown discourse-graph nodes in his Obsidian vault. He
+Sean has a cluster result living as markdown discourse-graph nodes in his Obsidian vault. He
 wants Kate's lab to **see it, trust it, and dig into it on their own time** — without installing
 anything, without a Zoom call, and **without handing over his 80 GB of raw images or his private
 notes.** He pushes a **selected subgraph** through KOI to a **shared web dashboard**; Kate (the PI)
@@ -80,35 +80,35 @@ with zero discourse-graphs background"* (Dashboard collaboration ideas, Jun 9). 
 
 | Role | Who | Tool | In the story |
 |---|---|---|---|
-| **Producer (bench)** | **Sean** — PhD student, **Vogel Lab** (cell biology) | Obsidian + DG plugin; 25 TB raw-data array | Authors the graph; **selects the subgraph to share**; sets permissions; keeps personal notes private. |
-| **Consumer (PI)** | **Kate** — PI of a collaborating stress-granule lab | a **web browser** (the dashboard) | **Glances and trusts**; manages **multiple collaborators across multiple projects**; wants everything **in one place, searchable, for years**. |
+| **Producer (bench)** | **Sean** — PhD student, **Vogel Lab** (quantitative imaging) | Obsidian + DG plugin; 25 TB raw-data array | Authors the graph; **selects the subgraph to share**; sets permissions; keeps personal notes private. |
+| **Consumer (PI)** | **Kate** — PI of a collaborating cluster lab | a **web browser** (the dashboard) | **Glances and trusts**; manages **multiple collaborators across multiple projects**; wants everything **in one place, searchable, for years**. |
 | **Consumer (reproducer)** | **a grad student in Kate's lab** | the dashboard | **Traverses back to the segmentation threshold**; follows pointers to the CSV; may **request access** / **request a follow-up**. |
 | **Viewer (public / funder)** | a lab-website visitor, a recruit, a funder | the public dashboard | Sees a **preset view** — open **questions/requests** (recruiting) or **experiments-in-progress** (funder); needs a *plain-language* summary. |
 
-> **The pivotal insight (same as the inter-lab and QBI stories): one bundle, different depths.** *"The
+> **The pivotal insight (same as the inter-lab and QSI stories): one bundle, different depths.** *"The
 > big idea up front… with busy principal investigators"* for the glancer; *"what segmentation threshold
 > did Sean use… go to the image analysis node"* for the reproducer (Collaboration between labs, Jun 8).
 
 ### 2.2 The worked example (verbatim from the Jun 8 demo)
 
-> Real test case Sean built live. **Stress-granule protein recruitment in HeLa cells.** Mark figures
+> Real test case Sean built live. **Cluster component recruitment in samples.** Mark figures
 > *illustrative · unpublished — workshop prototype* — Sean: *"we can't publish it outside of here
 > because it's unpublished data, but you can experiment."*
 
 - **The system (Sean, Jun 8):** *"the collaboration between Kate's lab and my lab, Vogel Lab, would
-  produce… they visited us and we had these HeLa cells and then we cultured them and then exposed them
-  to stress and image[d] them… using fluorescence microscopy, we were able to track the intensity of
-  these two… proteins within stress granules as they're forming or dissolving at really high… spatial
+  produce… they visited us and we had these samples and then we prepared them and then exposed them
+  to perturbation and image[d] them… using signal imaging, we were able to track the intensity of
+  these two… components within clusters as they're forming or dissolving at really high… spatial
   resolution."*
-- **Claim / result (illustrative):** *the two stress-granule markers are recruited in a fixed order —*
-  **G3BP1 rises before PABP1** *as granules assemble* (same protein pair as the sibling inter-lab
-  story, for cross-repo consistency; the transcript names only "two proteins").
-- **Evidence — key figure:** two intensity-vs-time curves; **G3BP1 climbs earlier, PABP1 lags**, as
-  granules form (and the order reverses as they dissolve).
-- **Study (the producers call it the "experiment"):** live fluorescence microscopy of stressed HeLa
-  cells, two-channel, tracking per-granule intensity over time.
-- **Protocol:** HeLa culture → stress induction → live imaging → **segmentation (threshold)** →
-  per-granule intensity quantification. *The segmentation threshold is the load-bearing methods detail.*
+- **Claim / result (illustrative):** *the two cluster markers are recruited in a fixed order —*
+  **Component A rises before Component B** *as clusters assemble* (same component pair as the sibling inter-lab
+  story, for cross-repo consistency; the transcript names only "two components").
+- **Evidence — key figure:** two intensity-vs-time curves; **Component A climbs earlier, Component B lags**, as
+  clusters form (and the order reverses as they dissolve).
+- **Study (the producers call it the "experiment"):** live signal imaging of perturbed sample
+  samples, two-channel, tracking per-cluster intensity over time.
+- **Protocol:** sample preparation → perturbation induction → live imaging → **segmentation (threshold)** →
+  per-cluster intensity quantification. *The segmentation threshold is the load-bearing methods detail.*
 - **Pointers, not payloads (R2), at the extreme:**
   - `git` → the analysis repo + commit (Speaker C, Jun 8: *"work out the git repo… work out the commit…
     a link to the position in that file… the CSV file that might be in a git repo"*).
@@ -142,9 +142,9 @@ The agreed scope, almost verbatim:
 - **Accessibility is a stated requirement:** *"please make sure it's colorblind friendly"*; legible for
   a *"60-year-old-plus professor whose last tech thing was C"* (EU standard).
 
-### 2.4 The two currents (this is what makes the tier different from QBI)
+### 2.4 The two currents (this is what makes the tier different from QSI)
 
-The QBI/world case is **one-directional** (producer → public). The dashboard tier **re-activates the
+The QSI/world case is **one-directional** (producer → public). The dashboard tier **re-activates the
 Request-back current** the canvas shows (a `Request for study` node in Kate's column):
 
 1. **Results out:** Sean pushes the shareable subgraph — *"the two elements we want to share are the
@@ -197,7 +197,7 @@ Request-back current** the canvas shows (a `Request for study` node in Kate's co
   Authoring stays in the vault; the dashboard reflects a **published subset**.
 - **Pointers, not payloads (R2), at the extreme.** Raw data (~80 GB) lives on a **25 TB lab array** — a
   third system entirely; the graph carries **GitHub + commit + path**, **S3**, and **curated CSV**
-  pointers, never the bytes. Non-text assets (CSVs, images, DNA files) are *"currently only embedded as
+  pointers, never the bytes. Non-text assets (CSVs, images, binary files) are *"currently only embedded as
   content, not exposed as separate schema fields — flagged as a gap"* (Dashboard collab, Jun 9).
 - **KOI is the transport, and it is *not* the open internet.** *"The internet… is like air travel all
   around the world. The KOI app is like a specific expressway"* — a structured interoperability layer
@@ -216,7 +216,7 @@ Request-back current** the canvas shows (a `Request for study` node in Kate's co
 - **Shared ≠ editable.** *"By default, shared nodes are visible but not editable by the receiving lab."*
 - **Provenance must be transportable and support invalidation (Jun 8):** *"you might find out three
   months later that there's a bug in your segmentation… you'll need to know everything downstream of
-  that and invalidate that and recompute it… [or] the microscope is too cold."* Auto-generated bullets
+  that and invalidate that and recompute it… [or] the instrument is too cold."* Auto-generated bullets
   carry *"provenance so you can see who created it"* and when.
 - **Automation that preserves intent.** Crawlers can read a repo and *"recognize when your Python script
   reads a CSV file"* (Snakemake/Nextflow integrations) and auto-propose edges — *"but then you lose that
@@ -231,7 +231,7 @@ Request-back current** the canvas shows (a `Request for study` node in Kate's co
 
 - **Candidate-node formalization flow:** when someone else formalizes your shared candidate node, do you
   approve / get notified? *"That's an open question."*
-- **Non-text assets in the schema:** how CSVs / images / DNA files become **referenceable schema fields**,
+- **Non-text assets in the schema:** how CSVs / images / binary files become **referenceable schema fields**,
   not just embedded content.
 - **Accounts & gating atop weak KOI:** how password-protected consortium views and per-resource
   request-access are enforced.
@@ -247,7 +247,7 @@ Request-back current** the canvas shows (a `Request for study` node in Kate's co
 ## 6. Provenance (sources + verified quotes)
 
 - **"Collaboration between labs experiment"** — Jun 8, 2026 (Granola; Sean demos). Worked example
-  (HeLa / two stress-granule proteins / forming-dissolving); 80 GB / 25 TB array; CSV-as-shared-unit;
+  (sample / two cluster components / forming-dissolving); 80 GB / 25 TB array; CSV-as-shared-unit;
   git+commit pointer; private "personal thoughts" node; glance-and-trust vs. segmentation-threshold;
   video walkthrough; "one place / searchable / three years"; one-project-umbrella / many collaborators;
   invalidate-and-recompute provenance; unpublished-data caveat.
@@ -266,7 +266,7 @@ Request-back current** the canvas shows (a `Request for study` node in Kate's co
 - **Schema:** <https://github.com/MIRA-science/schema> (`mira.yaml`): Question · Claim · Evidence ·
   Study · **Request** · Protocol; edges `grounds`/`is_grounded_in`, `follows`, **`request_for`**,
   **`request_target`**, `supports`/`opposes`, `addresses`.
-- **Companion:** [`./_grounding.md`](./_grounding.md) (the QBI / fully-public worked example retained in
+- **Companion:** [`./_grounding.md`](./_grounding.md) (the QSI / fully-public worked example retained in
   this repo).
 
 ---
