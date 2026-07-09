@@ -8,8 +8,8 @@
 
 > Read with [`_grounding.md`](./_grounding.md) and [`../AGENTS.md`](../AGENTS.md). Every mockup is a
 > **single self-contained `.html` file** in `artifacts/mockups/` that links the two shared
-> stylesheets and adds only screen-specific CSS. This repo **reuses the inter-lab design system
-> verbatim** (`tokens.css` + `components.css`, copied from `../lab-to-lab/`), plus a
+> stylesheets and adds only screen-specific CSS. This repo carries the **"DG × MIRA" design system**
+> (`tokens.css` + `components.css`), plus a
 > small extension block at the bottom of `components.css` for this repo's casts and destinations (two
 > blocks: QBI, then the Sean → Kate dashboard). Built per Claude's **frontend-design** sensibility:
 > distinctive, production-grade, never generic.

@@ -18,11 +18,10 @@
 > can open the URL, understand it cold, follow the pointers, request access to what's gated, and cite
 > the exact version.** One direction: results flow producer → the public (AGENTS.md §1; _grounding.md §0).
 
-This is the **bronze tier** of the shared-context ladder. Its sibling, the
-[inter-lab story](../lab-to-lab/), covers the gold/silver end — sharing into a *known*
-collaborator's graph. Here there is **no known recipient and no shared tooling**: the work must stand
-entirely on its own, and trust is earned by **visible provenance and reproducibility**, not by who
-sent it.
+This is the **bronze tier** of the shared-context ladder — the public extreme. Where this repo's
+**central** Sean → Kate dashboard has a *known* recipient, here there is **no known recipient and no
+shared tooling**: the work must stand entirely on its own, and trust is earned by **visible provenance
+and reproducibility**, not by who sent it.
 
 ---
 

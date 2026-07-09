@@ -1,12 +1,12 @@
 # Push results to a shared web interface
 
-*A MIRA user story — how one lab's result reaches the people who need it on a **shared web interface**, readable without any discourse-graph tooling: from a **collaborator's dashboard** to the **fully public** web. The shared-web-surface end of the [inter-graph exchange](lab-to-lab/).*
+*A MIRA user story — how one lab's result reaches the people who need it on a **shared web interface**, readable without any discourse-graph tooling: from a **collaborator's dashboard** to the **fully public** web.*
 
 ---
 
 ## ▶ See the mockups — live
 
-The nine screens are **interactive HTML mockups**, hosted on GitHub Pages. Open them in a browser — GitHub shows `.html` files as raw source, so use the links below (not the files in [`artifacts/mockups/`](./artifacts/mockups/)).
+The eleven screens are **interactive HTML mockups**, hosted on GitHub Pages. Open them in a browser — GitHub shows `.html` files as raw source, so use the links below (not the files in [`artifacts/mockups/`](./artifacts/mockups/)).
 
 ### 🔗 [**mira-science.github.io/inter-lab-user-story**](https://mira-science.github.io/inter-lab-user-story/) — the gallery index
 
@@ -18,6 +18,8 @@ The nine screens are **interactive HTML mockups**, hosted on GitHub Pages. Open 
 | **07** | [The shared dashboard ↗](https://mira-science.github.io/inter-lab-user-story/07-shared-dashboard.html) | the headline read-only web view — Graph · Kanban · Table |
 | **08** | [Traverse & request back ↗](https://mira-science.github.io/inter-lab-user-story/08-traverse-and-request.html) | follow lineage to the method, hit gated data, send a `Request` |
 | **09** | [Consortium view & recruiting ↗](https://mira-science.github.io/inter-lab-user-story/09-consortium-view.html) | one umbrella across many labs — public vs. password-protected |
+| **10** | [The evidence card ↗](https://mira-science.github.io/inter-lab-user-story/10-evidence-card.html) | one result-first card with the method folded in — shown at four states |
+| **11** | [Meeting prep ↗](https://mira-science.github.io/inter-lab-user-story/11-meeting-prep.html) | a mobile-first "since last sync" diff to prep for the next meeting |
 
 <details>
 <summary><b>Public extreme — QBI → the whole world (01–05)</b></summary>
@@ -42,8 +44,6 @@ Sean, a PhD student in the **Vogel Lab**, has a result living as markdown discou
 
 Not by installing a discourse-graph app, not on a scheduled Zoom call, and **without** shipping his 80 GB of raw images or exposing his private notes. He pushes a **selected subgraph** through KOI to a **read-only shared web dashboard** — **public** for the lab website, or **password-protected** for the consortium. Kate (the PI) **glances at the summary plot and trusts it**; her **grad student traverses back to the segmentation threshold** and pulls the curated CSV; and when they want more, they **send a `Request` back** for a follow-up experiment. *Two currents: results out, requests back.*
 
-> This is **distinct from the [lab-to-lab push/pull story](lab-to-lab/)** (now a subfolder of this repo), which stars the *same* Sean → Kate cast — but there the result is **imported into Kate's own graph**. **Here the surface is a read-only dashboard** Kate's lab simply *views in a browser* — "legible to people with zero discourse-graphs background."
-
 ## The public extreme — QBI → the whole world
 
 Take the same machinery and open it all the way up. Brian, at the **Quantum Biology Institute**, publishes a MagLOV2 magnetic-field-effect result to a **public repository or database** so that **anyone** — a reviewer, a future collaborator, or his own future self, with **no relationship and no shared tooling** — can read it cold at a URL, follow the pointers, **request access** to what's gated, and **cite the exact version**. One direction: producer → the public.
@@ -55,12 +55,12 @@ Take the same machinery and open it all the way up. Brian, at the **Quantum Biol
 | File | What it is |
 |---|---|
 | [`AGENTS.md`](./AGENTS.md) | **Start here.** The shared brief + spec: scope, actors, data model, twelve normative rules, the two lifecycles (share-to-dashboard + publish), acceptance criteria, and open questions. Written so coding agents in different labs can build interoperable pieces from one source of truth. |
-| [`artifacts/`](./artifacts/) | **The fleshed-out UX.** The **central** [`ux-user-story-dashboard.md`](./artifacts/ux-user-story-dashboard.md) (Sean → Kate) and its context pack [`_grounding-dashboard.md`](./artifacts/_grounding-dashboard.md); the retained [`ux-user-story.md`](./artifacts/ux-user-story.md) (QBI) and [`_grounding.md`](./artifacts/_grounding.md); and **nine** interactive HTML [`mockups/`](./artifacts/mockups/) ([**view live ↗**](https://mira-science.github.io/inter-lab-user-story/)) — **06–09** the dashboard (central), **01–05** the public extreme. See [`artifacts/README.md`](./artifacts/README.md). |
+| [`artifacts/`](./artifacts/) | **The fleshed-out UX.** The **central** [`ux-user-story-dashboard.md`](./artifacts/ux-user-story-dashboard.md) (Sean → Kate) and its context pack [`_grounding-dashboard.md`](./artifacts/_grounding-dashboard.md); the retained [`ux-user-story.md`](./artifacts/ux-user-story.md) (QBI) and [`_grounding.md`](./artifacts/_grounding.md); and **eleven** interactive HTML [`mockups/`](./artifacts/mockups/) ([**view live ↗**](https://mira-science.github.io/inter-lab-user-story/)) — **06–11** the dashboard (central), **01–05** the public extreme. See [`artifacts/README.md`](./artifacts/README.md). |
 | [`./low-context-user-story.png`](./low-context-user-story.png) | The user-story canvas — **Sean's notebook → Kate's lab → a shared web interface** ("KOI DG nodes to dashboard/kanban"), carrying a `Request for study` node — across location / format / feel / features / schema / tasks. |
 
 ## The shape of the data
 
-We use the **same MIRA grammar as the [inter-lab story](lab-to-lab/)** — the destination changes, the grammar does not. Six node types carry this work:
+We use the **standard MIRA grammar** — the destination changes, the grammar does not. Six node types carry this work:
 
 ```
 Question ←addresses← Claim ←supports← Evidence ←grounds← Study →follows→ Protocol
@@ -91,7 +91,7 @@ If you're an engineer or a coding agent picking up a piece of this: **read [`AGE
 
 ## Status
 
-Draft v0.1. The **central** use case is the **Sean → Kate dashboard** — pushing a selected subgraph to a read-only shared web interface (public or consortium-gated) with a request-back current, grounded in the Vogel × Kate stress-granule sessions and the user-story canvas. The **retained** public extreme is **QBI MagLOV2 → the world** (Obsidian → public repo/DB; the bronze tier of the shared-context ladder). Built as the shared-web-surface counterpart to the [`lab-to-lab/`](lab-to-lab/) push/pull story (now a subfolder of this repo). Both worked examples are real; the data is **unpublished** (mockup figures are labelled *illustrative · unpublished — workshop prototype*).
+Draft v0.1. The **central** use case is the **Sean → Kate dashboard** — pushing a selected subgraph to a read-only shared web interface (public or consortium-gated) with a request-back current, grounded in the Vogel × Kate stress-granule sessions and the user-story canvas. The **retained** public extreme is **QBI MagLOV2 → the world** (Obsidian → public repo/DB; the bronze tier of the shared-context ladder). Both worked examples are real; the data is **unpublished** (mockup figures are labelled *illustrative · unpublished — workshop prototype*).
 
 ---
 

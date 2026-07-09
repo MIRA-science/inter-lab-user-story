@@ -59,17 +59,18 @@ repository:
 > **Push a result to a shared web surface — from a *consortium dashboard* (Sean → Kate, gated) to the
 > *fully public* (Brian → world) — readable without any discourse-graph app.**
 
-| | Lab-to-lab push/pull (`./lab-to-lab/`) | **Sean → Kate dashboard (root, central)** | Brian → world (root, retained) |
-|---|---|---|---|
-| **Destination** | import into Kate's **own DG graph** | a **read-only shared web dashboard** | a **fully public repo / database** |
-| **Recipient tooling** | Kate runs a DG | **a browser** (no DG needed) | a browser |
-| **Openness** | private P2P | **public OR password-protected (consortium)** | public to everyone |
-| **Reverse current** | first-class `Request` into Sean's graph | **`Request` surfaced on the dashboard** | weak / absent |
-| **Trust basis** | the relationship | the relationship **+ visible provenance** | visible provenance only |
+| | **Sean → Kate dashboard (root, central)** | Brian → world (root, retained) |
+|---|---|---|
+| **Destination** | a **read-only shared web dashboard** | a **fully public repo / database** |
+| **Recipient tooling** | **a browser** (no DG needed) | a browser |
+| **Openness** | **public OR password-protected (consortium)** | public to everyone |
+| **Reverse current** | **`Request` surfaced on the dashboard** | weak / absent |
+| **Trust basis** | the relationship **+ visible provenance** | visible provenance only |
 
 The dashboard is explicitly the **complement** to in-graph sharing: *"makes that data legible to people
-with zero discourse-graphs background"* (Dashboard collaboration ideas, Jun 9). Lab-to-lab sharing
-*into* a graph already works via the plugin; the dashboard is the **viewing/discovery surface** on top.
+with zero discourse-graphs background"* (Dashboard collaboration ideas, Jun 9). Sharing a subgraph
+*into* a collaborator's own graph already works via the plugin; the dashboard is the
+**viewing/discovery surface** on top.
 
 ---
 
@@ -265,9 +266,8 @@ Request-back current** the canvas shows (a `Request for study` node in Kate's co
 - **Schema:** <https://github.com/MIRA-science/schema> (`mira.yaml`): Question · Claim · Evidence ·
   Study · **Request** · Protocol; edges `grounds`/`is_grounded_in`, `follows`, **`request_for`**,
   **`request_target`**, `supports`/`opposes`, `addresses`.
-- **Sibling & companion:** [`../lab-to-lab/`](../lab-to-lab/) (import-into-a-
-  known-graph; same Sean → Kate cast & G3BP1/PABP1 example); [`./_grounding.md`](./_grounding.md) (the
-  QBI / fully-public worked example retained in this repo).
+- **Companion:** [`./_grounding.md`](./_grounding.md) (the QBI / fully-public worked example retained in
+  this repo).
 
 ---
 

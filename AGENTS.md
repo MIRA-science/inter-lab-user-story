@@ -30,9 +30,10 @@
 - This repository captures **one spine — "push a result to a shared web interface" — in two worked
   examples**: the **central** Sean → Kate *dashboard* (a known collaborator/consortium, gated, with a
   request-back), and the **retained** Brian → *world* publication (fully public, one-directional).
-- It is the **shared-web-surface** counterpart to [`lab-to-lab/`](./lab-to-lab/) (which covers importing into a
-  *known collaborator's graph*). This file changes the **destination** (a shared web interface / public
-  repo) and, at the collaborator tier, **re-activates the `Request`-back current** — not the data model.
+- Its concern is the **shared-web-surface** destination — a result rendered as a read-only web page /
+  dashboard that needs no DG app, as opposed to being imported into a *known collaborator's graph*. This
+  changes the **destination** (a shared web interface / public repo) and, at the collaborator tier,
+  **re-activates the `Request`-back current** — not the data model.
 - Companion artifacts in this repo:
   - **Central (Sean → Kate dashboard):**
     [`artifacts/_grounding-dashboard.md`](./artifacts/_grounding-dashboard.md) — the context pack;
@@ -381,8 +382,6 @@ stays independently addressable. (See [`ux-user-story.md` §6](./artifacts/ux-us
 - Dashboard sessions (distilled in `_grounding-dashboard.md`; raw transcripts stay local per
   [`.gitignore`](./.gitignore)): **"Collaboration between labs experiment"** (Jun 8, 2026 — Sean demos),
   **"User story clarification session"** & **"Dashboard collaboration ideas"** (Jun 9, 2026).
-- Sibling story (importing into a *known* graph; the same Sean → Kate cast, the shared rules this varies):
-  [`lab-to-lab/AGENTS.md`](lab-to-lab/AGENTS.md).
 - Roam (dg-team): `[[ISS]] - Document initial inter-graph use cases`; the bronze node
   `🥉Low shared context: push result to a public repository or database`; `UserPilot/Quantum biology
   institute`; `Initiative/Inter-graph functionality` ("each DG node displayable as a web page with a

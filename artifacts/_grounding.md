@@ -3,8 +3,8 @@
 > **Note:** this pack grounds the **public extreme** (QBI → the world). The repo's **central** use case —
 > the **Sean → Kate dashboard** — is grounded in [`_grounding-dashboard.md`](./_grounding-dashboard.md).
 
-> A **variant of the inter-lab user story** for the *lowest* rung of the shared-context ladder.
-> Where the inter-lab story (`../lab-to-lab/`) is **P2P, Sean → a known Kate**, this
+> The **public extreme** of this repo's spine, at the *lowest* rung of the shared-context ladder.
+> Where the **central** Sean → Kate dashboard is **P2P, Sean → a known Kate**, this
 > variant is **producer → the public / anyone in the world**, with little-to-no shared context and
 > often **no shared tooling** on the receiving end.
 >
@@ -53,9 +53,8 @@ and `[[Inter-graph Use Cases]] to design MVP around` turns those into tiers. Thi
 | 🥈 Medium-high | push **between graphs and platforms** (`4UXkCArxd`) | shared interests; may/may not communicate | partial |
 | 🥉 **Low** | **push result to a public repository or database** (`pOEtpyGbH`) | **everyone in the world** | **often none** |
 
-The inter-lab user story (`../lab-to-lab/`) covers the **gold/silver** end (import into a
-DG app; its "Scenario B — view on the web" already reaches toward bronze). **This variant is the
-bronze end's first-class write-up.** Key consequence: with no shared context, **the bundle must
+The **gold/silver** end of the ladder — pushing between graphs a close community controls — is the
+higher-context case; **this variant is the bronze end's first-class write-up.** Key consequence: with no shared context, **the bundle must
 stand entirely on its own**, and trust comes from *visible provenance + reproducibility*, not from a
 prior relationship.
 
@@ -295,8 +294,7 @@ What the systems, formats, schema, and infrastructure impose or block:
   claim/evidence/figure only).
 - **Canvases**: `../low-context-user-story.png` (web-interface destination), `../../myst-dg-interop/MyST-DG user story.png`
   (MyST/nucleus variant).
-- **Inter-lab parent story** (for the variant contract & rules R1–R10): `../lab-to-lab/AGENTS.md`,
-  `../lab-to-lab/artifacts/ux-user-story.md`, `../lab-to-lab/artifacts/_grounding.md`.
+- **Repo spec** (the normative rules this variant must honor): [`../AGENTS.md`](../AGENTS.md).
 
 ---
 

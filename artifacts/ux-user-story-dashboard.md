@@ -27,10 +27,9 @@ discourse-graph app** — sliding from a *consortium dashboard* (Sean → Kate, 
 to a *fully public* page (Brian → world). Same machinery (KOI → MIRA JSON-LD → web rendering), same
 rules (pointers, summary-first, permissions-without-leaks, provenance, freeze, a URL).
 
-> **Distinct from the sibling [inter-lab story](../lab-to-lab/),** which stars the *same*
-> Sean → Kate cast: there, the result is **imported into Kate's own graph** (both labs run a DG). **Here
-> the surface is a read-only dashboard** Kate's lab simply *views in a browser* — *"legible to people
-> with zero discourse-graphs background"* (Dashboard collaboration ideas, Jun 9).
+> **The surface here is a read-only dashboard** Kate's lab simply *views in a browser* — no discourse-graph
+> app to install, the result *"legible to people with zero discourse-graphs background"* (Dashboard
+> collaboration ideas, Jun 9).
 
 ---
 

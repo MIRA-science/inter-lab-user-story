@@ -4,8 +4,7 @@
 the people who need it on a **shared web surface**, readable with no discourse-graph tooling — from a
 **collaborator's dashboard** (the central case) to the **fully public** web. Built from
 [`../AGENTS.md`](../AGENTS.md) (the spec), the **Vogel × Kate** lab-collaboration sessions, the
-**Quantum Biology Institute** pilot, the [MIRA schema](https://github.com/MIRA-science/schema), and the
-[inter-lab story](../lab-to-lab/) it varies.*
+**Quantum Biology Institute** pilot, and the [MIRA schema](https://github.com/MIRA-science/schema).*
 
 > **Start here.** To **build or maintain the mockups**, read the single current spec
 > **[`ux-spec.md`](./ux-spec.md)** — it folds the user stories, the design brief, and the dated
@@ -154,9 +153,8 @@ signal — plus citing a specific result with a **frozen version pin** (R1, R6, 
 
 ## The design system
 
-The mockups reuse the inter-lab "DG × MIRA" design language verbatim (`tokens.css` + `components.css`,
-copied from [`../lab-to-lab/`](../lab-to-lab/)), plus two small extension blocks
-at the bottom of `components.css`:
+The mockups carry the "DG × MIRA" design language (`tokens.css` + `components.css`), plus two small
+extension blocks at the bottom of `components.css`:
 
 - **`mockups/tokens.css`** — the canonical Discourse-Graph node palette (Question · gold, Claim · green,
   Evidence · coral, Study · blue, Protocol · violet, Request · indigo, Source · teal), a warm
